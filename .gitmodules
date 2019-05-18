@@ -1,0 +1,3 @@
+[submodule "Utilities/tool"]
+	path = Utilities/tool
+	url = https://MahlonaVitalii@bitbucket.org/MahlonaVitalii/tool.git
