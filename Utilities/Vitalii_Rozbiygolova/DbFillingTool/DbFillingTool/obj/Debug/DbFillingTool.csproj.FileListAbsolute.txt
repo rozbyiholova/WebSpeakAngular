@@ -1,0 +1,13 @@
+C:\Users\vrozbyiholova\source\repos\producthouse_2019_2\Vitalii_Rozbiygolova\DbFillingTool\DbFillingTool\bin\Debug\DbFillingTool.exe.config
+C:\Users\vrozbyiholova\source\repos\producthouse_2019_2\Vitalii_Rozbiygolova\DbFillingTool\DbFillingTool\bin\Debug\DbFillingTool.exe
+C:\Users\vrozbyiholova\source\repos\producthouse_2019_2\Vitalii_Rozbiygolova\DbFillingTool\DbFillingTool\bin\Debug\DbFillingTool.pdb
+C:\Users\vrozbyiholova\source\repos\producthouse_2019_2\Vitalii_Rozbiygolova\DbFillingTool\DbFillingTool\bin\Debug\LinqToExcel.dll
+C:\Users\vrozbyiholova\source\repos\producthouse_2019_2\Vitalii_Rozbiygolova\DbFillingTool\DbFillingTool\bin\Debug\Remotion.Data.Linq.dll
+C:\Users\vrozbyiholova\source\repos\producthouse_2019_2\Vitalii_Rozbiygolova\DbFillingTool\DbFillingTool\bin\Debug\Remotion.dll
+C:\Users\vrozbyiholova\source\repos\producthouse_2019_2\Vitalii_Rozbiygolova\DbFillingTool\DbFillingTool\bin\Debug\Remotion.Interfaces.dll
+C:\Users\vrozbyiholova\source\repos\producthouse_2019_2\Vitalii_Rozbiygolova\DbFillingTool\DbFillingTool\bin\Debug\LinqToExcel.xml
+C:\Users\vrozbyiholova\source\repos\producthouse_2019_2\Vitalii_Rozbiygolova\DbFillingTool\DbFillingTool\obj\Debug\DbFillingTool.csprojAssemblyReference.cache
+C:\Users\vrozbyiholova\source\repos\producthouse_2019_2\Vitalii_Rozbiygolova\DbFillingTool\DbFillingTool\obj\Debug\DbFillingTool.csproj.CoreCompileInputs.cache
+C:\Users\vrozbyiholova\source\repos\producthouse_2019_2\Vitalii_Rozbiygolova\DbFillingTool\DbFillingTool\obj\Debug\DbFillingTool.csproj.CopyComplete
+C:\Users\vrozbyiholova\source\repos\producthouse_2019_2\Vitalii_Rozbiygolova\DbFillingTool\DbFillingTool\obj\Debug\DbFillingTool.exe
+C:\Users\vrozbyiholova\source\repos\producthouse_2019_2\Vitalii_Rozbiygolova\DbFillingTool\DbFillingTool\obj\Debug\DbFillingTool.pdb
