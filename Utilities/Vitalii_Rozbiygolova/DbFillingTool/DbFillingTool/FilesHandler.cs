@@ -31,6 +31,8 @@ namespace DbFillingTool
 
             }
         }
+        private static int parentCategoryId { get; set; } = 0;
+        private static int wordId { get; set; } = 0;
 
         private static ExcelFileRow[] DeleteNulls(this List<ExcelFileRow> list)
         {
@@ -51,9 +53,11 @@ namespace DbFillingTool
 
             return result;
         }
-        private static int 
 
-        private static int parentCategoryId { get; set; } = 0;
+        private static void LoadTests(SqlConnection connection, string path)
+        {
+
+        }
 
         private static void LoadLanguages(SqlConnection connection, string path)
         {
@@ -71,6 +75,7 @@ namespace DbFillingTool
                     command.CommandText = $"insert into Languages (name) values (@name)";
                     command.Parameters.Add("@name", SqlDbType.VarChar).Value = names[i + 1];
                     command.ExecuteNonQuery();
+                    command.Parameters.Clear();
                 }
             }
 
@@ -90,6 +95,7 @@ namespace DbFillingTool
                         command.Parameters.Add("@lang_id", SqlDbType.VarChar).Value = i + 1;
                         command.Parameters.Add("@native_lang_id", SqlDbType.VarChar).Value = j + 1;
                         command.ExecuteNonQuery();
+                        command.Parameters.Clear();
                     }
 
                 }
@@ -125,6 +131,7 @@ namespace DbFillingTool
                     FileInfo pictureToInsert = Array.Find(pictures, picture => Path.GetFileName(picture.FullName).ToLower() == (DirName + ".jpg").ToLower());
                     command.Parameters.Add("@picture", SqlDbType.NVarChar, 200).Value = pictureToInsert.FullName;
                     command.ExecuteNonQuery();
+                    command.Parameters.Clear();
                     parentCategoryId++;
 
                     // CategoryTranslation
@@ -132,17 +139,7 @@ namespace DbFillingTool
                     ExcelFileRow[] categories = (from row in factory.Worksheet<ExcelFileRow>(0)
                                                 select row).ToList().DeleteNulls();
 
-                    int categoryId = -1;
-                    SqlCommand readerCommand = new SqlCommand();
-                    readerCommand.Connection = connection;
-                    readerCommand.CommandText = "select id from Categories where name = @name";
-                    readerCommand.Parameters.Add("@name", SqlDbType.VarChar).Value = DirName;
-                    SqlDataReader reader = readerCommand.ExecuteReader();
-                    if (reader.Read())
-                    {
-                        categoryId = (int)reader.GetValue(0);
-                    }
-                    reader.Close();
+                    int categoryId = GetCategoryId(DirName, connection);
 
                     string[] properties = GetPropertyValues(categories[i]);
                     for (int j = 1; j < properties.Length; j++)
@@ -157,6 +154,7 @@ namespace DbFillingTool
                             commandForTranslation.Parameters.Add("@category_id", SqlDbType.VarChar).Value = categoryId;
                             commandForTranslation.Parameters.Add("@lang_id", SqlDbType.VarChar).Value = j;
                             commandForTranslation.ExecuteNonQuery();
+                            commandForTranslation.Parameters.Clear();
                         }
 
                     }
@@ -172,13 +170,15 @@ namespace DbFillingTool
             subDirEntries = subDirEntries.Where(dir => Path.GetFileName(dir.FullName) != "pictures").ToArray();
             if (Array.Exists(subDirEntries, dir => Path.GetFileName(dir.FullName) == "pronounce"))
             {
-                LoadWords(path, connection);
+                string pathForWords = path;
+                LoadWords(pathForWords, connection);
+                return;
             }
             FileInfo[] pictures;
             try
             {
-                string currentOath = path;
-                DirectoryInfo picturesInfo = new DirectoryInfo(currentOath += @"\pictures");
+                string currentPath = path;
+                DirectoryInfo picturesInfo = new DirectoryInfo(currentPath += @"\pictures");
                 pictures = picturesInfo.GetFiles();
             }
             catch
@@ -205,21 +205,11 @@ namespace DbFillingTool
                     command.Parameters.Add("@name", SqlDbType.NVarChar).Value = DirName;
                     command.Parameters.Add("@parent_id", SqlDbType.Int).Value = parentCategoryId;
                     command.ExecuteNonQuery();
+                    command.Parameters.Clear();
                 }
 
-                int categoryId = -1;
-                SqlCommand readerCommand = new SqlCommand();
-                readerCommand.Connection = connection;
-                readerCommand.CommandText = "select id from Categories where name = @name";
-                readerCommand.Parameters.Add("@name", SqlDbType.VarChar).Value = DirName;
-                SqlDataReader reader = readerCommand.ExecuteReader();
-                if (reader.Read())
-                {
-                    categoryId = (int)reader.GetValue(0);
-                }
-                reader.Close();
-                
 
+                int categoryId = GetCategoryId(DirName, connection);
                 //CategoryTranslation
                 ExcelQueryFactory factory = new ExcelQueryFactory(path + @"\" + Path.GetFileName(path) + ".xlsx");
                 ExcelFileRow[] categories = (from row in factory.Worksheet<ExcelFileRow>(0)
@@ -238,10 +228,11 @@ namespace DbFillingTool
                         commandForTranslation.Parameters.Add("@category_id", SqlDbType.VarChar).Value = categoryId;
                         commandForTranslation.Parameters.Add("@lang_id", SqlDbType.VarChar).Value = j;
                         commandForTranslation.ExecuteNonQuery();
+                        commandForTranslation.Parameters.Clear();
                     }
 
                 }
-                
+
                 LoadSubDir(subDirEntries[i].FullName, connection);
             }
             parentCategoryId += subDirEntries.Length;
@@ -256,30 +247,91 @@ namespace DbFillingTool
             FileInfo[] pictures = new DirectoryInfo(path + @"\pictures").GetFiles();
             DirectoryInfo[] pronounce = new DirectoryInfo(path + @"\pronounce").GetDirectories();
             FileInfo[] sounds;
+            string dirName = Path.GetFileName(path);
             try
             {
                 sounds = new DirectoryInfo(path + @"\sounds").GetFiles();
             }
             catch
             {
-                Console.WriteLine("Category has no sounds");
+                Console.WriteLine($"Category {dirName} has no sounds");
                 sounds = Array.Empty<FileInfo>();
             }
+
+            int categoryId = GetCategoryId(dirName, connection);
+            string[] sheetNames = factory.GetWorksheetNames().ToArray();
+            string[] headers = factory.GetColumnNames(sheetNames[0]).ToArray();
             for (int i = 0; i < words.Length; i++)
             {
-                for (int j = 0; j < words.Length; j++)
+                using (SqlCommand wordInsert = new SqlCommand())
                 {
-                    using (SqlCommand wordInsert = new SqlCommand())
+                    FileInfo soundFileInfo = Array.Find(sounds,
+                               s => Path.GetFileName(s.FullName).ToLower() == words[i].Name.ToLower() + ".wav");
+                    wordInsert.Connection = connection;
+                    if (sounds.Length > 0 && soundFileInfo != null)
                     {
-                        wordInsert.Connection = connection;
-                        wordInsert.CommandText = "insert into Words (name, category_id, sound, picture) values (@name, @category_id, @sound, @picture)";
-                        wordInsert.Parameters.Add("@name", SqlDbType.VarChar).Value = words[j].Name;
-                        wordInsert.Parameters.Add("@category_id", SqlDbType.Int).Value = 
+                        wordInsert.CommandText =
+                            "insert into Words (name, category_id, sound, picture) values (@name, @category_id, @sound, @picture)";
+                            wordInsert.Parameters.Add("@sound", SqlDbType.VarChar, 200).Value = soundFileInfo.FullName;
+                    }
+                    else
+                    {
+                        wordInsert.CommandText =
+                            "insert into Words (name, category_id, picture) values (@name, @category_id,  @picture)";
+                    }
+                    wordInsert.Parameters.Add("@name", SqlDbType.VarChar).Value = words[i].Name;
+                    wordInsert.Parameters.Add("@category_id", SqlDbType.Int).Value = categoryId;
+                    FileInfo picture = Array.Find(pictures,
+                        p => Path.GetFileName(p.FullName).ToLower().Replace(" ", String.Empty) == words[i].Name.ToLower().Replace(" ", String.Empty) + ".jpg");
+                    wordInsert.Parameters.Add("@picture", SqlDbType.VarChar, 200).Value = picture.FullName;
+                    wordInsert.ExecuteNonQuery();
+                    wordInsert.Parameters.Clear();
+                    wordId++;
+                }
+
+                using (SqlCommand wordTranslationCommand = new SqlCommand())
+                {
+                    string[] properties = GetPropertyValues(words[i]);
+                    for (int j = 1; j < properties.Length; j++)
+                    {
+                        wordTranslationCommand.Connection = connection;
+                        wordTranslationCommand.CommandText = "insert into WordTranslations (lang_id, translation, word_id, pronounce) " +
+                                                 "values (@lang_id, @translation, @word_id, @pronounce)";
+                        wordTranslationCommand.Parameters.Add("@lang_id", SqlDbType.Int).Value = j;
+                        wordTranslationCommand.Parameters.Add("@translation", SqlDbType.NVarChar).Value = properties[j];
+                        wordTranslationCommand.Parameters.Add("@word_id", SqlDbType.Int).Value = wordId;
+                        FileInfo[] pronounses = new DirectoryInfo(path + @"\pronounce\" + headers[j]).GetFiles();
+                        FileInfo pronounceToInsert = Array.Find(pronounses,
+                            p => Path.GetFileName(p.FullName).ToLower().Replace(" ", String.Empty) == words[i].Name.ToLower().Replace(" ", String.Empty) + ".wav");
+                        wordTranslationCommand.Parameters.Add("@pronounce", SqlDbType.VarChar, 200).Value =
+                            pronounceToInsert.FullName;
+                        wordTranslationCommand.ExecuteNonQuery();
+                        wordTranslationCommand.Parameters.Clear();
                     }
                 }
-                
+
             }
-     
+
+        }
+
+        private static int GetCategoryId(string categoryName, SqlConnection connection)
+        {
+                int categoryId = -1;
+                using (SqlCommand readerCommand = new SqlCommand())
+                {
+                    readerCommand.Connection = connection;
+                    readerCommand.CommandText = "select id from Categories where name = @name";
+                    readerCommand.Parameters.Add("@name", SqlDbType.VarChar).Value = categoryName;
+                    SqlDataReader reader = readerCommand.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        categoryId = (int)reader.GetValue(0);
+                    }
+                    reader.Close();
+                readerCommand.Parameters.Clear();
+                }
+                
+                return categoryId;
         }
     }
 }
