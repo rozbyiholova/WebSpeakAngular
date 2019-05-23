@@ -14,25 +14,23 @@ namespace DbFillingTool
 {
     public static class FilesHandler
     {
+        private static string[] names;
+
         public static void LoadMainEntities()
         {
             string categoriesPath = @"D:\LanguageSite\DictionaryForFullStack";
             string languagesPath = @"D:\LanguageSite\DictionaryForFullStack\Languages.xlsx";
-            string testsPath = @"D:\LanguageSite\DictionaryForFullStack\TestNames.xlsx";
+            string testsPath = @"D:\LanguageSite\DictionaryForFullStack\TestsNames.xlsx";
 
 
             using (SqlConnection db = new SqlConnection(ConfigurationManager.ConnectionStrings["DbConnection"].ConnectionString))
             {
                 db.Open();
                 LoadLanguages(db, languagesPath);
+                LoadTests(db, testsPath);
                 LoadCategories(db, categoriesPath);
-
-
-
             }
         }
-        private static int parentCategoryId { get; set; } = 0;
-        private static int wordId { get; set; } = 0;
 
         private static ExcelFileRow[] DeleteNulls(this List<ExcelFileRow> list)
         {
@@ -56,7 +54,47 @@ namespace DbFillingTool
 
         private static void LoadTests(SqlConnection connection, string path)
         {
+            ExcelQueryFactory factory = new ExcelQueryFactory(path);
+            ExcelFileRow[] tests = (from row in factory.Worksheet<ExcelFileRow>(0)
+                                    select row).ToList().DeleteNulls();
+            FileInfo[] icons = new DirectoryInfo(Path.GetDirectoryName(path) + @"\Test_Icons\white").GetFiles();
 
+            //table Tests
+            for (int i = 0; i < tests.Length; i++)
+            {
+                using (SqlCommand command = new SqlCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandText = $"insert into Tests (name, icon) values (@name, @icon)";
+                    command.Parameters.Add("@name", SqlDbType.NVarChar).Value = tests[i].Name;
+                    command.Parameters.Add("@icon", SqlDbType.VarChar, 200).Value = icons[i + 2].FullName;
+                    command.ExecuteNonQuery();
+                    command.Parameters.Clear();
+
+                    //table TestTRanslations
+                    string[] properties = GetPropertyValues(tests[i]);
+
+                    int test_id = GetId("Tests", tests[i].Name, connection);
+                    //starts with 1 because properties[0] contains not values but names only
+                    //exapmle (Names, UA, RU etc)
+                    for (int j = 1; j < properties.Length; j++)
+                    {
+                        int language_id = GetId("Languages", names[j], connection);
+                        using (SqlCommand testTranslationCommand = new SqlCommand())
+                        {
+                            testTranslationCommand.Connection = connection;
+                            testTranslationCommand.CommandText = "insert into TestTranslations (translation, test_id, lang_id) " +
+                                $"values (@translation, @test_id, @lang_id)";
+                            testTranslationCommand.Parameters.Add("@translation", SqlDbType.NVarChar).Value = properties[j];
+                            testTranslationCommand.Parameters.Add("@test_id", SqlDbType.Int).Value = i + 1;
+                            testTranslationCommand.Parameters.Add("@lang_id", SqlDbType.Int).Value = j;
+                            testTranslationCommand.ExecuteNonQuery();
+                            testTranslationCommand.Parameters.Clear();
+                        }
+
+                    }
+                }
+            }
         }
 
         private static void LoadLanguages(SqlConnection connection, string path)
@@ -64,7 +102,7 @@ namespace DbFillingTool
             ExcelQueryFactory factory = new ExcelQueryFactory(path);
             ExcelFileRow[] languages = (from row in factory.Worksheet<ExcelFileRow>(0)
                                         select row).ToList().DeleteNulls();
-            string[] names = factory.GetColumnNames("Categories").ToArray();
+            names = factory.GetColumnNames("Categories").ToArray();
 
             //table Languages
             for (int i = 0; i < languages.Length; i++)
@@ -82,8 +120,10 @@ namespace DbFillingTool
             //table LanguageTranslations
             for (int i = 0; i < languages.Length; i++)
             {
-                for (int j = 0; j < languages.Length; j++)
+                int language_id = GetId("Languages", names[i + 1], connection);
+                for (int j = 1; j < languages.Length + 1; j++)
                 {
+                    int native_lang_id = GetId("Languages", names[j], connection);
                     if (i >= languages.Length) break;
                     using (SqlCommand command = new SqlCommand())
                     {
@@ -91,9 +131,9 @@ namespace DbFillingTool
                         command.Connection = connection;
                         command.CommandText = "insert into LanguageTranslations (translation, lang_id, native_lang_id) " +
                             $"values (@translation, @lang_id, @native_lang_id)";
-                        command.Parameters.Add("@translation", SqlDbType.NVarChar).Value = properties[j + 1];
-                        command.Parameters.Add("@lang_id", SqlDbType.VarChar).Value = i + 1;
-                        command.Parameters.Add("@native_lang_id", SqlDbType.VarChar).Value = j + 1;
+                        command.Parameters.Add("@translation", SqlDbType.NVarChar).Value = properties[j];
+                        command.Parameters.Add("@lang_id", SqlDbType.VarChar).Value = language_id;
+                        command.Parameters.Add("@native_lang_id", SqlDbType.VarChar).Value = native_lang_id;
                         command.ExecuteNonQuery();
                         command.Parameters.Clear();
                     }
@@ -132,14 +172,13 @@ namespace DbFillingTool
                     command.Parameters.Add("@picture", SqlDbType.NVarChar, 200).Value = pictureToInsert.FullName;
                     command.ExecuteNonQuery();
                     command.Parameters.Clear();
-                    parentCategoryId++;
 
                     // CategoryTranslation
                     ExcelQueryFactory factory = new ExcelQueryFactory(@"D:\LanguageSite\DictionaryForFullStack\CategoriesRoot.xlsx");
                     ExcelFileRow[] categories = (from row in factory.Worksheet<ExcelFileRow>(0)
                                                 select row).ToList().DeleteNulls();
 
-                    int categoryId = GetCategoryId(DirName, connection);
+                    int categoryId = GetId("Categories", DirName, connection);
 
                     string[] properties = GetPropertyValues(categories[i]);
                     for (int j = 1; j < properties.Length; j++)
@@ -147,12 +186,13 @@ namespace DbFillingTool
                         if (j >= properties.Length) break;
                         using (SqlCommand commandForTranslation = new SqlCommand())
                         {
+                            int language_id = GetId("Languages", names[j], connection);
                             commandForTranslation.Connection = connection;
                             commandForTranslation.CommandText = "insert into CategoriesTranslations (translation, category_id, lang_id) " +
                                 $"values (@translation, @category_id, @lang_id)";
                             commandForTranslation.Parameters.Add("@translation", SqlDbType.NVarChar).Value = properties[j];
                             commandForTranslation.Parameters.Add("@category_id", SqlDbType.VarChar).Value = categoryId;
-                            commandForTranslation.Parameters.Add("@lang_id", SqlDbType.VarChar).Value = j;
+                            commandForTranslation.Parameters.Add("@lang_id", SqlDbType.VarChar).Value = language_id;
                             commandForTranslation.ExecuteNonQuery();
                             commandForTranslation.Parameters.Clear();
                         }
@@ -188,6 +228,8 @@ namespace DbFillingTool
             }
             for (int i = 0; i < subDirEntries.Length; i++)
             {
+                string parentName = Path.GetFileName(path);
+                int parent_id = GetId("Categories", parentName, connection);
                 string DirName = Path.GetFileName(subDirEntries[i].FullName);
                 using (SqlCommand command = new SqlCommand())
                 {
@@ -203,13 +245,13 @@ namespace DbFillingTool
                     }
 
                     command.Parameters.Add("@name", SqlDbType.NVarChar).Value = DirName;
-                    command.Parameters.Add("@parent_id", SqlDbType.Int).Value = parentCategoryId;
+                    command.Parameters.Add("@parent_id", SqlDbType.Int).Value = parent_id;
                     command.ExecuteNonQuery();
                     command.Parameters.Clear();
                 }
 
 
-                int categoryId = GetCategoryId(DirName, connection);
+                int categoryId = GetId("Categories", DirName, connection);
                 //CategoryTranslation
                 ExcelQueryFactory factory = new ExcelQueryFactory(path + @"\" + Path.GetFileName(path) + ".xlsx");
                 ExcelFileRow[] categories = (from row in factory.Worksheet<ExcelFileRow>(0)
@@ -218,6 +260,7 @@ namespace DbFillingTool
                 string[] properties = GetPropertyValues(categories[i]);
                 for (int j = 1; j < properties.Length; j++)
                 {
+                    int language_id = GetId("Languages", names[j], connection);
                     if (j >= properties.Length) break;
                     using (SqlCommand commandForTranslation = new SqlCommand())
                     {
@@ -235,7 +278,6 @@ namespace DbFillingTool
 
                 LoadSubDir(subDirEntries[i].FullName, connection);
             }
-            parentCategoryId += subDirEntries.Length;
         }
 
         private static void LoadWords(string path, SqlConnection connection)
@@ -258,7 +300,7 @@ namespace DbFillingTool
                 sounds = Array.Empty<FileInfo>();
             }
 
-            int categoryId = GetCategoryId(dirName, connection);
+            int categoryId = GetId("Categories", dirName, connection);
             string[] sheetNames = factory.GetWorksheetNames().ToArray();
             string[] headers = factory.GetColumnNames(sheetNames[0]).ToArray();
             for (int i = 0; i < words.Length; i++)
@@ -286,20 +328,21 @@ namespace DbFillingTool
                     wordInsert.Parameters.Add("@picture", SqlDbType.VarChar, 200).Value = picture.FullName;
                     wordInsert.ExecuteNonQuery();
                     wordInsert.Parameters.Clear();
-                    wordId++;
                 }
 
                 using (SqlCommand wordTranslationCommand = new SqlCommand())
                 {
+                    int word_id = GetId("Words", words[i].Name, connection);
                     string[] properties = GetPropertyValues(words[i]);
                     for (int j = 1; j < properties.Length; j++)
                     {
+                        int lang_id = GetId("Languages", names[j], connection);
                         wordTranslationCommand.Connection = connection;
                         wordTranslationCommand.CommandText = "insert into WordTranslations (lang_id, translation, word_id, pronounce) " +
                                                  "values (@lang_id, @translation, @word_id, @pronounce)";
-                        wordTranslationCommand.Parameters.Add("@lang_id", SqlDbType.Int).Value = j;
+                        wordTranslationCommand.Parameters.Add("@lang_id", SqlDbType.Int).Value = lang_id;
                         wordTranslationCommand.Parameters.Add("@translation", SqlDbType.NVarChar).Value = properties[j];
-                        wordTranslationCommand.Parameters.Add("@word_id", SqlDbType.Int).Value = wordId;
+                        wordTranslationCommand.Parameters.Add("@word_id", SqlDbType.Int).Value = word_id;
                         FileInfo[] pronounses = new DirectoryInfo(path + @"\pronounce\" + headers[j]).GetFiles();
                         FileInfo pronounceToInsert = Array.Find(pronounses,
                             p => Path.GetFileName(p.FullName).ToLower().Replace(" ", String.Empty) == words[i].Name.ToLower().Replace(" ", String.Empty) + ".wav");
@@ -314,24 +357,19 @@ namespace DbFillingTool
 
         }
 
-        private static int GetCategoryId(string categoryName, SqlConnection connection)
+        private static int GetId(string tableName, string value, SqlConnection connection)
         {
-                int categoryId = -1;
+                int Id = -1;
                 using (SqlCommand readerCommand = new SqlCommand())
                 {
                     readerCommand.Connection = connection;
-                    readerCommand.CommandText = "select id from Categories where name = @name";
-                    readerCommand.Parameters.Add("@name", SqlDbType.VarChar).Value = categoryName;
-                    SqlDataReader reader = readerCommand.ExecuteReader();
-                    if (reader.Read())
-                    {
-                        categoryId = (int)reader.GetValue(0);
-                    }
-                    reader.Close();
-                readerCommand.Parameters.Clear();
+                    readerCommand.CommandText = $"select id from {tableName} where name = @name";
+                    readerCommand.Parameters.Add("@name", SqlDbType.VarChar).Value = value;
+                    Id = (int)readerCommand.ExecuteScalar();
+                    readerCommand.Parameters.Clear();
                 }
                 
-                return categoryId;
+                return Id;
         }
     }
 }
