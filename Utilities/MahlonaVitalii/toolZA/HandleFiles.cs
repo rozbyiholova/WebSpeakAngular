@@ -170,7 +170,7 @@ namespace toolZA
             var excel = new ExcelQueryFactory(fileInfO.FullName);
             var worksheetList = excel.GetWorksheetNames().ToList();
 
-            if (nameFile.Contains("Languages"))
+            if (nameFile.Contains("Languages") || nameFile.Contains("TestsNames"))
             {
                 return from c in excel.Worksheet<ExcelTable>(worksheetList[0])
                        where !String.IsNullOrEmpty(c.Name)
