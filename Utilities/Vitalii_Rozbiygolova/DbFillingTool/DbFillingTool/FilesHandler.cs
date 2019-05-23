@@ -86,8 +86,8 @@ namespace DbFillingTool
                             testTranslationCommand.CommandText = "insert into TestTranslations (translation, test_id, lang_id) " +
                                 $"values (@translation, @test_id, @lang_id)";
                             testTranslationCommand.Parameters.Add("@translation", SqlDbType.NVarChar).Value = properties[j];
-                            testTranslationCommand.Parameters.Add("@test_id", SqlDbType.Int).Value = i + 1;
-                            testTranslationCommand.Parameters.Add("@lang_id", SqlDbType.Int).Value = j;
+                            testTranslationCommand.Parameters.Add("@test_id", SqlDbType.Int).Value = test_id;
+                            testTranslationCommand.Parameters.Add("@lang_id", SqlDbType.Int).Value = language_id;
                             testTranslationCommand.ExecuteNonQuery();
                             testTranslationCommand.Parameters.Clear();
                         }
