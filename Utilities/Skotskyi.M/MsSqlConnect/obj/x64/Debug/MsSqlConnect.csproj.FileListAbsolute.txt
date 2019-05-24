@@ -1,7 +1,0 @@
-D:\Projects\producthouse_2019_2\MsSqlConnect\MsSqlConnect\bin\x64\Debug\MsSqlConnect.exe.config
-D:\Projects\producthouse_2019_2\MsSqlConnect\MsSqlConnect\bin\x64\Debug\MsSqlConnect.exe
-D:\Projects\producthouse_2019_2\MsSqlConnect\MsSqlConnect\bin\x64\Debug\MsSqlConnect.pdb
-D:\Projects\producthouse_2019_2\MsSqlConnect\MsSqlConnect\obj\x64\Debug\MsSqlConnect.csprojAssemblyReference.cache
-D:\Projects\producthouse_2019_2\MsSqlConnect\MsSqlConnect\obj\x64\Debug\MsSqlConnect.csproj.CoreCompileInputs.cache
-D:\Projects\producthouse_2019_2\MsSqlConnect\MsSqlConnect\obj\x64\Debug\MsSqlConnect.exe
-D:\Projects\producthouse_2019_2\MsSqlConnect\MsSqlConnect\obj\x64\Debug\MsSqlConnect.pdb
