@@ -15,7 +15,7 @@ namespace DbFillingTool
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-            FilesHandler.LoadMainEntities();
+            new FilesHandler().LoadMainEntities();
             stopWatch.Stop();
 
             TimeSpan ts = stopWatch.Elapsed;

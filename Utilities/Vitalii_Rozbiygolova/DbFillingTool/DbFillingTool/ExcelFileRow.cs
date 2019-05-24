@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DbFillingTool
 {
-    class ExcelFileRow
+    public class ExcelFileRow
     {
         public string Name { get; set; }
         public string UA { get; set; }
