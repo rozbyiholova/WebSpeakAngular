@@ -80,7 +80,6 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="FilesHandler.cs" />
     <Compile Include="Helper.cs" />
-    <Compile Include="Insert.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
