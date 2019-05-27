@@ -13,9 +13,11 @@ namespace DbFillingTool
     {
         static void Main(string[] args)
         {
+            FilesHandler handler = new FilesHandler();
+
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-            new FilesHandler().LoadMainEntities();
+            handler.LoadMainEntities();
             stopWatch.Stop();
 
             TimeSpan ts = stopWatch.Elapsed;

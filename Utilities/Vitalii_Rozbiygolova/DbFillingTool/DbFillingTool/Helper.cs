@@ -29,7 +29,9 @@ namespace DbFillingTool
                 return result;
             }
             else
+            { 
                 throw new Exception("Object can not be null");
+            }
 
         }
         
@@ -60,7 +62,10 @@ namespace DbFillingTool
             bool result = true;
             foreach (object obj in objects)
             {
-                if (obj == null) result = false;
+                if (obj == null)
+                {
+                    result = false;
+                }
             }
             return result;
         }
@@ -70,8 +75,14 @@ namespace DbFillingTool
             try
             {
                 ExcelQueryFactory factory;
-                if (path.Contains(".xlsx")) factory = new ExcelQueryFactory(path);
-                else factory = new ExcelQueryFactory(path + @"\" + Path.GetFileName(path) + ".xlsx");
+                if (path.Contains(".xlsx"))
+                {
+                    factory = new ExcelQueryFactory(path);
+                }
+                else
+                {
+                    factory = new ExcelQueryFactory(path + @"\" + Path.GetFileName(path) + ".xlsx");
+                }
                  
                 ExcelFileRow[] file = (from row in factory.Worksheet<ExcelFileRow>(0)
                                        orderby row.Name
@@ -86,7 +97,7 @@ namespace DbFillingTool
 
         public static FileInfo[] GetPictures(string path)
         {
-            FileInfo[] pictures;
+            FileInfo[] pictures = Array.Empty<FileInfo>();
             try
             {
                 string currentPath = path;
@@ -95,8 +106,7 @@ namespace DbFillingTool
             }
             catch
             {
-                Console.WriteLine("Directory has no pictures");
-                pictures = Array.Empty<FileInfo>();
+                throw new Exception("Can not find any pictures");
             }
             return pictures;
         }

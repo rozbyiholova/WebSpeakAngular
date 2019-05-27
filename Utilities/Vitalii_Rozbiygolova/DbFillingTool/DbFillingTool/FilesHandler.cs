@@ -10,22 +10,28 @@ namespace DbFillingTool
 {
     public class FilesHandler
     {
+
+        private const string Tests = "Tests";
+        private const string Languages = "Languages";
+        private const string Categories = "Categories";
+        private const string Words = "Words";
+
         private string[] names;
 
         public void LoadMainEntities()
         {
-            const string categoriesPath = @"D:\LanguageSite\DictionaryForFullStack";
-            const string languagesPath = @"D:\LanguageSite\DictionaryForFullStack\Languages.xlsx";
-            const string testsPath = @"D:\LanguageSite\DictionaryForFullStack\TestsNames.xlsx";
+            const string CategoriesPath = @"D:\LanguageSite\DictionaryForFullStack";
+            const string LanguagesPath = @"D:\LanguageSite\DictionaryForFullStack\Languages.xlsx";
+            const string TestsPath = @"D:\LanguageSite\DictionaryForFullStack\TestsNames.xlsx";
             
             try
             { 
                 using (SqlConnection db = new SqlConnection(ConfigurationManager.ConnectionStrings["DbConnection"].ConnectionString))
                 {
                     db.Open();
-                    LoadLanguages(db, languagesPath);
-                    //LoadTests(db, testsPath);
-                    //LoadCategories(db, categoriesPath);
+                    LoadLanguages(db, LanguagesPath);
+                    LoadTests(db, TestsPath);
+                    LoadCategories(db, CategoriesPath);
                 }
             }
             catch (Exception e)
@@ -65,12 +71,12 @@ namespace DbFillingTool
                         //table TestTranslations
                         string[] properties = Helper.GetPropertyValues(tests[i]);
 
-                        int test_id = Helper.GetId("Tests", tests[i].Name, connection);
+                        int test_id = Helper.GetId(Tests, tests[i].Name, connection);
                         //starts with 1 because properties[0] contains not values but names only
                         //exapmle (Names, UA, RU etc)
                         for (int j = 1; j < properties.Length; j++)
                         {
-                            int language_id = Helper.GetId("Languages", names[j], connection);
+                            int language_id = Helper.GetId(Languages, names[j], connection);
                             using (SqlCommand testTranslationCommand = new SqlCommand())
                             {
                                 testTranslationCommand.Connection = connection;
@@ -95,7 +101,7 @@ namespace DbFillingTool
             ExcelQueryFactory factory = new ExcelQueryFactory(path);
             ExcelFileRow[] languages = (from row in factory.Worksheet<ExcelFileRow>(0)
                                    select row).ToList().DeleteNulls();
-            names = factory.GetColumnNames("Categories").ToArray();
+            names = factory.GetColumnNames(Categories).ToArray();
 
             //table Languages
             for (int i = 0; i < languages.Length; i++)
@@ -113,11 +119,14 @@ namespace DbFillingTool
             //table LanguageTranslations
             for (int i = 0; i < languages.Length; i++)
             {
-                int language_id = Helper.GetId("Languages", names[i + 1], connection);
+                int language_id = Helper.GetId(Languages, names[i + 1], connection);
                 for (int j = 1; j < languages.Length + 1; j++)
                 {
-                    int native_lang_id = Helper.GetId("Languages", names[j], connection);
-                    if (i >= languages.Length) break;
+                    int native_lang_id = Helper.GetId(Languages, names[j], connection);
+                    if (i >= languages.Length)
+                    {
+                        break;
+                    }
                     using (SqlCommand command = new SqlCommand())
                     {
                         string[] properties = Helper.GetPropertyValues(languages[i]);
@@ -143,27 +152,41 @@ namespace DbFillingTool
             for (int i = 0; i < subDirEntries.Length; i++)
             {
                 string DirName = Path.GetFileName(subDirEntries[i].FullName);
+                FileInfo pictureToInsert = null;
                 using (SqlCommand command = new SqlCommand())
                 {
                     command.Connection = connection;
                     command.CommandText = $"insert into Categories (name, picture) values (@name, @picture)";
                     command.Parameters.Add("@name", SqlDbType.NVarChar).Value = DirName;
-                    FileInfo pictureToInsert = Array.Find(pictures, picture => Path.GetFileName(picture.FullName).ToLower() == (DirName + ".jpg").ToLower());
-                    command.Parameters.Add("@picture", SqlDbType.NVarChar, 200).Value = pictureToInsert.FullName;
+                    try
+                    {
+                        pictureToInsert = Array.Find(pictures, picture => Path.GetFileName(picture.FullName).ToLower() == (DirName + ".jpg").ToLower());
+                    }
+                    catch
+                    {
+                        throw new Exception("Can not find file");
+                    }
+                    if (Helper.Check(pictureToInsert))
+                    {
+                        command.Parameters.Add("@picture", SqlDbType.NVarChar, 200).Value = pictureToInsert.FullName;
+                    }
                     command.ExecuteNonQuery();
                     command.Parameters.Clear();
 
                     // CategoryTranslation
                     ExcelFileRow[] categories = Helper.GetExcel(@"D:\LanguageSite\DictionaryForFullStack\CategoriesRoot.xlsx");
-                    int categoryId = Helper.GetId("Categories", DirName, connection);
+                    int categoryId = Helper.GetId(Categories, DirName, connection);
 
                     string[] properties = Helper.GetPropertyValues(categories[i]);
                     for (int j = 1; j < properties.Length; j++)
                     {
-                        if (j >= properties.Length) break;
+                        if (j >= properties.Length)
+                        {
+                            break;
+                        }
                         using (SqlCommand commandForTranslation = new SqlCommand())
                         {
-                            int language_id = Helper.GetId("Languages", names[j], connection);
+                            int language_id = Helper.GetId(Languages, names[j], connection);
                             commandForTranslation.Connection = connection;
                             commandForTranslation.CommandText = "insert into CategoriesTranslations (translation, category_id, lang_id) " +
                                 $"values (@translation, @category_id, @lang_id)";
@@ -194,7 +217,7 @@ namespace DbFillingTool
             for (int i = 0; i < subDirEntries.Length; i++)
             {
                 string parentName = Path.GetFileName(path);
-                int parent_id = Helper.GetId("Categories", parentName, connection);
+                int parent_id = Helper.GetId(Categories, parentName, connection);
                 string DirName = Path.GetFileName(subDirEntries[i].FullName);
                 using (SqlCommand command = new SqlCommand())
                 {
@@ -216,14 +239,17 @@ namespace DbFillingTool
                 }
 
 
-                int categoryId = Helper.GetId("Categories", DirName, connection);
+                int categoryId = Helper.GetId(Categories, DirName, connection);
                 //CategoryTranslation
                 ExcelFileRow[] categories = Helper.GetExcel(path);
                 string[] properties = Helper.GetPropertyValues(categories[i]);
                 for (int j = 1; j < properties.Length; j++)
                 {
-                    int language_id = Helper.GetId("Languages", names[j], connection);
-                    if (j >= properties.Length) break;
+                    int language_id = Helper.GetId(Languages, names[j], connection);
+                    if (j >= properties.Length)
+                    {
+                        break;
+                    }
                     using (SqlCommand commandForTranslation = new SqlCommand())
                     {
                         commandForTranslation.Connection = connection;
@@ -248,17 +274,17 @@ namespace DbFillingTool
             ExcelFileRow[] words = Helper.GetExcel(path);
             DirectoryInfo[] pronounce = new DirectoryInfo(path + @"\pronounce").GetDirectories();
             FileInfo[] pictures = Helper.GetPictures(path);
-            FileInfo[] sounds;
+            FileInfo[] sounds = Array.Empty<FileInfo>();
             try
             {
                 sounds = new DirectoryInfo(path + @"\sounds").GetFiles();
             }
             catch
             {
-                sounds = Array.Empty<FileInfo>();
+                Console.WriteLine($"Category {dirName} has no sound");
             }
 
-            int categoryId = Helper.GetId("Categories", dirName, connection);
+            int categoryId = Helper.GetId(Categories, dirName, connection);
             ExcelQueryFactory factory = new ExcelQueryFactory(path + @"\" + Path.GetFileName(path) + ".xlsx");
             string[] sheetNames = factory.GetWorksheetNames().ToArray();
             string[] headers = factory.GetColumnNames(sheetNames[0]).ToArray();
@@ -266,6 +292,7 @@ namespace DbFillingTool
             {
                 using (SqlCommand wordInsert = new SqlCommand())
                 {
+                    FileInfo picture = null;
                     FileInfo soundFileInfo = Array.Find(sounds,
                                s => Path.GetFileName(s.FullName).ToLower() == words[i].Name.ToLower() + ".wav");
                     wordInsert.Connection = connection;
@@ -282,8 +309,15 @@ namespace DbFillingTool
                     }
                     wordInsert.Parameters.Add("@name", SqlDbType.VarChar).Value = words[i].Name;
                     wordInsert.Parameters.Add("@category_id", SqlDbType.Int).Value = categoryId;
-                    FileInfo picture = Array.Find(pictures,
-                        p => Path.GetFileName(p.FullName).ToLower().Replace(" ", String.Empty) == words[i].Name.ToLower().Replace(" ", String.Empty) + ".jpg");
+                    try
+                    {
+                        picture = Array.Find(pictures,
+                       p => Path.GetFileName(p.FullName).ToLower().Replace(" ", String.Empty) == words[i].Name.ToLower().Replace(" ", String.Empty) + ".jpg");
+                    }
+                    catch
+                    {
+                        throw new Exception("Can not find picture");
+                    }
                     wordInsert.Parameters.Add("@picture", SqlDbType.VarChar, 200).Value = picture.FullName;
                     wordInsert.ExecuteNonQuery();
                     wordInsert.Parameters.Clear();
@@ -291,11 +325,11 @@ namespace DbFillingTool
 
                 using (SqlCommand wordTranslationCommand = new SqlCommand())
                 {
-                    int word_id = Helper.GetId("Words", words[i].Name, connection);
+                    int word_id = Helper.GetId(Words, words[i].Name, connection);
                     string[] properties = Helper.GetPropertyValues(words[i]);
                     for (int j = 1; j < properties.Length; j++)
                     {
-                        int lang_id = Helper.GetId("Languages", names[j], connection);
+                        int lang_id = Helper.GetId(Languages, names[j], connection);
                         FileInfo[] pronounses = new DirectoryInfo(path + @"\pronounce\" + headers[j]).GetFiles();
                         FileInfo pronounceToInsert = Array.Find(pronounses,
                             p => Path.GetFileName(p.FullName).ToLower().Replace(" ", String.Empty) == words[i].Name.ToLower().Replace(" ", String.Empty) + ".wav");
@@ -312,13 +346,15 @@ namespace DbFillingTool
                             wordTranslationCommand.ExecuteNonQuery();
                             wordTranslationCommand.Parameters.Clear();
                         }
-                        else Console.WriteLine($"Pronounce can not be null");
+                        else
+                        {
+                            Console.WriteLine($"Pronounce can not be null");
+                        }
                     }
                 }
 
             }
 
         }
-
     }
 }
