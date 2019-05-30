@@ -46,7 +46,7 @@ namespace DbFillingTool
             FileInfo[] icons;
             try
             {
-                icons = new DirectoryInfo(Path.GetDirectoryName(path) + @"\Test_Icons\white").GetFiles();
+                icons = new DirectoryInfo(Path.GetDirectoryName(path) + @"\Test_Icons\grey").GetFiles();
             }
             catch
             {
@@ -64,7 +64,7 @@ namespace DbFillingTool
                         command.Connection = connection;
                         command.CommandText = $"insert into Tests (name, icon) values (@name, @icon)";
                         command.Parameters.Add("@name", SqlDbType.NVarChar).Value = tests[i].Name;
-                        command.Parameters.Add("@icon", SqlDbType.VarChar, 200).Value = icons[i + 2].FullName;
+                        command.Parameters.Add("@icon", SqlDbType.VarChar, 200).Value = icons[i + 2].FullName.Substring(3);
                         command.ExecuteNonQuery();
                         command.Parameters.Clear();
 
@@ -168,7 +168,7 @@ namespace DbFillingTool
                     }
                     if (Helper.Check(pictureToInsert))
                     {
-                        command.Parameters.Add("@picture", SqlDbType.NVarChar, 200).Value = pictureToInsert.FullName;
+                        command.Parameters.Add("@picture", SqlDbType.NVarChar, 200).Value = pictureToInsert.FullName.Substring(3);
                     }
                     command.ExecuteNonQuery();
                     command.Parameters.Clear();
@@ -225,7 +225,7 @@ namespace DbFillingTool
                     if (pictures.Length > 0)
                     {
                         command.CommandText = $"insert into Categories (name, parent_id, picture) values (@name, @parent_id, @picture)";
-                        command.Parameters.Add("@picture", SqlDbType.NVarChar, 200).Value = pictures[i].FullName;
+                        command.Parameters.Add("@picture", SqlDbType.NVarChar, 200).Value = pictures[i].FullName.Substring(3);
                     }
                     else
                     {
@@ -318,7 +318,7 @@ namespace DbFillingTool
                     {
                         throw new Exception("Can not find picture");
                     }
-                    wordInsert.Parameters.Add("@picture", SqlDbType.VarChar, 200).Value = picture.FullName;
+                    wordInsert.Parameters.Add("@picture", SqlDbType.VarChar, 200).Value = picture.FullName.Substring(3);
                     wordInsert.ExecuteNonQuery();
                     wordInsert.Parameters.Clear();
                 }
