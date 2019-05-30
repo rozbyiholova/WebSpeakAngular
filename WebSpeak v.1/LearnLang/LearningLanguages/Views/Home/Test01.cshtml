@@ -1,0 +1,40 @@
+﻿@using DAL.Models
+@using Microsoft.AspNetCore.Http
+@model IEnumerable<DTO>
+
+@{
+    ViewData["Title"] = "Test01";
+}
+
+<div class="words">
+    @foreach (var word in Model)
+    {
+        <div class="word">
+            <a href="~/Home/Categories/SubCategories/Tests/Test01?id=@ViewBag.subCategoryId">
+                <p>@word.WordLearnLang
+                    @if (ViewBag.enableNativeLang.Contains("true"))
+                    {
+                        <em>( @word.WordNativeLang )</em>
+                    }
+                </p>
+
+<img src="../../../../@word.Picture" width="256" height="256" alt="@word.WordNativeLang">
+
+</a>
+
+</div>
+    }
+</div>
+
+<style>
+    .words {
+        display: flex;
+        height: 300px;
+    }
+
+    .word {
+        width: 256px;
+        height: 256px;
+        margin: auto;
+    }
+</style>
