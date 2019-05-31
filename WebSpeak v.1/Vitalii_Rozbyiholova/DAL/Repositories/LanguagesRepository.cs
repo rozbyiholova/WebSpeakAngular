@@ -7,27 +7,27 @@ using System.Text;
 
 namespace DAL.Repositories
 {
-    class TotalScoresRepository : IRepository<TotalScores>
+    public class LanguagesRepository : IRepository<Languages>
     {
         ProductHouseContext db;
 
-        public TotalScoresRepository()
+        public LanguagesRepository()
         {
             db = new ProductHouseContext(ConfigurateOptions.GetOptions());
         }
 
-        public IEnumerable<TotalScores> GetAll()
+        public IEnumerable<Languages> GetAll()
         {
-            return db.TotalScores;
+            return db.Languages;
         }
 
-        public TotalScores GetById(int id)
+        public Languages GetById(int id)
         {
             using (ProductHouseContext db = new ProductHouseContext())
             {
                 try
                 {
-                    return db.TotalScores.Where(c => c.Id == id).FirstOrDefault();
+                    return db.Languages.Where(c => c.Id == id).FirstOrDefault();
                 }
                 catch (Exception e)
                 {

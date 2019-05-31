@@ -7,27 +7,27 @@ using System.Text;
 
 namespace DAL.Repositories
 {
-    class CategoriesTranslationsRepository : IRepository<CategoriesTranslations>
+    public class WordsTranslationsRepository : IRepository<WordTranslations>
     {
         ProductHouseContext db;
 
-        public CategoriesTranslationsRepository()
+        public WordsTranslationsRepository()
         {
             db = new ProductHouseContext(ConfigurateOptions.GetOptions());
         }
 
-        public IEnumerable<CategoriesTranslations> GetAll()
+        public IEnumerable<WordTranslations> GetAll()
         {
-            return db.CategoriesTranslations;
+            return db.WordTranslations;
         }
 
-        public CategoriesTranslations GetById(int id)
+        public WordTranslations GetById(int id)
         {
             using (ProductHouseContext db = new ProductHouseContext())
             {
                 try
                 {
-                    return db.CategoriesTranslations.Where(c => c.Id == id).FirstOrDefault();
+                    return db.WordTranslations.Where(c => c.Id == id).FirstOrDefault();
                 }
                 catch (Exception e)
                 {
