@@ -11,18 +11,10 @@
     {
         <div class="word">
             <a href="~/Home/Categories/SubCategories/Tests/Test01?id=@ViewBag.subCategoryId">
-                <p>@word.WordLearnLang
-                    @if (ViewBag.enableNativeLang.Contains("true"))
-                    {
-                        <em>( @word.WordNativeLang )</em>
-                    }
-                </p>
-
-<img src="../../../../@word.Picture" width="256" height="256" alt="@word.WordNativeLang">
-
-</a>
-
-</div>
+                <p>@word.WordLearnLang</p>
+                <img src="../../../../@word.Picture" width="256" height="256" alt="@word.WordNativeLang">
+            </a>
+        </div>
     }
 </div>
 

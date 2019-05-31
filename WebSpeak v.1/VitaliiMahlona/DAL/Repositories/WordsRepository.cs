@@ -73,8 +73,9 @@ namespace DAL.Repositories
                     wordTrans => wordTrans.WordId,
                     (word, wordTrans) => new
                     {
-                        Id = word.Id,
-                        Name = wordTrans.Translation
+                        word.Id,
+                        Name = wordTrans.Translation,
+                        PronounceLearn = wordTrans.Pronounce
                     }
             ).ToList();
 
@@ -88,7 +89,10 @@ namespace DAL.Repositories
                         Id = word.Id,
                         WordNativeLang = wordTrans.Translation,
                         Picture = word.Picture,
-                        WordLearnLang = LearnLangWords.Find(x => x.Id == word.Id).Name
+                        WordLearnLang = LearnLangWords.Find(x => x.Id == word.Id).Name,
+                        Sound = word.Sound,
+                        PronounceNative = wordTrans.Pronounce,
+                        PronounceLearn = LearnLangWords.Find(x => x.Id == word.Id).PronounceLearn
                     }
             ).ToList();
 

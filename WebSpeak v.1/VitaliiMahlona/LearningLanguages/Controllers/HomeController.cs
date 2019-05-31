@@ -36,10 +36,16 @@ namespace LearningLanguages.Controllers
             int idLangNative = Convert.ToInt32(form["idLangNative"]);
             int idLangLearn = Convert.ToInt32(form["idLangLearn"]);
             string enableNativeLang = Convert.ToString(form["enableNativeLang"]);
+            string enableSound = Convert.ToString(form["enableSound"]);
+            string enablePronounceNativeLang = Convert.ToString(form["enablePronounceNativeLang"]);
+            string enablePronounceLearnLang = Convert.ToString(form["enablePronounceLearnLang"]);
 
-            HttpContext.Session.SetString("enableNativeLang", enableNativeLang);
             HttpContext.Session.SetInt32("idLangNative", idLangNative);
             HttpContext.Session.SetInt32("idLangLearn", idLangLearn);
+            HttpContext.Session.SetString("enableNativeLang", enableNativeLang);
+            HttpContext.Session.SetString("enableSound", enableSound);
+            HttpContext.Session.SetString("enablePronounceNativeLang", enablePronounceNativeLang);
+            HttpContext.Session.SetString("enablePronounceLearnLang", enablePronounceLearnLang);
 
             return RedirectToAction("Categories");
         }
@@ -87,11 +93,19 @@ namespace LearningLanguages.Controllers
         {
             int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
             int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
+            string enableNativeLang = HttpContext.Session.GetString("enableNativeLang");
+            string enableSound = HttpContext.Session.GetString("enableSound");
+            string enablePronounceNativeLang = HttpContext.Session.GetString("enablePronounceNativeLang");
+            string enablePronounceLearnLang = HttpContext.Session.GetString("enablePronounceLearnLang");
 
             List<DTO> NativeLearnLangWords = words.GetTranslations(idLangLearn, idLangNative, id);
 
             ViewBag.subCategoryId = id;
             ViewBag.categoryId = categories.GetItem(id).ParentId;
+            ViewBag.enableNativeLang = enableNativeLang;
+            ViewBag.enableSound = enableSound;
+            ViewBag.enablePronounceNativeLang = enablePronounceNativeLang;
+            ViewBag.enablePronounceLearnLang = enablePronounceLearnLang;
 
             return View(NativeLearnLangWords);
         }
@@ -115,7 +129,6 @@ namespace LearningLanguages.Controllers
         {
             int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
             int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
-            string enableNativeLang = HttpContext.Session.GetString("enableNativeLang");
 
             Random rand = new Random();
 
@@ -134,7 +147,6 @@ namespace LearningLanguages.Controllers
 
             ViewBag.subCategoryId = id;
             ViewBag.categoryId = categories.GetItem(id).ParentId;
-            ViewBag.enableNativeLang = enableNativeLang;
 
             return View(twoWords);
         }
