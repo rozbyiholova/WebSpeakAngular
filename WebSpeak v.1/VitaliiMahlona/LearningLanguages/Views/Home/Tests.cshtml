@@ -12,12 +12,12 @@
 <div class="tests">
     @foreach (var test in Model)
     {
+    <a class="link" href="~/Home/Categories/SubCategories/Tests/@test.Picture.Substring(73, 6)?id=@ViewBag.subCategoryId">
         <div class="test">
-            <a href="~/Home/Categories/SubCategories/Tests/@test.Picture.Substring(73, 6)?id=@ViewBag.subCategoryId">
-                <p>@test.WordNativeLang (@test.WordLearnLang)</p>
-                <img src="../../../@test.Picture" width="64" height="64" alt="@test.WordNativeLang">
-            </a>
+            <p>@test.WordNativeLang (@test.WordLearnLang)</p>
+            <img src="../../../@test.Picture" width="64" height="64" alt="@test.WordNativeLang">
         </div>
+    </a>
     }
 </div>
 
@@ -29,8 +29,25 @@
     }
 
     .test {
-        width: 180px; 
-        height: 180px; 
+        width: 225px;
+        height: 225px;
         margin: auto;
+        position: relative;
+        background: #e6edf7;
+        color: #30507c;
+    }
+
+    .test:hover {
+        cursor: pointer;
+        opacity: .7;
+    }
+
+    .link:hover {
+        text-decoration: none;
+    }
+
+    img {
+        height: 128px;
+        width: auto;
     }
 </style>

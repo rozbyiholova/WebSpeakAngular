@@ -10,5 +10,8 @@ namespace DAL.Models
         public string WordNativeLang { get; set; }
         public string WordLearnLang { get; set; }
         public string Picture { get; set; }
+        public string Sound { get; set; }
+        public string PronounceLearn { get; set; }
+        public string PronounceNative { get; set; }
     }
 }

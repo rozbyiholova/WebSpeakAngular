@@ -7,12 +7,12 @@
 <div class="subCategories">
     @foreach (var subCategory in Model)
     {
-    <div class="subCategory">
-        <a href="~/Home/Categories/SubCategories/Tests?id=@subCategory.Id">
+    <a class="link" href="~/Home/Categories/SubCategories/Tests?id=@subCategory.Id">
+        <div class="subCategory">
             <p>@subCategory.WordNativeLang (@subCategory.WordLearnLang)</p>
-            <img src="../../@subCategory.Picture" width="128" height="128" alt="@subCategory.WordNativeLang">
-        </a>
-    </div>
+            <img src="../../@subCategory.Picture" alt="@subCategory.WordNativeLang">
+        </div>
+    </a>
 }
 </div>
 
@@ -27,5 +27,22 @@
         width: 225px;
         height: 225px;
         margin: auto;
+        position: relative;
+        background: #e6edf7;
+        color: #30507c;
     }
-</style>
+
+    .subCategory:hover {
+        cursor: pointer;
+        opacity: .7;
+    }
+
+    .link:hover {
+        text-decoration: none;
+    }
+
+    img {
+        height: 128px;
+        width: auto;
+    }
+ </style>

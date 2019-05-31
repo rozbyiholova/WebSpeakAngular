@@ -6,24 +6,24 @@
 
 <div class="container">
     <div class="slidecontainer">
+        Interval: <div id="valueSlider"></div>
         <input type="range" min="500" max="5000" value="2250" class="slider" id="myRange">
     </div>
-    <div id="valueSlider"></div>
     <div class="row">
-        <div id="slideshow" class="carousel slide" data-ride="carousel" data-interval="50" data-pause="false">
-            <div class="carousel-inner">
+        <div id="slideshow" class="carousel slide container" data-ride="carousel" data-interval="50" data-pause="false">
+            <div class="carousel-inner border border-success">
                 <div class="carousel-item active">
-                    <img class="d-block w-100 img-thumbnail" src="../../../../@(Model.ElementAt(0).Picture)" alt="@Model.ElementAt(0).WordNativeLang">
+                    <img class="d-block img-thumbnail" src="../../../../@(Model.ElementAt(0).Picture)" alt="@Model.ElementAt(0).WordNativeLang">
                     <div class="carousel-caption d-none d-md-block">
-                        <h1>@(Model.ElementAt(0).WordNativeLang) (@(Model.ElementAt(0).WordLearnLang))</h1>
+                        <h1>@Model.ElementAt(0).WordLearnLang</h1>
                     </div>
                 </div>
                 @foreach (var word in Model.Skip(1))
                 {
                     <div class="carousel-item">
-                        <img class="d-block w-100 img-thumbnail" src="../../../../@word.Picture" alt="@word.WordNativeLang">
+                        <img class="d-block img-thumbnail" src="../../../../@word.Picture" alt="@word.WordNativeLang">
                         <div class="carousel-caption d-none d-md-block">
-                            <h1>@word.WordNativeLang (@word.WordLearnLang)</h1>
+                            <h1>@word.WordLearnLang</h1>
                         </div>
                     </div>
                 }
@@ -32,11 +32,59 @@
     </div>
 </div>
 <style>
+    #valueSlider {
+        float: right;
+    }
+
     .carousel-caption {
         position: relative;
         left: auto;
         right: auto;
         color: black;
+    }
+
+    img {
+        height: auto;
+        width: 512px;
+    }
+
+    #slideshow {
+        width: 512px;
+        height: 800px;
+    }
+
+    .carousel-item {
+        height: 800px;
+    }
+
+    .slidecontainer {
+        width: 25%; /* Width of the outside container */
+    }
+
+    /* The slider itself */
+    .slider {
+        -webkit-appearance: none; /* Override default CSS styles */
+        width: 100%; /* Full-width */
+        height: 25px; /* Specified height */
+        background: #d3d3d3; /* Grey background */
+        outline: none; /* Remove outline */
+        opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+        -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+        transition: opacity .2s;
+    }
+
+    /* Mouse-over effects */
+    .slider:hover {
+        opacity: 1; /* Fully shown on mouse-over */
+    }
+
+    /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none; /* Override default look */
+        width: 25px; /* Set a specific slider handle width */
+        height: 25px; /* Slider handle height */
+        background: #4CAF50; /* Green background */
+        cursor: pointer; /* Cursor on hover */
     }
 </style>
 
