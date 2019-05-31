@@ -89,7 +89,7 @@ namespace toolZA
                             SqlCommand commandCat = new SqlCommand();
                             commandCat.Connection = _connection;
                             commandCat.Parameters.Add(new SqlParameter("@name", catDirInfo.Name));
-                            commandCat.Parameters.Add(new SqlParameter("@picture", pictureCategory));
+                            commandCat.Parameters.Add(new SqlParameter("@picture", pictureCategory.Substring(3)));
                             commandCat.CommandText = "INSERT INTO Categories (name, picture) VALUES (@name, @picture); " +
                                                      "SELECT SCOPE_IDENTITY()";
                             object idCategory = commandCat.ExecuteScalar();
@@ -119,7 +119,7 @@ namespace toolZA
                                 commandSubCat.Connection = _connection;
                                 commandSubCat.Parameters.Add(new SqlParameter("@name", subCategoryDirInfo.Name));
                                 commandSubCat.Parameters.Add(new SqlParameter("@parent_id", idCategory));
-                                commandSubCat.Parameters.Add(new SqlParameter("@picture", pictureSubCategory));
+                                commandSubCat.Parameters.Add(new SqlParameter("@picture", pictureSubCategory.Substring(3)));
                                 commandSubCat.CommandText = "INSERT INTO Categories (name, parent_id, picture) " +
                                                             "VALUES (@name, @parent_id, @picture); SELECT SCOPE_IDENTITY()";
                                 object idSubCategory = commandSubCat.ExecuteScalar();
@@ -235,7 +235,7 @@ namespace toolZA
                 commandWord.Connection = _connection;
                 commandWord.Parameters.Add(new SqlParameter("@name", row.Name));
                 commandWord.Parameters.Add(new SqlParameter("@category_id", idSubCategory));
-                commandWord.Parameters.Add(new SqlParameter("@picture", picturesFiles[iteratorWords]));
+                commandWord.Parameters.Add(new SqlParameter("@picture", picturesFiles[iteratorWords].Substring(3)));
 
                 string soundFile = soundsDir is null ? null : Array.Find(soundsFiles, s => s.ToLower().Contains(row.Name.ToLower()));
 
@@ -246,7 +246,7 @@ namespace toolZA
                 }
                 else
                 {
-                    commandWord.Parameters.Add(new SqlParameter("@sound", soundFile));
+                    commandWord.Parameters.Add(new SqlParameter("@sound", soundFile.Substring(3)));
                     commandWord.CommandText = "INSERT INTO Words (name, category_id, picture, sound) " +
                                               "VALUES (@name, @category_id, @picture, @sound); SELECT SCOPE_IDENTITY()";
                 }
@@ -295,7 +295,7 @@ namespace toolZA
                 SqlCommand commandTest = new SqlCommand();
                 commandTest.Connection = _connection;
                 commandTest.Parameters.Add(new SqlParameter("@name", row.Name));
-                commandTest.Parameters.Add(new SqlParameter("@icon", filesWhiteIcons[iteratorTestIcons]));
+                commandTest.Parameters.Add(new SqlParameter("@icon", filesWhiteIcons[iteratorTestIcons].Substring(3)));
                 commandTest.CommandText = "INSERT INTO Tests (name, icon) VALUES (@name, @icon); SELECT SCOPE_IDENTITY()";
                 object idTest = commandTest.ExecuteScalar();
 
@@ -333,7 +333,7 @@ namespace toolZA
                         string pronounceFile = Array.Find(pronounceSubDirFiles, s => s.ToLower().Trim().Contains
                                                                                 (transTable[iteratorTransTable].Name.ToLower().Trim()));
 
-                        commandTrans.Parameters.Add(new SqlParameter("@pronounce", pronounceFile));
+                        commandTrans.Parameters.Add(new SqlParameter("@pronounce", pronounceFile.Substring(3)));
                         commandTrans.CommandText = $"INSERT INTO {table} ({column}, lang_id, translation, pronounce) " +
                                                    $"VALUES (@id, @lang_id, @translation, @pronounce)";
                     }

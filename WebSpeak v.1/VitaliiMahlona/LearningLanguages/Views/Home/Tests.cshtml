@@ -1,0 +1,36 @@
+﻿@using DAL.Models
+@model IEnumerable<DTO>
+@{
+    ViewData["Title"] = "Tests";
+}
+
+<div>
+    <p><a href="~/Home/Categories/SubCategories/Tests/Manual?id=@ViewBag.subCategoryId">Manual</a></p>
+    <p><a href="~/Home/Categories/SubCategories/Tests/Slideshow?id=@ViewBag.subCategoryId">Slideshow</a></p>
+</div>
+
+<div class="tests">
+    @foreach (var test in Model)
+    {
+        <div class="test">
+            <a href="~/Home/Categories/SubCategories/Tests/@test.Picture.Substring(73, 6)?id=@ViewBag.subCategoryId">
+                <p>@test.WordNativeLang (@test.WordLearnLang)</p>
+                <img src="../../../@test.Picture" width="64" height="64" alt="@test.WordNativeLang">
+            </a>
+        </div>
+    }
+</div>
+
+<style>
+    .tests {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .test {
+        width: 180px; 
+        height: 180px; 
+        margin: auto;
+    }
+</style>

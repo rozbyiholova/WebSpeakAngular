@@ -1,0 +1,20 @@
+﻿@model SelectList
+@{
+    ViewData["Title"] = "Select lang";
+}
+
+@using (Html.BeginForm())
+{
+    <div>
+        @Html.DropDownList("idLangNative", Model as SelectList)
+    </div>
+    <div>
+        @Html.DropDownList("idLangLearn", Model as SelectList)
+    </div>
+    <div>
+        @Html.CheckBox("enableNativeLang")
+    </div>
+    <p>
+        <input type="submit" value="Погнали" />
+    </p>
+}
