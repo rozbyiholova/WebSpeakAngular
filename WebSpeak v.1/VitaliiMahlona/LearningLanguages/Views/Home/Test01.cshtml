@@ -1,21 +1,15 @@
 ﻿@using DAL.Models
 @using Microsoft.AspNetCore.Http
-@model IEnumerable<DTO>
 
 @{
     ViewData["Title"] = "Test01";
 }
 
-<div class="words">
-    @foreach (var word in Model)
-    {
-        <div class="word">
-            <a href="~/Home/Categories/SubCategories/Tests/Test01?id=@ViewBag.subCategoryId">
-                <p>@word.WordLearnLang</p>
-                <img src="../../../../@word.Picture" width="256" height="256" alt="@word.WordNativeLang">
-            </a>
-        </div>
-    }
+<div id="test">
+
+</div>
+<div class="buttonSubmit">
+    <button type="submit" class="btn btn-success" onclick="check()">Submit</button>
 </div>
 
 <style>
@@ -29,4 +23,75 @@
         height: 256px;
         margin: auto;
     }
+
+    .wordQA {
+        text-align: center;
+        margin-top: 50px;
+    }
+
+    .buttonSubmit {
+        margin-top: 50px;
+        text-align: center;
+    }
+
+    /* HIDE RADIO */
+    [type=radio] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    /* IMAGE STYLES */
+    [type=radio] + img {
+        cursor: pointer;
+    }
+
+    /* CHECKED STYLES */
+    [type=radio]:checked + img {
+        outline: 2px solid #4CAF50;
+    }
 </style>
+
+<script>
+    var correctAnswer = Math.floor(Math.random() * 2) + 1;
+
+    check();
+
+    function check() {
+        if (($("[type=radio]:checked").val() == correctAnswer)) {
+            console.log("+");
+        }
+        else if ($("[type=radio]:checked").val() != undefined) {
+            console.log("-");
+        }
+
+        correctAnswer = Math.floor(Math.random() * 2) + 1;
+        $.ajax({
+            type: 'GET',
+            url: '/Home/Categories/SubCategories/Tests/Test01/Test?id=@ViewBag.subCategoryId',
+            success: function (result) {
+                var s = `
+                <div class="words">
+                    <label class="word">
+                        <p>${result[0].wordLearnLang}</p>
+                        <input type="radio" name="test" id="radio1" value="1">
+                        <img src="../../../../${result[0].picture}" width="256" height="256" alt="${result[0].wordLearnLang}">
+                    </label>
+                    <label class="word">
+                        <p>${result[1].wordLearnLang}</p>
+                        <input type="radio" name="test" id="radio2" value="2">
+                        <img src="../../../../${result[1].picture}" width="256" height="256" alt="${result[1].wordLearnLang}">
+                    </label>
+                </div>
+                <div class="wordQA">
+                ${(correctAnswer == 1) ? `<h1>${result[0].wordLearnLang}</h1>` : `<h1>${result[1].wordLearnLang}</h1>`}
+                </div>
+                `;
+
+                $('#test').html(s);
+            }
+        });
+    }
+
+</script>

@@ -127,6 +127,16 @@ namespace LearningLanguages.Controllers
         [Route("Home/Categories/SubCategories/Tests/Test01")]
         public IActionResult Test01(int id)
         {
+            ViewBag.subCategoryId = id;
+            ViewBag.categoryId = categories.GetItem(id).ParentId;
+
+            return View();
+        }
+
+        [Route("Home/Categories/SubCategories/Tests/Test01/Test")]
+        [HttpGet]
+        public IActionResult Test01One(int id)
+        {
             int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
             int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
 
@@ -136,7 +146,8 @@ namespace LearningLanguages.Controllers
 
             int randomWordId1 = rand.Next(LearnLangWords.First().Id, LearnLangWords.Last().Id + 1);
             int randomWordId2 = rand.Next(LearnLangWords.First().Id, LearnLangWords.Last().Id + 1);
-            while (randomWordId1 == randomWordId2) {
+            while (randomWordId1 == randomWordId2)
+            {
                 randomWordId2 = rand.Next(LearnLangWords.First().Id, LearnLangWords.Last().Id + 1);
             }
 
@@ -145,10 +156,7 @@ namespace LearningLanguages.Controllers
 
             List<DTO> twoWords = new List<DTO>() { word1, word2 };
 
-            ViewBag.subCategoryId = id;
-            ViewBag.categoryId = categories.GetItem(id).ParentId;
-
-            return View(twoWords);
+            return new JsonResult(twoWords);
         }
 
         public IActionResult Privacy()
