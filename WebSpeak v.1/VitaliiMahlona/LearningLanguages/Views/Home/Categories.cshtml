@@ -4,45 +4,16 @@
     ViewData["Title"] = "Category";
 }
 
-<div class="categories">
+<link rel="stylesheet" href="~/css/CatTestsSubCat.css" />
+
+<div class="parent">
     @foreach (var category in Model)
     {
     <a class="link" href="~/Home/Categories/SubCategories?id=@category.Id">
-        <div class="category">
+        <div class="child">
             <p>@category.WordNativeLang (@category.WordLearnLang)</p>
             <img src="../@category.Picture" alt="@category.WordNativeLang">
         </div>
     </a>
      }
 </div>
-
-<style>
-    .categories {
-        display: flex;
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .category {
-        width: 225px;
-        height: 225px;
-        margin: auto;
-        position: relative;
-        background: #e6edf7;
-        color: #30507c;
-    }
-
-    .category:hover {
-        cursor: pointer;
-        opacity: .7;
-    }
-
-    .link:hover {
-        text-decoration: none;
-    }
-
-    img {
-        height: 128px;
-        width: auto;
-    }
-</style>

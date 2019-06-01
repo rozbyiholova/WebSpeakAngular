@@ -1,0 +1,53 @@
+﻿#result {
+    text-align: center;
+    font-size: 25px;
+}
+
+#error {
+    display: none;
+}
+
+.words {
+    align-items: center;
+    display: flex;
+    height: 300px;
+}
+
+.word {
+    width: 256px;
+    height: 256px;
+    margin: auto;
+}
+
+.QA {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.buttonSubmit {
+    margin-top: 50px;
+    text-align: center;
+}
+
+/* HIDE RADIO */
+[type=radio] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+img:hover {
+    cursor: pointer;
+    opacity: .7;
+}
+
+/* IMAGE STYLES */
+[type=radio] + img {
+    cursor: pointer;
+}
+
+/* CHECKED STYLES */
+[type=radio]:checked + img {
+    outline: 5px solid #4CAF50;
+}
