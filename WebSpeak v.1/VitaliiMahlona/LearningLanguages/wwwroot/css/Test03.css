@@ -1,0 +1,48 @@
+﻿#result {
+    text-align: center;
+    font-size: 25px;
+}
+
+#error {
+    display: none;
+}
+
+.words {
+    align-items: center;
+    display: flex;
+    height: 100px;
+}
+
+.word {
+    width: auto;
+    height: auto;
+    margin: auto;
+}
+
+.QA {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.buttonSubmit {
+    margin-top: 50px;
+    text-align: center;
+}
+
+[type=radio] {
+    display: none;
+}
+
+label.word {
+    font-size: 25px;
+}
+
+label:hover {
+    cursor: pointer;
+    opacity: .7;
+}
+
+input[type="radio"]:checked + label {
+    font-size: 27px;
+    color: #4CAF50;
+}

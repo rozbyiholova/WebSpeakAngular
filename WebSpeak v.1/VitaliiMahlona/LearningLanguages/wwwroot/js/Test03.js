@@ -2,11 +2,6 @@
 var result = 0;
 var first = true;
 
-var test4 = false;
-
-if (testNumber == 4) test4 = true;
-if ((testNumber == 2) || (testNumber == 4)) testNumber = "2or04";
-
 check();
 
 function check() {
@@ -22,9 +17,6 @@ function check() {
         }
         first = false;
     }
-    else {
-        console.log("-");
-    }
 
     $('#error').hide();
 
@@ -37,26 +29,15 @@ function check() {
             var s = '<div class="words">';
             for (let i = 0; i < Object.keys(result).length; i++) {
                 s += `
-                    <label class="word">
-                        <p>${result[i].wordLearnLang}</p>
-                        <input type="radio" name="test" value="${i + 1}">
-                        <img src="../../../../${result[i].picture}" width="256" height="256" alt="${result[i].wordLearnLang}">
-                    </label>
+                    <input type="radio" name="test" value="${i + 1}" id="${i + 1}"/>
+                    <label class="word btn btn-light" for="${i + 1}">${result[i].wordLearnLang}</label>
                     `;
             }
             s += `</div>
                         <div class="QA">`;
             for (let i = 0; i < Object.keys(result).length; i++) {
                 if (correctAnswer == i + 1) {
-                    if (test4) {
-                        s += `<audio controls>
-                              <source src="../../../../${result[i].pronounceLearn}" type="audio/mpeg" />
-                              Your browser does not support the audio element.
-                              </audio>`
-                    }
-                    else {
-                        s += `<h1>${result[i].wordLearnLang}</h1>`;
-                    }
+                    s += `<img src="../../../../${result[i].picture}" width="256" height="256" alt="${result[i].wordLearnLang}">`;
                     break;
                 }
             }

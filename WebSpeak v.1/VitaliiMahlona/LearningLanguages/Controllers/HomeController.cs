@@ -202,6 +202,45 @@ namespace LearningLanguages.Controllers
             return new JsonResult(fourWords);
         }
 
+        [Route("Home/Categories/SubCategories/Tests/Test03")]
+        public IActionResult Test03(int id)
+        {
+            ViewBag.subCategoryId = id;
+            ViewBag.categoryId = categories.GetItem(id).ParentId;
+
+            return View();
+        }
+
+        [Route("Home/Categories/SubCategories/Tests/Test03/Test")]
+        [HttpGet]
+        public IActionResult Test03One(int id)
+        {
+            int countOptions = 4;
+
+            int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
+            int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
+
+            Random rand = new Random();
+
+            var LearnLangWords = words.GetTranslations(idLangLearn, idLangNative, id);
+
+            int[] randomWordsId = new int[countOptions];
+
+            List<DTO> fourWords = new List<DTO>();
+
+            for (int i = 0; i < countOptions; ++i)
+            {
+            a: randomWordsId[i] = rand.Next(LearnLangWords.First().Id, LearnLangWords.Last().Id + 1);
+                for (int j = 0; j < i; j++)
+                {
+                    if (randomWordsId[j] == randomWordsId[i]) goto a;
+                }
+                fourWords.Add(LearnLangWords.Find(w => w.Id == randomWordsId[i]));
+            }
+
+            return new JsonResult(fourWords);
+        }
+
         [Route("Home/Categories/SubCategories/Tests/Test04")]
         public IActionResult Test04(int id)
         {
