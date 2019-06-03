@@ -33,7 +33,7 @@
     display: none;
 }
 
-label.word {
+label.word, p {
     font-size: 25px;
 }
 

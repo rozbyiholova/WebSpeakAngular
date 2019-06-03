@@ -172,9 +172,9 @@ namespace LearningLanguages.Controllers
             return View();
         }
 
-        [Route("Home/Categories/SubCategories/Tests/Test02or04/Test")]
+        [Route("Home/Categories/SubCategories/Tests/Test02or03or04/Test")]
         [HttpGet]
-        public IActionResult Test02or04One(int id)
+        public IActionResult Test02or03or04One(int id)
         {
             int countOptions = 4;
 
@@ -243,6 +243,69 @@ namespace LearningLanguages.Controllers
 
         [Route("Home/Categories/SubCategories/Tests/Test04")]
         public IActionResult Test04(int id)
+        {
+            ViewBag.subCategoryId = id;
+            ViewBag.categoryId = categories.GetItem(id).ParentId;
+
+            return View();
+        }
+
+        [Route("Home/Categories/SubCategories/Tests/Test05")]
+        public IActionResult Test05(int id)
+        {
+            ViewBag.subCategoryId = id;
+            ViewBag.categoryId = categories.GetItem(id).ParentId;
+
+            return View();
+        }
+
+        [Route("Home/Categories/SubCategories/Tests/Test06")]
+        public IActionResult Test06(int id)
+        {
+            ViewBag.subCategoryId = id;
+            ViewBag.categoryId = categories.GetItem(id).ParentId;
+
+            return View();
+        }
+
+        [Route("Home/Categories/SubCategories/Tests/Test06or07/Test")]
+        [HttpGet]
+        public IActionResult Test06or07One(int id)
+        {
+            int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
+            int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
+
+            Random rand = new Random();
+
+            var LearnLangWords = words.GetTranslations(idLangLearn, idLangNative, id);
+
+            int randomWordId = rand.Next(LearnLangWords.First().Id, LearnLangWords.Last().Id + 1);
+
+            DTO Word = LearnLangWords.Find(w => w.Id == randomWordId);
+
+            return new JsonResult(Word);
+        }
+
+        [Route("Home/Categories/SubCategories/Tests/Test07")]
+        public IActionResult Test07(int id)
+        {
+            ViewBag.subCategoryId = id;
+            ViewBag.categoryId = categories.GetItem(id).ParentId;
+
+            return View();
+        }
+
+        [Route("Home/Categories/SubCategories/Tests/Test08")]
+        public IActionResult Test08(int id)
+        {
+            ViewBag.subCategoryId = id;
+            ViewBag.categoryId = categories.GetItem(id).ParentId;
+
+            return View();
+        }
+
+        [Route("Home/Categories/SubCategories/Tests/Test09")]
+        public IActionResult Test09(int id)
         {
             ViewBag.subCategoryId = id;
             ViewBag.categoryId = categories.GetItem(id).ParentId;

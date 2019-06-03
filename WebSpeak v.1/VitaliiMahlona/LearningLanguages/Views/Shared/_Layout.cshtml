@@ -84,6 +84,30 @@
                 {
                     <li>@Html.ActionLink("Test04", "Test04", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
                 }
+                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test05"))
+                {
+                    <li>@Html.ActionLink("Test05", "Test05", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
+                }
+                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test06"))
+                {
+                    <li>@Html.ActionLink("Test06", "Test06", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
+                }
+                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test07"))
+                {
+                    <li>@Html.ActionLink("Test07", "Test07", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
+                }
+                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test08"))
+                {
+                    <li>@Html.ActionLink("Test08", "Test08", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
+                }
+                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test09"))
+                {
+                    <li>@Html.ActionLink("Test09", "Test09", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
+                }
+                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test10"))
+                {
+                    <li>@Html.ActionLink("Test10", "Test10", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
+                }
             </ol>
         </nav>
 
