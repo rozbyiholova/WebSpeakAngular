@@ -90,7 +90,8 @@ namespace DAL.Repositories
                         Id = category.Id,
                         WordNativeLang = categoryTrans.Translation,
                         Picture = category.Picture,
-                        WordLearnLang = LearnLangCat.Find(x => x.Id == category.Id).Name
+                        WordLearnLang = LearnLangCat.Find(x => x.Id == category.Id).Name,
+                        CategoryId = category.ParentId
                     }
             ).ToListAsync();
 

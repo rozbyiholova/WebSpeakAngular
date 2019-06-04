@@ -71,8 +71,6 @@ namespace LearningLanguages.Controllers
 
             List<DTO> NativeLearnLangSubCat =await _categories.GetTranslations(idLangLearn, idLangNative, id);
 
-            ViewBag.categoryId = id;
-
             return View(NativeLearnLangSubCat);
         }
 
@@ -83,11 +81,11 @@ namespace LearningLanguages.Controllers
             int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
 
             List<DTO> NativeLearnLangTests = await _tests.GetTranslations(idLangLearn, idLangNative, id);
-            
+
             Categories category = await _categories.GetItem(id);
 
-            ViewBag.subCategoryId = id;
-            ViewBag.categoryId = category.ParentId;
+            NativeLearnLangTests.First().CategoryId = category.ParentId;
+            NativeLearnLangTests.First().SubCategoryId = category.Id;
 
             return View(NativeLearnLangTests);
         }
@@ -106,8 +104,9 @@ namespace LearningLanguages.Controllers
 
             Categories category = await _categories.GetItem(id);
 
-            ViewBag.subCategoryId = id;
-            ViewBag.categoryId = category.ParentId;
+            NativeLearnLangWords.First().CategoryId = category.ParentId;
+            NativeLearnLangWords.First().SubCategoryId = category.Id;
+
             ViewBag.enableNativeLang = enableNativeLang;
             ViewBag.enableSound = enableSound;
             ViewBag.enablePronounceNativeLang = enablePronounceNativeLang;
@@ -126,8 +125,8 @@ namespace LearningLanguages.Controllers
 
             Categories category = await _categories.GetItem(id);
 
-            ViewBag.subCategoryId = id;
-            ViewBag.categoryId = category.ParentId;
+            NativeLearnLangWords.First().CategoryId = category.ParentId;
+            NativeLearnLangWords.First().SubCategoryId = category.Id;
 
             return View(NativeLearnLangWords);
         }
@@ -137,10 +136,7 @@ namespace LearningLanguages.Controllers
         {
             Categories category = await _categories.GetItem(id);
 
-            ViewBag.subCategoryId = id;
-            ViewBag.categoryId = category.ParentId;
-
-            return View();
+            return View(category);
         }
 
         [Route("Home/Categories/SubCategories/Tests/Test01or05/Test")]
@@ -182,10 +178,7 @@ namespace LearningLanguages.Controllers
         {
             Categories category = await _categories.GetItem(id);
 
-            ViewBag.subCategoryId = id;
-            ViewBag.categoryId = category.ParentId;
-
-            return View();
+            return View(category);
         }
 
         [Route("Home/Categories/SubCategories/Tests/Test02or03or04or08or09/Test")]
@@ -227,10 +220,7 @@ namespace LearningLanguages.Controllers
         {
             Categories category = await _categories.GetItem(id);
 
-            ViewBag.subCategoryId = id;
-            ViewBag.categoryId = category.ParentId;
-
-            return View();
+            return View(category);
         }
 
         [Route("Home/Categories/SubCategories/Tests/Test04")]
@@ -238,10 +228,7 @@ namespace LearningLanguages.Controllers
         {
             Categories category = await _categories.GetItem(id);
 
-            ViewBag.subCategoryId = id;
-            ViewBag.categoryId = category.ParentId;
-
-            return View();
+            return View(category);
         }
 
         [Route("Home/Categories/SubCategories/Tests/Test05")]
@@ -249,10 +236,7 @@ namespace LearningLanguages.Controllers
         {
             Categories category = await _categories.GetItem(id);
 
-            ViewBag.subCategoryId = id;
-            ViewBag.categoryId = category.ParentId;
-
-            return View();
+            return View(category);
         }
 
         [Route("Home/Categories/SubCategories/Tests/Test06")]
@@ -260,10 +244,7 @@ namespace LearningLanguages.Controllers
         {
             Categories category = await _categories.GetItem(id);
 
-            ViewBag.subCategoryId = id;
-            ViewBag.categoryId = category.ParentId;
-
-            return View();
+            return View(category);
         }
 
         [Route("Home/Categories/SubCategories/Tests/Test06or07/Test")]
@@ -289,10 +270,7 @@ namespace LearningLanguages.Controllers
         {
             Categories category = await _categories.GetItem(id);
 
-            ViewBag.subCategoryId = id;
-            ViewBag.categoryId = category.ParentId;
-
-            return View();
+            return View(category);
         }
 
         [Route("Home/Categories/SubCategories/Tests/Test08")]
@@ -300,10 +278,7 @@ namespace LearningLanguages.Controllers
         {
             Categories category = await _categories.GetItem(id);
 
-            ViewBag.subCategoryId = id;
-            ViewBag.categoryId = category.ParentId;
-
-            return View();
+            return View(category);
         }
 
         [Route("Home/Categories/SubCategories/Tests/Test09")]
@@ -311,10 +286,7 @@ namespace LearningLanguages.Controllers
         {
             Categories category = await _categories.GetItem(id);
 
-            ViewBag.subCategoryId = id;
-            ViewBag.categoryId = category.ParentId;
-
-            return View();
+            return View(category);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -94,7 +94,8 @@ namespace DAL.Repositories
                         WordLearnLang = LearnLangWords.Find(x => x.Id == word.Id).Name,
                         Sound = word.Sound,
                         PronounceNative = wordTrans.Pronounce,
-                        PronounceLearn = LearnLangWords.Find(x => x.Id == word.Id).PronounceLearn
+                        PronounceLearn = LearnLangWords.Find(x => x.Id == word.Id).PronounceLearn,
+                        SubCategoryId = word.CategoryId
                     }
             ).ToListAsync();
 

@@ -1,5 +1,6 @@
 ﻿@using DAL.Models
 @using Microsoft.AspNetCore.Http
+@model Categories
 
 @{
     ViewData["Title"] = "Test05";
@@ -20,7 +21,7 @@
 
 <script>
     var testNumber = 5;
-    var subCategoryId = @ViewBag.subCategoryId;
+    var subCategoryId = @Model.Id;
 </script>
 <script src="~/js/Test05.js"></script>
 

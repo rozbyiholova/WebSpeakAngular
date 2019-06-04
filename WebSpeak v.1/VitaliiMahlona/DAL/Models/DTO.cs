@@ -13,5 +13,7 @@ namespace DAL.Models
         public string Sound { get; set; }
         public string PronounceLearn { get; set; }
         public string PronounceNative { get; set; }
+        public int? SubCategoryId { get; set; }
+        public int? CategoryId { get; set; }
     }
 }
