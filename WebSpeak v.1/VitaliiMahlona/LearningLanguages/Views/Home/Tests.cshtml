@@ -4,50 +4,31 @@
     ViewData["Title"] = "Tests";
 }
 
-<div>
-    <p><a href="~/Home/Categories/SubCategories/Tests/Manual?id=@ViewBag.subCategoryId">Manual</a></p>
-    <p><a href="~/Home/Categories/SubCategories/Tests/Slideshow?id=@ViewBag.subCategoryId">Slideshow</a></p>
+<link rel="stylesheet" href="~/css/CatTestsSubCat.css" />
+
+<div id="actionLink">
+    @Html.ActionLink("Manual", "Manual", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })
+    @Html.ActionLink("Slideshow", "Slideshow", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })
 </div>
 
-<div class="tests">
+<div class="parent">
     @foreach (var test in Model)
     {
-    <a class="link" href="~/Home/Categories/SubCategories/Tests/@test.Picture.Substring(73, 6)?id=@ViewBag.subCategoryId">
-        <div class="test">
-            <p>@test.WordNativeLang (@test.WordLearnLang)</p>
-            <img src="../../../@test.Picture" width="64" height="64" alt="@test.WordNativeLang">
-        </div>
-    </a>
+        //73 - 62 (substring)
+        <a class="link" href="~/Home/Categories/SubCategories/Tests/@test.Picture.Substring(73, 6)?id=@ViewBag.subCategoryId">
+            <div class="child">
+                <p>@test.WordNativeLang (@test.WordLearnLang)</p>
+                <img src="../../../@test.Picture" alt="@test.WordNativeLang">
+            </div>
+        </a>
     }
 </div>
 
-<style>
-    .tests {
-        display: flex;
-        flex-direction: column;
-        text-align: center;
+<script>
+    var select = document.querySelectorAll('#actionLink a');
+    for (var i = 0; i < select.length; i++) {
+        select[i].className += "btn btn-outline-success";
+        select[select.length - 1].setAttribute("role", "button");
+        select[select.length - 1].setAttribute("aria-pressed", "true");
     }
-
-    .test {
-        width: 225px;
-        height: 225px;
-        margin: auto;
-        position: relative;
-        background: #e6edf7;
-        color: #30507c;
-    }
-
-    .test:hover {
-        cursor: pointer;
-        opacity: .7;
-    }
-
-    .link:hover {
-        text-decoration: none;
-    }
-
-    img {
-        height: 128px;
-        width: auto;
-    }
-</style>
+</script>

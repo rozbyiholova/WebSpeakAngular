@@ -127,6 +127,18 @@ namespace LearningLanguages.Controllers
         [Route("Home/Categories/SubCategories/Tests/Test01")]
         public IActionResult Test01(int id)
         {
+            ViewBag.subCategoryId = id;
+            ViewBag.categoryId = categories.GetItem(id).ParentId;
+
+            return View();
+        }
+
+        [Route("Home/Categories/SubCategories/Tests/Test01or05/Test")]
+        [HttpGet]
+        public IActionResult Test01or05One(int id)
+        {
+            int countOptions = 2;
+
             int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
             int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
 
@@ -134,21 +146,141 @@ namespace LearningLanguages.Controllers
 
             var LearnLangWords = words.GetTranslations(idLangLearn, idLangNative, id);
 
-            int randomWordId1 = rand.Next(LearnLangWords.First().Id, LearnLangWords.Last().Id + 1);
-            int randomWordId2 = rand.Next(LearnLangWords.First().Id, LearnLangWords.Last().Id + 1);
-            while (randomWordId1 == randomWordId2) {
-                randomWordId2 = rand.Next(LearnLangWords.First().Id, LearnLangWords.Last().Id + 1);
+            int[] randomWordsId = new int[countOptions];
+
+            List<DTO> twoWords = new List<DTO>();
+
+            for (int i = 0; i < countOptions; ++i)
+            {
+            a: randomWordsId[i] = rand.Next(LearnLangWords.First().Id, LearnLangWords.Last().Id + 1);
+                for (int j = 0; j < i; j++)
+                {
+                    if (randomWordsId[j] == randomWordsId[i]) goto a;
+                }
+                twoWords.Add(LearnLangWords.Find(w => w.Id == randomWordsId[i]));
             }
 
-            DTO word1 = LearnLangWords.Find(w => w.Id == randomWordId1);
-            DTO word2 = LearnLangWords.Find(w => w.Id == randomWordId2);
+            return new JsonResult(twoWords);
+        }
 
-            List<DTO> twoWords = new List<DTO>() { word1, word2 };
-
+        [Route("Home/Categories/SubCategories/Tests/Test02")]
+        public IActionResult Test02(int id)
+        {
             ViewBag.subCategoryId = id;
             ViewBag.categoryId = categories.GetItem(id).ParentId;
 
-            return View(twoWords);
+            return View();
+        }
+
+        [Route("Home/Categories/SubCategories/Tests/Test02or03or04or08or09/Test")]
+        [HttpGet]
+        public IActionResult Test02or03or04or08or09One(int id)
+        {
+            int countOptions = 4;
+
+            int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
+            int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
+
+            Random rand = new Random();
+
+            var LearnLangWords = words.GetTranslations(idLangLearn, idLangNative, id);
+
+            int[] randomWordsId = new int[countOptions];
+
+            List<DTO> fourWords = new List<DTO>();
+
+            for (int i = 0; i < countOptions; ++i)
+            {
+                a:  randomWordsId[i] = rand.Next(LearnLangWords.First().Id, LearnLangWords.Last().Id + 1);
+                for (int j = 0; j < i; j++)
+                {
+                    if (randomWordsId[j] == randomWordsId[i]) goto a;
+                }
+                fourWords.Add(LearnLangWords.Find(w => w.Id == randomWordsId[i]));
+            }
+
+            return new JsonResult(fourWords);
+        }
+
+        [Route("Home/Categories/SubCategories/Tests/Test03")]
+        public IActionResult Test03(int id)
+        {
+            ViewBag.subCategoryId = id;
+            ViewBag.categoryId = categories.GetItem(id).ParentId;
+
+            return View();
+        }
+
+        [Route("Home/Categories/SubCategories/Tests/Test04")]
+        public IActionResult Test04(int id)
+        {
+            ViewBag.subCategoryId = id;
+            ViewBag.categoryId = categories.GetItem(id).ParentId;
+
+            return View();
+        }
+
+        [Route("Home/Categories/SubCategories/Tests/Test05")]
+        public IActionResult Test05(int id)
+        {
+            ViewBag.subCategoryId = id;
+            ViewBag.categoryId = categories.GetItem(id).ParentId;
+
+            return View();
+        }
+
+        [Route("Home/Categories/SubCategories/Tests/Test06")]
+        public IActionResult Test06(int id)
+        {
+            ViewBag.subCategoryId = id;
+            ViewBag.categoryId = categories.GetItem(id).ParentId;
+
+            return View();
+        }
+
+        [Route("Home/Categories/SubCategories/Tests/Test06or07/Test")]
+        [HttpGet]
+        public IActionResult Test06or07One(int id)
+        {
+            int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
+            int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
+
+            Random rand = new Random();
+
+            var LearnLangWords = words.GetTranslations(idLangLearn, idLangNative, id);
+
+            int randomWordId = rand.Next(LearnLangWords.First().Id, LearnLangWords.Last().Id + 1);
+
+            DTO Word = LearnLangWords.Find(w => w.Id == randomWordId);
+
+            return new JsonResult(Word);
+        }
+
+        [Route("Home/Categories/SubCategories/Tests/Test07")]
+        public IActionResult Test07(int id)
+        {
+            ViewBag.subCategoryId = id;
+            ViewBag.categoryId = categories.GetItem(id).ParentId;
+
+            return View();
+        }
+
+        [Route("Home/Categories/SubCategories/Tests/Test08")]
+        public IActionResult Test08(int id)
+        {
+            ViewBag.subCategoryId = id;
+            ViewBag.categoryId = categories.GetItem(id).ParentId;
+
+            return View();
+        }
+
+        [Route("Home/Categories/SubCategories/Tests/Test09")]
+        public IActionResult Test09(int id)
+        {
+            ViewBag.subCategoryId = id;
+            ViewBag.categoryId = categories.GetItem(id).ParentId;
+
+            return View();
         }
 
         public IActionResult Privacy()

@@ -1,0 +1,34 @@
+﻿#result {
+    text-align: center;
+    font-size: 25px;
+}
+
+#error {
+    display: none;
+    margin-top: 20px;
+}
+
+.buttonSubmit {
+    margin-top: 50px;
+    text-align: center;
+}
+
+.image, .audio {
+    align-items: center;
+    display: flex;
+    height: 300px;
+}
+
+img {
+    margin: auto;
+    height: 256px;
+    width: auto;
+}
+
+audio {
+    margin: auto;
+}
+
+.form-group {
+    margin: auto;
+}

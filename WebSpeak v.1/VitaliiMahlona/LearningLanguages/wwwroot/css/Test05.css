@@ -1,0 +1,21 @@
+﻿#result {
+    text-align: center;
+    font-size: 25px;
+}
+
+.buttonsSubmit {
+    margin-top: 50px;
+    text-align: center;
+}
+
+.name {
+    text-align: center;
+    font-size: 25px;
+    width: auto;
+    height: auto;
+    margin: auto;
+}
+
+img {
+    height: 256px;
+}

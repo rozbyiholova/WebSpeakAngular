@@ -1,0 +1,27 @@
+﻿@using DAL.Models
+@using Microsoft.AspNetCore.Http
+
+@{
+    ViewData["Title"] = "Test03";
+}
+
+<link rel="stylesheet" href="~/css/Tests-03-08-09.css" />
+
+<div id="result">
+    <b>Score: 0</b>
+</div>
+<div id="test">
+
+</div>
+<div id="error" class="alert alert-danger" role="alert">
+
+</div>
+<div class="buttonSubmit">
+    <button type="submit" class="btn btn-success" onclick="check()">Submit</button>
+</div>
+
+<script>
+    var testNumber = 8;
+    var subCategoryId = @ViewBag.subCategoryId;
+</script>
+<script src="~/js/Tests-03-08-09.js"></script>

@@ -7,6 +7,7 @@
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -40,37 +41,74 @@
             </div>
         </nav>
     </header>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
     <div class="container">
         <partial name="_CookieConsentPartial" />
 
         <nav aria-label="breadcrumb">
-            <div class="breadcrumb">
-                @Html.ActionLink("Home", "Index", "Home")
+            <ol class="breadcrumb">
+                <li>@Html.ActionLink("Index", "Index", "Home")</li>
                 @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Categories"))
                 {
-                    @Html.ActionLink("Categories", "Categories", ViewContext.RouteData.Values["controller"].ToString())
+                    <li>@Html.ActionLink("Categories", "Categories", ViewContext.RouteData.Values["controller"].ToString())</li>
                 }
                 @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("SubCategories"))
                 {
-                    @Html.ActionLink("SubCategories", "SubCategories", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.categoryId }, null)
+                    <li>@Html.ActionLink("SubCategories", "SubCategories", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.categoryId })</li>
                 }
                 @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Tests"))
                 {
-                    @Html.ActionLink("Tests", "Tests", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId }, null)
+                    <li>@Html.ActionLink("Tests", "Tests", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
                 }
                 @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Manual"))
                 {
-                    @Html.ActionLink("Manual", "Manual", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId }, null)
+                    <li>@Html.ActionLink("Manual", "Manual", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
                 }
                 @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Slideshow"))
                 {
-                    @Html.ActionLink("Slideshow", "Slideshow", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId }, null)
+                    <li>@Html.ActionLink("Slideshow", "Slideshow", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
                 }
                 @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test01"))
                 {
-                    @Html.ActionLink("Test01", "Test01", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId }, null)
+                    <li>@Html.ActionLink("Test01", "Test01", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
                 }
-            </div>
+                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test02"))
+                {
+                    <li>@Html.ActionLink("Test02", "Test02", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
+                }
+                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test03"))
+                {
+                    <li>@Html.ActionLink("Test03", "Test03", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
+                }
+                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test04"))
+                {
+                    <li>@Html.ActionLink("Test04", "Test04", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
+                }
+                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test05"))
+                {
+                    <li>@Html.ActionLink("Test05", "Test05", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
+                }
+                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test06"))
+                {
+                    <li>@Html.ActionLink("Test06", "Test06", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
+                }
+                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test07"))
+                {
+                    <li>@Html.ActionLink("Test07", "Test07", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
+                }
+                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test08"))
+                {
+                    <li>@Html.ActionLink("Test08", "Test08", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
+                }
+                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test09"))
+                {
+                    <li>@Html.ActionLink("Test09", "Test09", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
+                }
+                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test10"))
+                {
+                    <li>@Html.ActionLink("Test10", "Test10", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
+                }
+            </ol>
         </nav>
 
         <main role="main" class="pb-3">
@@ -78,42 +116,44 @@
         </main>
     </div>
 
-        <footer class="border-top footer text-muted">
-            <div class="container">
-                &copy; 2019 - LearningLanguages
-            </div>
-        </footer>
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2019 - LearningLanguages
+        </div>
+    </footer>
 
-        <environment include="Development">
-            <script src="~/lib/jquery/dist/jquery.js"></script>
-            <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
-        </environment>
-        <environment exclude="Development">
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
-                    asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                    asp-fallback-test="window.jQuery"
-                    crossorigin="anonymous"
-                    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=">
-            </script>
-            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"
-                    asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
-                    asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                    crossorigin="anonymous"
-                    integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o">
-            </script>
-        </environment>
-        <script src="~/js/site.js" asp-append-version="true"></script>
+    <environment include="Development">
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=">
+        </script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o">
+        </script>
+    </environment>
+    <script src="~/js/site.js" asp-append-version="true"></script>
 
-        <script>
-            var select = document.querySelectorAll('.breadcrumb a');
-            for (var i = 0; i < select.length; i++) {
+    <script>
+            var select = document.querySelectorAll('.breadcrumb li');
+            for (var i = 0; i < select.length - 1; i++) {
                 select[i].className += "breadcrumb-item";
             }
+            select[select.length - 1].firstChild.remove();
+            select[select.length - 1].className += "breadcrumb-item active";
+            select[select.length - 1].setAttribute("aria-current", "page");
+            select[select.length - 1].textContent = "@ViewContext.RouteData.Values["action"].ToString()";
 
+    </script>
 
-        </script>
-
-        @RenderSection("Scripts", required: false)
+    @RenderSection("Scripts", required: false)
 
 </body>
 </html>
