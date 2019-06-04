@@ -5,16 +5,4 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    @using (Html.BeginForm("Categories", null))
-    {
-        <p>Native language</p>
-        @Html.DropDownList("Language1", Model, "", null)
-        <p> Learning language</p>
-        @Html.DropDownList("Language2", Model, "", null)
-        <p/>
-        <input type="submit" value="Start!"/>
-    }
 
-</div>

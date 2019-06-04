@@ -1,0 +1,22 @@
+﻿@model SelectList
+@using DAL.Interfaces;
+@using DAL.Models
+@{
+    ViewData["Title"] = "Languages";
+}
+
+<h1>Languages</h1>
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    @using (Html.BeginForm("Languages", "Home", FormMethod.Post))
+    {
+        <p>Native language</p>
+        @Html.DropDownList("Language1", Model)
+        <p> Learning language</p>
+        @Html.DropDownList("Language2", Model)
+        <p />
+        <input type="submit" value="Start!" />
+    }
+
+</div>

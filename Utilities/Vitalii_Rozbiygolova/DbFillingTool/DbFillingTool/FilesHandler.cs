@@ -300,7 +300,7 @@ namespace DbFillingTool
                     {
                         wordInsert.CommandText =
                             "insert into Words (name, category_id, sound, picture) values (@name, @category_id, @sound, @picture)";
-                            wordInsert.Parameters.Add("@sound", SqlDbType.VarChar, 200).Value = soundFileInfo.FullName;
+                            wordInsert.Parameters.Add("@sound", SqlDbType.VarChar, 200).Value = soundFileInfo.FullName.Substring(3);
                     }
                     else
                     {
@@ -342,7 +342,7 @@ namespace DbFillingTool
                             wordTranslationCommand.Parameters.Add("@lang_id", SqlDbType.Int).Value = lang_id;
                             wordTranslationCommand.Parameters.Add("@translation", SqlDbType.NVarChar).Value = properties[j];
                             wordTranslationCommand.Parameters.Add("@word_id", SqlDbType.Int).Value = word_id;
-                            wordTranslationCommand.Parameters.Add("@pronounce", SqlDbType.VarChar, 200).Value = pronounceToInsert.FullName;
+                            wordTranslationCommand.Parameters.Add("@pronounce", SqlDbType.VarChar, 200).Value = pronounceToInsert.FullName.Substring(3);
                             wordTranslationCommand.ExecuteNonQuery();
                             wordTranslationCommand.Parameters.Clear();
                         }
