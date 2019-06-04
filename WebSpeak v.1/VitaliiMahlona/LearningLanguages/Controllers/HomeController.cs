@@ -133,9 +133,9 @@ namespace LearningLanguages.Controllers
             return View();
         }
 
-        [Route("Home/Categories/SubCategories/Tests/Test01/Test")]
+        [Route("Home/Categories/SubCategories/Tests/Test01or05/Test")]
         [HttpGet]
-        public IActionResult Test01One(int id)
+        public IActionResult Test01or05One(int id)
         {
             int countOptions = 2;
 
@@ -172,9 +172,9 @@ namespace LearningLanguages.Controllers
             return View();
         }
 
-        [Route("Home/Categories/SubCategories/Tests/Test02or03or04/Test")]
+        [Route("Home/Categories/SubCategories/Tests/Test02or03or04or08or09/Test")]
         [HttpGet]
-        public IActionResult Test02or03or04One(int id)
+        public IActionResult Test02or03or04or08or09One(int id)
         {
             int countOptions = 4;
 
@@ -209,36 +209,6 @@ namespace LearningLanguages.Controllers
             ViewBag.categoryId = categories.GetItem(id).ParentId;
 
             return View();
-        }
-
-        [Route("Home/Categories/SubCategories/Tests/Test03/Test")]
-        [HttpGet]
-        public IActionResult Test03One(int id)
-        {
-            int countOptions = 4;
-
-            int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
-            int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
-
-            Random rand = new Random();
-
-            var LearnLangWords = words.GetTranslations(idLangLearn, idLangNative, id);
-
-            int[] randomWordsId = new int[countOptions];
-
-            List<DTO> fourWords = new List<DTO>();
-
-            for (int i = 0; i < countOptions; ++i)
-            {
-            a: randomWordsId[i] = rand.Next(LearnLangWords.First().Id, LearnLangWords.Last().Id + 1);
-                for (int j = 0; j < i; j++)
-                {
-                    if (randomWordsId[j] == randomWordsId[i]) goto a;
-                }
-                fourWords.Add(LearnLangWords.Find(w => w.Id == randomWordsId[i]));
-            }
-
-            return new JsonResult(fourWords);
         }
 
         [Route("Home/Categories/SubCategories/Tests/Test04")]

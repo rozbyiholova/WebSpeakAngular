@@ -19,7 +19,13 @@
     height: 300px;
 }
 
-img, audio {
+img {
+    margin: auto;
+    height: 256px;
+    width: auto;
+}
+
+audio {
     margin: auto;
 }
 

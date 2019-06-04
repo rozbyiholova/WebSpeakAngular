@@ -3,9 +3,7 @@
 var correctAnswer = Math.random();
 
 var first = true;
-
 check();
-
 
 function check() {
     if (($("#resultInput").val() == correctAnswer)) {
@@ -27,17 +25,26 @@ function check() {
         url: `/Home/Categories/SubCategories/Tests/Test06or07/Test?id=${subCategoryId}`,
         success: function (result) {
             correctAnswer = result.wordLearnLang;
-            var s = `<div class="audio">
+
+            var s = '';
+            if (testNumber == 6) {
+                s += `<div class="image">
+                        <img src="../../../../${result.picture}" alt="${result.wordNativeLang}">
+                      </div>`;
+            }
+            if (testNumber == 7) {
+                s += `<div class="audio">
                         <audio controls>
                             <source src="../../../../${result.pronounceLearn}" type="audio/mpeg" />
                             Your browser does not support the audio element.
-                        </audio >
-                     </div>
-                     <div class="form-group w-50">
-                         <label for="resultInput">Your answer</label>
-                         <input type="text" class="form-control" id="resultInput" placeholder="Enter answer">
-                     </div>
-                     `;
+                        </audio>
+                      </div>`;
+            }
+            s += `<div class="form-group w-50">
+                     <label for="resultInput">Your answer</label>
+                     <input type="text" class="form-control" id="resultInput" placeholder="Enter answer">
+                  </div>
+                 `;
 
             $('#test').html(s);
         }

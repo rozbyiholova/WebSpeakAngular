@@ -1,7 +1,8 @@
 ﻿var correctAnswer = Math.floor(Math.random() * 4) + 1;
 
 if (testNumber == 1) {
-    correctAnswer = Math.floor(Math.random() * 2) + 1
+    correctAnswer = Math.floor(Math.random() * 2) + 1;
+    testNumber = "1or05";
 } 
 
 var result = 0;
@@ -10,11 +11,12 @@ var first = true;
 var test4 = false;
 
 if (testNumber == 4) test4 = true;
-if ((testNumber == 2) || (testNumber == 4)) testNumber = "2or03or04";
+if ((testNumber == 2) || (testNumber == 4)) testNumber = "2or03or04or08or09";
 
 check();
 
 function check() {
+    console.log(correctAnswer);
     if (($("[type=radio]:checked").val() == correctAnswer)) {
         $('#result').html(`<b>Score: ${++result}</b>`);
     }
@@ -31,8 +33,8 @@ function check() {
 
     correctAnswer = Math.floor(Math.random() * 4) + 1;
 
-    if (testNumber == 1) {
-        correctAnswer = Math.floor(Math.random() * 2) + 1
+    if (testNumber == "1or05") {
+        correctAnswer = Math.floor(Math.random() * 2) + 1;
     } 
 
     $.ajax({

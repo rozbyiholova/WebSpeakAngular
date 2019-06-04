@@ -14,14 +14,14 @@ function check(event) {
 
     $.ajax({
         type: 'GET',
-        url: `/Home/Categories/SubCategories/Tests/Test01/Test?id=${subCategoryId}`,
+        url: `/Home/Categories/SubCategories/Tests/Test01or05/Test?id=${subCategoryId}`,
         success: function (result) {
             var s = `<div class="name">
                         <p>${result[0].wordLearnLang}</p>
                     `;
             for (let i = 0; i < Object.keys(result).length; i++) {
                 if (correctAnswer == i + 1) {
-                    s += `<img src="../../../../${result[i].picture}" alt="${result[i].wordLearnLang}">`;
+                    s += `<img src="../../../../${result[i].picture}" alt="${result[i].wordNativeLang}">`;
                     break;
                 }
             }

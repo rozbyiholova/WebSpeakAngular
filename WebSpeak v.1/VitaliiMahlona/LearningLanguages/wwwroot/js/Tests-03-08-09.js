@@ -23,7 +23,7 @@ function check() {
 
     $.ajax({
         type: 'GET',
-        url: `/Home/Categories/SubCategories/Tests/Test02or03or04/Test?id=${subCategoryId}`,
+        url: `/Home/Categories/SubCategories/Tests/Test02or03or04or08or09/Test?id=${subCategoryId}`,
         success: function (result) {
             var s = '<div class="words">';
             for (let i = 0; i < Object.keys(result).length; i++) {
