@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DAL.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories
 {
@@ -24,14 +26,14 @@ namespace DAL.Repositories
             throw new NotImplementedException();
         }
 
-        public Categories GetItem(int id)
+        public async Task<Categories> GetItem(int id)
         {
-            return db.Categories.Find(id);
+            return await db.Categories.FindAsync(id);
         }
 
-        public IEnumerable<Categories> GetList()
+        public async Task<IEnumerable<Categories>> GetList()
         {
-            return db.Categories;
+            return await db.Categories.ToListAsync();
         }
 
         public void Save()
@@ -64,9 +66,9 @@ namespace DAL.Repositories
             GC.SuppressFinalize(this);
         }
 
-        public List<DTO> GetTranslations(int idLangLearn, int idLangNative, int? parentId)
+        public async Task<List<DTO>> GetTranslations(int idLangLearn, int idLangNative, int? parentId)
         {
-            var LearnLangCat = db.Categories.Where(s => s.ParentId == parentId)
+            var LearnLangCat = await db.Categories.Where(s => s.ParentId == parentId)
                 .Join(
                     db.CategoriesTranslations.Where(s => s.LangId == idLangLearn),
                     category => category.Id,
@@ -76,9 +78,9 @@ namespace DAL.Repositories
                         Id = category.Id,
                         Name = categoryTrans.Translation
                     }
-            ).ToList();
+            ).ToListAsync();
 
-            List<DTO> NativeLearnLangCat = db.Categories.Where(s => s.ParentId == parentId)
+            List<DTO> NativeLearnLangCat = await db.Categories.Where(s => s.ParentId == parentId)
                 .Join(
                     db.CategoriesTranslations.Where(s => s.LangId == idLangNative),
                     category => category.Id,
@@ -90,7 +92,7 @@ namespace DAL.Repositories
                         Picture = category.Picture,
                         WordLearnLang = LearnLangCat.Find(x => x.Id == category.Id).Name
                     }
-            ).ToList();
+            ).ToListAsync();
 
             return NativeLearnLangCat;
         }

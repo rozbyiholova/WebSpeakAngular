@@ -9,23 +9,25 @@ using DAL;
 using DAL.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace LearningLanguages.Controllers
 {
     public class HomeController : Controller
     {
-        IRepository<Categories> categories = new CategoriesRepository();
+        IRepository<Categories> _categories = new CategoriesRepository();
 
-        IRepository<Languages> languages = new LanguagesRepository();
+        IRepository<Languages> _languages = new LanguagesRepository();
 
-        IRepository<Words> words = new WordsRepository();
+        IRepository<Words> _words = new WordsRepository();
 
-        IRepository<Tests> tests = new TestsRepository();
+        IRepository<Tests> _tests = new TestsRepository();
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            SelectList languagesList = new SelectList(languages.GetList(), "Id", "Name");
+            SelectList languagesList = new SelectList(await _languages.GetList(), "Id", "Name");
 
             return View(languagesList);
         }
@@ -50,24 +52,24 @@ namespace LearningLanguages.Controllers
             return RedirectToAction("Categories");
         }
         [Route("Home/Categories")]
-        public IActionResult Categories()
+        public async Task<IActionResult> Categories()
         {
             int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
             int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
 
-            List<DTO> NativeLearnLangCat = categories.GetTranslations(idLangLearn, idLangNative, null);
+            List<DTO> NativeLearnLangCat = await _categories.GetTranslations(idLangLearn, idLangNative, null);
 
             return View(NativeLearnLangCat);
         }
 
         [Route("Home/Categories/SubCategories")]
         [HttpGet]
-        public IActionResult SubCategories(int id)
+        public async Task<IActionResult> SubCategories(int id)
         {
             int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
             int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
 
-            List<DTO> NativeLearnLangSubCat = categories.GetTranslations(idLangLearn, idLangNative, id);
+            List<DTO> NativeLearnLangSubCat =await _categories.GetTranslations(idLangLearn, idLangNative, id);
 
             ViewBag.categoryId = id;
 
@@ -75,21 +77,23 @@ namespace LearningLanguages.Controllers
         }
 
         [Route("Home/Categories/SubCategories/Tests")]
-        public IActionResult Tests(int id)
+        public async Task<IActionResult> Tests(int id)
         {
             int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
             int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
 
-            List<DTO> NativeLearnLangTests = tests.GetTranslations(idLangLearn, idLangNative, id);
+            List<DTO> NativeLearnLangTests = await _tests.GetTranslations(idLangLearn, idLangNative, id);
+            
+            Categories category = await _categories.GetItem(id);
 
             ViewBag.subCategoryId = id;
-            ViewBag.categoryId = categories.GetItem(id).ParentId;
+            ViewBag.categoryId = category.ParentId;
 
             return View(NativeLearnLangTests);
         }
 
         [Route("Home/Categories/SubCategories/Tests/Manual")]
-        public IActionResult Manual(int id)
+        public async Task<IActionResult> Manual(int id)
         {
             int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
             int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
@@ -98,10 +102,12 @@ namespace LearningLanguages.Controllers
             string enablePronounceNativeLang = HttpContext.Session.GetString("enablePronounceNativeLang");
             string enablePronounceLearnLang = HttpContext.Session.GetString("enablePronounceLearnLang");
 
-            List<DTO> NativeLearnLangWords = words.GetTranslations(idLangLearn, idLangNative, id);
+            List<DTO> NativeLearnLangWords = await _words.GetTranslations(idLangLearn, idLangNative, id);
+
+            Categories category = await _categories.GetItem(id);
 
             ViewBag.subCategoryId = id;
-            ViewBag.categoryId = categories.GetItem(id).ParentId;
+            ViewBag.categoryId = category.ParentId;
             ViewBag.enableNativeLang = enableNativeLang;
             ViewBag.enableSound = enableSound;
             ViewBag.enablePronounceNativeLang = enablePronounceNativeLang;
@@ -111,31 +117,35 @@ namespace LearningLanguages.Controllers
         }
 
         [Route("Home/Categories/SubCategories/Tests/Slideshow")]
-        public IActionResult Slideshow(int id)
+        public async Task<IActionResult> Slideshow(int id)
         {
             int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
             int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
 
-            List<DTO> NativeLearnLangWords = words.GetTranslations(idLangLearn, idLangNative, id);
+            List<DTO> NativeLearnLangWords = await _words.GetTranslations(idLangLearn, idLangNative, id);
+
+            Categories category = await _categories.GetItem(id);
 
             ViewBag.subCategoryId = id;
-            ViewBag.categoryId = categories.GetItem(id).ParentId;
+            ViewBag.categoryId = category.ParentId;
 
             return View(NativeLearnLangWords);
         }
 
         [Route("Home/Categories/SubCategories/Tests/Test01")]
-        public IActionResult Test01(int id)
+        public async Task<IActionResult> Test01(int id)
         {
+            Categories category = await _categories.GetItem(id);
+
             ViewBag.subCategoryId = id;
-            ViewBag.categoryId = categories.GetItem(id).ParentId;
+            ViewBag.categoryId = category.ParentId;
 
             return View();
         }
 
         [Route("Home/Categories/SubCategories/Tests/Test01or05/Test")]
         [HttpGet]
-        public IActionResult Test01or05One(int id)
+        public async Task<IActionResult> Test01or05One(int id)
         {
             int countOptions = 2;
 
@@ -144,7 +154,7 @@ namespace LearningLanguages.Controllers
 
             Random rand = new Random();
 
-            var LearnLangWords = words.GetTranslations(idLangLearn, idLangNative, id);
+            var LearnLangWords = await _words.GetTranslations(idLangLearn, idLangNative, id);
 
             int[] randomWordsId = new int[countOptions];
 
@@ -152,10 +162,14 @@ namespace LearningLanguages.Controllers
 
             for (int i = 0; i < countOptions; ++i)
             {
-            a: randomWordsId[i] = rand.Next(LearnLangWords.First().Id, LearnLangWords.Last().Id + 1);
+                randomWordsId[i] = rand.Next(LearnLangWords.First().Id, LearnLangWords.Last().Id + 1);
+
                 for (int j = 0; j < i; j++)
                 {
-                    if (randomWordsId[j] == randomWordsId[i]) goto a;
+                    while (randomWordsId[j] == randomWordsId[i])
+                    {
+                        randomWordsId[i] = rand.Next(LearnLangWords.First().Id, LearnLangWords.Last().Id + 1);
+                    }
                 }
                 twoWords.Add(LearnLangWords.Find(w => w.Id == randomWordsId[i]));
             }
@@ -164,17 +178,19 @@ namespace LearningLanguages.Controllers
         }
 
         [Route("Home/Categories/SubCategories/Tests/Test02")]
-        public IActionResult Test02(int id)
+        public async Task<IActionResult> Test02(int id)
         {
+            Categories category = await _categories.GetItem(id);
+
             ViewBag.subCategoryId = id;
-            ViewBag.categoryId = categories.GetItem(id).ParentId;
+            ViewBag.categoryId = category.ParentId;
 
             return View();
         }
 
         [Route("Home/Categories/SubCategories/Tests/Test02or03or04or08or09/Test")]
         [HttpGet]
-        public IActionResult Test02or03or04or08or09One(int id)
+        public async Task<IActionResult> Test02or03or04or08or09One(int id)
         {
             int countOptions = 4;
 
@@ -183,7 +199,7 @@ namespace LearningLanguages.Controllers
 
             Random rand = new Random();
 
-            var LearnLangWords = words.GetTranslations(idLangLearn, idLangNative, id);
+            var LearnLangWords = await _words.GetTranslations(idLangLearn, idLangNative, id);
 
             int[] randomWordsId = new int[countOptions];
 
@@ -191,10 +207,14 @@ namespace LearningLanguages.Controllers
 
             for (int i = 0; i < countOptions; ++i)
             {
-                a:  randomWordsId[i] = rand.Next(LearnLangWords.First().Id, LearnLangWords.Last().Id + 1);
+                randomWordsId[i] = rand.Next(LearnLangWords.First().Id, LearnLangWords.Last().Id + 1);
+
                 for (int j = 0; j < i; j++)
                 {
-                    if (randomWordsId[j] == randomWordsId[i]) goto a;
+                    while (randomWordsId[j] == randomWordsId[i])
+                    {
+                        randomWordsId[i] = rand.Next(LearnLangWords.First().Id, LearnLangWords.Last().Id + 1);
+                    }
                 }
                 fourWords.Add(LearnLangWords.Find(w => w.Id == randomWordsId[i]));
             }
@@ -203,51 +223,59 @@ namespace LearningLanguages.Controllers
         }
 
         [Route("Home/Categories/SubCategories/Tests/Test03")]
-        public IActionResult Test03(int id)
+        public async Task<IActionResult> Test03(int id)
         {
+            Categories category = await _categories.GetItem(id);
+
             ViewBag.subCategoryId = id;
-            ViewBag.categoryId = categories.GetItem(id).ParentId;
+            ViewBag.categoryId = category.ParentId;
 
             return View();
         }
 
         [Route("Home/Categories/SubCategories/Tests/Test04")]
-        public IActionResult Test04(int id)
+        public async Task<IActionResult> Test04(int id)
         {
+            Categories category = await _categories.GetItem(id);
+
             ViewBag.subCategoryId = id;
-            ViewBag.categoryId = categories.GetItem(id).ParentId;
+            ViewBag.categoryId = category.ParentId;
 
             return View();
         }
 
         [Route("Home/Categories/SubCategories/Tests/Test05")]
-        public IActionResult Test05(int id)
+        public async Task<IActionResult> Test05(int id)
         {
+            Categories category = await _categories.GetItem(id);
+
             ViewBag.subCategoryId = id;
-            ViewBag.categoryId = categories.GetItem(id).ParentId;
+            ViewBag.categoryId = category.ParentId;
 
             return View();
         }
 
         [Route("Home/Categories/SubCategories/Tests/Test06")]
-        public IActionResult Test06(int id)
+        public async Task<IActionResult> Test06(int id)
         {
+            Categories category = await _categories.GetItem(id);
+
             ViewBag.subCategoryId = id;
-            ViewBag.categoryId = categories.GetItem(id).ParentId;
+            ViewBag.categoryId = category.ParentId;
 
             return View();
         }
 
         [Route("Home/Categories/SubCategories/Tests/Test06or07/Test")]
         [HttpGet]
-        public IActionResult Test06or07One(int id)
+        public async Task<IActionResult> Test06or07One(int id)
         {
             int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
             int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
 
             Random rand = new Random();
 
-            var LearnLangWords = words.GetTranslations(idLangLearn, idLangNative, id);
+            var LearnLangWords = await _words.GetTranslations(idLangLearn, idLangNative, id);
 
             int randomWordId = rand.Next(LearnLangWords.First().Id, LearnLangWords.Last().Id + 1);
 
@@ -257,34 +285,35 @@ namespace LearningLanguages.Controllers
         }
 
         [Route("Home/Categories/SubCategories/Tests/Test07")]
-        public IActionResult Test07(int id)
+        public async Task<IActionResult> Test07(int id)
         {
+            Categories category = await _categories.GetItem(id);
+
             ViewBag.subCategoryId = id;
-            ViewBag.categoryId = categories.GetItem(id).ParentId;
+            ViewBag.categoryId = category.ParentId;
 
             return View();
         }
 
         [Route("Home/Categories/SubCategories/Tests/Test08")]
-        public IActionResult Test08(int id)
+        public async Task<IActionResult> Test08(int id)
         {
+            Categories category = await _categories.GetItem(id);
+
             ViewBag.subCategoryId = id;
-            ViewBag.categoryId = categories.GetItem(id).ParentId;
+            ViewBag.categoryId = category.ParentId;
 
             return View();
         }
 
         [Route("Home/Categories/SubCategories/Tests/Test09")]
-        public IActionResult Test09(int id)
+        public async Task<IActionResult> Test09(int id)
         {
+            Categories category = await _categories.GetItem(id);
+
             ViewBag.subCategoryId = id;
-            ViewBag.categoryId = categories.GetItem(id).ParentId;
+            ViewBag.categoryId = category.ParentId;
 
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
             return View();
         }
 
