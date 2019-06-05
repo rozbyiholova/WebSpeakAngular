@@ -294,7 +294,15 @@ namespace LearningLanguages.Controllers
         {
             Categories category = await _categories.GetItem(id);
 
-            return View(category);
+            int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
+            int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
+
+            var LearnLangWords = await _words.GetTranslations(idLangLearn, idLangNative, id);
+
+            LearnLangWords.First().CategoryId = category.ParentId;
+            LearnLangWords.First().SubCategoryId = category.Id;
+
+            return View(LearnLangWords);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
