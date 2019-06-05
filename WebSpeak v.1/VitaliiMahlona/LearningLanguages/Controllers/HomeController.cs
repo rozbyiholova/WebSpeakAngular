@@ -107,10 +107,10 @@ namespace LearningLanguages.Controllers
             NativeLearnLangWords.First().CategoryId = category.ParentId;
             NativeLearnLangWords.First().SubCategoryId = category.Id;
 
-            ViewBag.enableNativeLang = enableNativeLang;
-            ViewBag.enableSound = enableSound;
-            ViewBag.enablePronounceNativeLang = enablePronounceNativeLang;
-            ViewBag.enablePronounceLearnLang = enablePronounceLearnLang;
+            NativeLearnLangWords.First().EnableNativeLang = enableNativeLang;
+            NativeLearnLangWords.First().EnableSound = enableSound;
+            NativeLearnLangWords.First().EnablePronounceNativeLang = enablePronounceNativeLang;
+            NativeLearnLangWords.First().EnablePronounceLearnLang = enablePronounceLearnLang;
 
             return View(NativeLearnLangWords);
         }
@@ -283,6 +283,14 @@ namespace LearningLanguages.Controllers
 
         [Route("Home/Categories/SubCategories/Tests/Test09")]
         public async Task<IActionResult> Test09(int id)
+        {
+            Categories category = await _categories.GetItem(id);
+
+            return View(category);
+        }
+
+        [Route("Home/Categories/SubCategories/Tests/Test10")]
+        public async Task<IActionResult> Test10(int id)
         {
             Categories category = await _categories.GetItem(id);
 
