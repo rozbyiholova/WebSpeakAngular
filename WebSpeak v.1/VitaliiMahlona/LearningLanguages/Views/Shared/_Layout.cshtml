@@ -33,9 +33,6 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
                     </ul>
                 </div>
             </div>
@@ -47,66 +44,41 @@
 
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
+                @using DAL.Models
                 <li>@Html.ActionLink("Index", "Index", "Home")</li>
-                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Categories"))
-                {
-                    <li>@Html.ActionLink("Categories", "Categories", ViewContext.RouteData.Values["controller"].ToString())</li>
-                }
-                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("SubCategories"))
-                {
-                    <li>@Html.ActionLink("SubCategories", "SubCategories", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.categoryId })</li>
-                }
-                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Tests"))
-                {
-                    <li>@Html.ActionLink("Tests", "Tests", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
-                }
-                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Manual"))
-                {
-                    <li>@Html.ActionLink("Manual", "Manual", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
-                }
-                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Slideshow"))
-                {
-                    <li>@Html.ActionLink("Slideshow", "Slideshow", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
-                }
-                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test01"))
-                {
-                    <li>@Html.ActionLink("Test01", "Test01", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
-                }
-                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test02"))
-                {
-                    <li>@Html.ActionLink("Test02", "Test02", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
-                }
-                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test03"))
-                {
-                    <li>@Html.ActionLink("Test03", "Test03", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
-                }
-                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test04"))
-                {
-                    <li>@Html.ActionLink("Test04", "Test04", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
-                }
-                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test05"))
-                {
-                    <li>@Html.ActionLink("Test05", "Test05", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
-                }
-                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test06"))
-                {
-                    <li>@Html.ActionLink("Test06", "Test06", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
-                }
-                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test07"))
-                {
-                    <li>@Html.ActionLink("Test07", "Test07", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
-                }
-                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test08"))
-                {
-                    <li>@Html.ActionLink("Test08", "Test08", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
-                }
-                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test09"))
-                {
-                    <li>@Html.ActionLink("Test09", "Test09", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
-                }
-                @if (Url.RouteUrl(ViewContext.RouteData.Values).Contains("Test10"))
-                {
-                    <li>@Html.ActionLink("Test10", "Test10", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })</li>
+                @{
+                    string[] route = new string[7];
+                    route = Url.RouteUrl(ViewContext.RouteData.Values).Split('/');
+
+                    for (int i = 2; i < route.Length; i++)
+                    {
+                        if (route[i] == "Categories")
+                        {
+                            <li>@Html.ActionLink(route[i], route[i], ViewContext.RouteData.Values["controller"].ToString())</li>
+                        }
+                        if (route[i] == "SubCategories")
+                        {
+                            if (Model is IEnumerable<DTO>)
+                            {
+                                <li>@Html.ActionLink(route[i], route[i], ViewContext.RouteData.Values["controller"].ToString(), new { id = Model[0].CategoryId })</li>
+                            }
+                            else
+                            {
+                                <li>@Html.ActionLink(route[i], route[i], ViewContext.RouteData.Values["controller"].ToString(), new { id = Model.ParentId })</li>
+                            }
+                        }
+                        else if(route[i] != "Categories")
+                        {
+                            if (Model is IEnumerable<DTO>)
+                            {
+                                <li>@Html.ActionLink(route[i], route[i], ViewContext.RouteData.Values["controller"].ToString(), new { id = Model[0].SubCategoryId })</li>
+                            }
+                            else
+                            {
+                                <li>@Html.ActionLink(route[i], route[i], ViewContext.RouteData.Values["controller"].ToString(), new { id = Model.Id })</li>
+                            }
+                        }
+                    }
                 }
             </ol>
         </nav>

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DAL.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories
 {
@@ -23,14 +25,14 @@ namespace DAL.Repositories
             throw new NotImplementedException();
         }
 
-        public TestResults GetItem(int id)
+        public async Task<TestResults> GetItem(int id)
         {
-            return db.TestResults.Find(id);
+            return await db.TestResults.FindAsync(id);
         }
 
-        public IEnumerable<TestResults> GetList()
+        public async Task<IEnumerable<TestResults>> GetList()
         {
-            return db.TestResults;
+            return await db.TestResults.ToListAsync();
         }
 
         public void Save()
@@ -63,7 +65,7 @@ namespace DAL.Repositories
             GC.SuppressFinalize(this);
         }
 
-        public List<DTO> GetTranslations(int idLangLearn, int idLangNative, int? parentId)
+        Task<List<DTO>> IRepository<TestResults>.GetTranslations(int idLangLearn, int idLangNative, int? parentId)
         {
             throw new NotImplementedException();
         }

@@ -1,0 +1,48 @@
+﻿#result {
+    text-align: center;
+    font-size: 25px;
+}
+
+#error {
+    display: none;
+    margin-top: 150px;
+}
+
+#answer {
+    margin-top: 150px;
+}
+#leftColumn, #rightColumn {
+    align-items: center;
+    display: flex;
+    height: 100px;
+    flex-direction: column;
+}
+
+.word {
+    width: auto;
+    height: auto;
+    margin: auto;
+}
+
+#buttons {
+    margin-top: 50px;
+    text-align: center;
+}
+
+[type=radio] {
+    display: none;
+}
+
+label.word, p {
+    font-size: 25px;
+}
+
+label:hover {
+    cursor: pointer;
+    opacity: .7;
+}
+
+input[type="radio"]:checked + label {
+    font-size: 27px;
+    color: #4CAF50;
+}

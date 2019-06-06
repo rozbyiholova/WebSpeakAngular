@@ -7,15 +7,15 @@
 <link rel="stylesheet" href="~/css/CatTestsSubCat.css" />
 
 <div id="actionLink">
-    @Html.ActionLink("Manual", "Manual", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })
-    @Html.ActionLink("Slideshow", "Slideshow", ViewContext.RouteData.Values["controller"].ToString(), new { id = ViewContext.ViewBag.subCategoryId })
+    @Html.ActionLink("Manual", "Manual", ViewContext.RouteData.Values["controller"].ToString(), new { id = Model.First().SubCategoryId })
+    @Html.ActionLink("Slideshow", "Slideshow", ViewContext.RouteData.Values["controller"].ToString(), new { id = Model.First().SubCategoryId })
 </div>
 
 <div class="parent">
     @foreach (var test in Model)
     {
         //73 - 62 (substring)
-        <a class="link" href="~/Home/Categories/SubCategories/Tests/@test.Picture.Substring(73, 6)?id=@ViewBag.subCategoryId">
+        <a class="link" href="~/Home/Categories/SubCategories/Tests/@test.Picture.Substring(62, 6)?id=@Model.First().SubCategoryId">
             <div class="child">
                 <p>@test.WordNativeLang (@test.WordLearnLang)</p>
                 <img src="../../../@test.Picture" alt="@test.WordNativeLang">

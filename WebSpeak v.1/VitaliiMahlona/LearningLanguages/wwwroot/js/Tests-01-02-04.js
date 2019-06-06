@@ -16,7 +16,6 @@ if ((testNumber == 2) || (testNumber == 4)) testNumber = "2or03or04or08or09";
 check();
 
 function check() {
-    console.log(correctAnswer);
     if (($("[type=radio]:checked").val() == correctAnswer)) {
         $('#result').html(`<b>Score: ${++result}</b>`);
     }

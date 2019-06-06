@@ -1,0 +1,34 @@
+﻿@using DAL.Models
+@using Microsoft.AspNetCore.Http
+@model List<DTO>
+
+@{
+    ViewData["Title"] = "Test10";
+}
+
+<link rel="stylesheet" href="~/css/Test10.css" />
+
+<div id="result">
+    <b>Score: 0</b>
+</div>
+<div id="test">
+
+</div>
+<div id="error" class="alert alert-danger" role="alert">
+
+</div>
+<div id="answer">
+
+</div>
+<div id="buttons">
+    <button type="button" class="btn btn-primary" onclick="next()">Next</button>
+    <button type="button" class="btn btn-danger" onclick="cancel()">Cancel</button>
+</div>
+
+<script>
+    var testNumber = 10;
+    var subCategoryId = @Model.First().SubCategoryId;
+    var model = @Html.Raw(Json.Serialize(Model));
+
+</script>
+<script src="~/js/Test10.js"></script>

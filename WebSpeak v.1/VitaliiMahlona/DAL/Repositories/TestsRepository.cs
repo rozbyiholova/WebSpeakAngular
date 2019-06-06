@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DAL.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories
 {
@@ -24,14 +26,14 @@ namespace DAL.Repositories
             throw new NotImplementedException();
         }
 
-        public Tests GetItem(int id)
+        public async Task<Tests> GetItem(int id)
         {
-            return db.Tests.Find(id);
+            return await db.Tests.FindAsync(id);
         }
 
-        public IEnumerable<Tests> GetList()
+        public async Task<IEnumerable<Tests>> GetList()
         {
-            return db.Tests;
+            return await db.Tests.ToListAsync();
         }
 
         public void Save()
@@ -64,9 +66,9 @@ namespace DAL.Repositories
             GC.SuppressFinalize(this);
         }
 
-        public List<DTO> GetTranslations(int idLangLearn, int idLangNative, int? parentId)
+        public async Task<List<DTO>> GetTranslations(int idLangLearn, int idLangNative, int? parentId)
         {
-            var LearnLangTests = db.Tests
+            var LearnLangTests = await db.Tests
                 .Join(
                     db.TestTranslations.Where(s => s.LangId == idLangLearn),
                     test => test.Id,
@@ -76,9 +78,9 @@ namespace DAL.Repositories
                         Id = test.Id,
                         Name = testTrans.Translation
                     }
-            ).ToList();
+            ).ToListAsync();
 
-            List<DTO> NativeLearnLangTests = db.Tests
+            List<DTO> NativeLearnLangTests = await db.Tests
                 .Join(
                     db.TestTranslations.Where(s => s.LangId == idLangNative),
                     test => test.Id,
@@ -90,7 +92,7 @@ namespace DAL.Repositories
                         Picture = test.Icon,
                         WordLearnLang = LearnLangTests.Find(x => x.Id == test.Id).Name
                     }
-            ).ToList();
+            ).ToListAsync();
 
             return NativeLearnLangTests;
         }

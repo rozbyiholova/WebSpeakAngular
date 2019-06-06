@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using DAL.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Repositories
 {
@@ -24,14 +26,14 @@ namespace DAL.Repositories
             throw new NotImplementedException();
         }
 
-        public Words GetItem(int id)
+        public async Task<Words> GetItem(int id)
         {
-            return db.Words.Find(id);
+            return await db.Words.FindAsync(id);
         }
 
-        public IEnumerable<Words> GetList()
+        public async Task<IEnumerable<Words>> GetList()
         {
-            return db.Words;
+            return await db.Words.ToListAsync();
         }
 
         public void Save()
@@ -64,9 +66,9 @@ namespace DAL.Repositories
             GC.SuppressFinalize(this);
         }
 
-        public List<DTO> GetTranslations(int idLangLearn, int idLangNative, int? parentId)
+        public async Task<List<DTO>> GetTranslations(int idLangLearn, int idLangNative, int? parentId)
         {
-            var LearnLangWords = db.Words.Where(s => s.CategoryId == parentId)
+            var LearnLangWords = await db.Words.Where(s => s.CategoryId == parentId)
                 .Join(
                     db.WordTranslations.Where(s => s.LangId == idLangLearn),
                     word => word.Id,
@@ -77,9 +79,9 @@ namespace DAL.Repositories
                         Name = wordTrans.Translation,
                         PronounceLearn = wordTrans.Pronounce
                     }
-            ).ToList();
+            ).ToListAsync();
 
-            List<DTO> NativeLearnLangWords = db.Words.Where(s => s.CategoryId == parentId)
+            List<DTO> NativeLearnLangWords = await db.Words.Where(s => s.CategoryId == parentId)
                 .Join(
                     db.WordTranslations.Where(s => s.LangId == idLangNative),
                     word => word.Id,
@@ -92,9 +94,10 @@ namespace DAL.Repositories
                         WordLearnLang = LearnLangWords.Find(x => x.Id == word.Id).Name,
                         Sound = word.Sound,
                         PronounceNative = wordTrans.Pronounce,
-                        PronounceLearn = LearnLangWords.Find(x => x.Id == word.Id).PronounceLearn
+                        PronounceLearn = LearnLangWords.Find(x => x.Id == word.Id).PronounceLearn,
+                        SubCategoryId = word.CategoryId
                     }
-            ).ToList();
+            ).ToListAsync();
 
             return NativeLearnLangWords;
         }

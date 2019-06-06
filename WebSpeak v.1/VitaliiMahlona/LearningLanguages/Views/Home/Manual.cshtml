@@ -13,13 +13,13 @@
                     <div class="carousel-caption d-none d-md-block">
                         <h1>
                             @(Model.ElementAt(0).WordLearnLang)
-                            @if (ViewBag.enableNativeLang.Contains("true"))
+                            @if (Model.ElementAt(0).EnableNativeLang.Contains("true"))
                             {
                                 <em>( @Model.ElementAt(0).WordNativeLang )</em>
                             }
                         </h1>
                         <div>
-                            @if (ViewBag.enableSound.Contains("true") && !String.IsNullOrEmpty(Model.ElementAt(0).Sound))
+                            @if (Model.ElementAt(0).EnableSound.Contains("true") && !String.IsNullOrEmpty(Model.ElementAt(0).Sound))
                             {
                                 <p>Sound:</p>
                                 <audio controls>
@@ -27,7 +27,7 @@
                                     Your browser does not support the audio element.
                                 </audio>
                             }
-                            @if (ViewBag.enablePronounceLearnLang.Contains("true"))
+                            @if (Model.ElementAt(0).EnablePronounceLearnLang.Contains("true"))
                             {
                                 <p>Pronounce(Learn):</p>
                                 <audio controls>
@@ -35,7 +35,7 @@
                                     Your browser does not support the audio element.
                                 </audio>
                             }
-                            @if (ViewBag.enablePronounceNativeLang.Contains("true"))
+                            @if (Model.ElementAt(0).EnablePronounceNativeLang.Contains("true"))
                             {
                                 <p>Pronounce(Native):</p>
                                 <audio controls>
@@ -53,13 +53,13 @@
                         <div class="carousel-caption d-none d-md-block">
                             <h1>
                                 @word.WordLearnLang
-                                @if (ViewBag.enableNativeLang.Contains("true"))
+                                @if (Model.ElementAt(0).EnableNativeLang.Contains("true"))
                                 {
                                     <em>( @word.WordNativeLang )</em>
                                 }
                             </h1>
                             <div>
-                                @if (ViewBag.enableSound.Contains("true") && !String.IsNullOrEmpty(Model.ElementAt(0).Sound))
+                                @if (Model.ElementAt(0).EnableSound.Contains("true") && !String.IsNullOrEmpty(Model.ElementAt(0).Sound))
                                 {
                                     <p>Sound:</p>
                                     <audio controls>
@@ -67,7 +67,7 @@
                                         Your browser does not support the audio element.
                                     </audio>
                                 }
-                                @if (ViewBag.enablePronounceLearnLang.Contains("true"))
+                                @if (Model.ElementAt(0).EnablePronounceLearnLang.Contains("true"))
                                 {
                                     <p>Pronounce(Learn):</p>
                                     <audio controls>
@@ -75,7 +75,7 @@
                                         Your browser does not support the audio element.
                                     </audio>
                                 }
-                                @if (ViewBag.enablePronounceNativeLang.Contains("true"))
+                                @if (Model.ElementAt(0).EnablePronounceNativeLang.Contains("true"))
                                 {
                                     <p>Pronounce(Native):</p>
                                     <audio controls>
@@ -109,7 +109,6 @@
 
     .carousel-control-prev, .carousel-control-next {
         position: absolute;
-        bottom: 400px;
     }
 
     img {
