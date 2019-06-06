@@ -15,7 +15,7 @@
     @foreach (var test in Model)
     {
         //73 - 62 (substring)
-        <a class="link" href="~/Home/Categories/SubCategories/Tests/@test.Picture.Substring(62, 6)?id=@Model.First().SubCategoryId">
+        <a class="link" href="~/Home/Categories/SubCategories/Tests/@test.Picture.Substring(73, 6)?id=@Model.First().SubCategoryId">
             <div class="child">
                 <p>@test.WordNativeLang (@test.WordLearnLang)</p>
                 <img src="../../../@test.Picture" alt="@test.WordNativeLang">

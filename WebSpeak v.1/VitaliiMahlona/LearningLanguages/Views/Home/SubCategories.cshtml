@@ -9,11 +9,11 @@
 <div class="parent">
     @foreach (var subCategory in Model)
     {
-        <a class="link" href="~/Home/Categories/SubCategories/Tests?id=@subCategory.Id">
-            <div class="child">
-                <p>@subCategory.WordNativeLang (@subCategory.WordLearnLang)</p>
-                <img src="../../@subCategory.Picture" alt="@subCategory.WordNativeLang">
-            </div>
-        </a>
+    <a class="link" href="~/Home/Categories/SubCategories/Tests?id=@subCategory.Id">
+        <div class="child">
+            <p>@subCategory.WordNativeLang (@subCategory.WordLearnLang)</p>
+            <img src="../../@subCategory.Picture" alt="@subCategory.WordNativeLang">
+        </div>
+    </a>
     }
 </div>
