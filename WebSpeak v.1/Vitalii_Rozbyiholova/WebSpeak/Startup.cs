@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using DAL.Models;
+using SmartBreadcrumbs.Extensions;
 
 namespace WebSpeak
 {
@@ -34,11 +35,12 @@ namespace WebSpeak
             });
 
             services.AddDistributedMemoryCache();
-
+            services.AddBreadcrumbs(GetType().Assembly);
+            services.AddSingleton<Helper>();
+            services.AddHttpContextAccessor();
             services.AddSession(options =>
             {
                 // Set a short timeout for easy testing.
-                options.IdleTimeout = TimeSpan.FromSeconds(10);
                 options.Cookie.HttpOnly = true;
                 // Make the session cookie essential
                 options.Cookie.IsEssential = true;
@@ -65,6 +67,7 @@ namespace WebSpeak
                 app.UseHsts();
             }
 
+            
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
@@ -74,6 +77,9 @@ namespace WebSpeak
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+                routes.MapRoute(
+                    name: "Tests",
+                    template: "{controller=Test}/{action=Index}/{id?}");
             });
         }
     }

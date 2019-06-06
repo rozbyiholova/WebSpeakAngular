@@ -10,25 +10,27 @@ using DAL.Models;
 using DAL.Interfaces;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Http;
+using SmartBreadcrumbs.Attributes;
 
 namespace WebSpeak.Controllers
 {
     public class HomeController : Controller
     {
-        private const string NativeLanguage = "NativeLanguage";
-        private const string LearningLanguage = "LearningLanguage";
+        private readonly Helper helper;
 
-        private const int DefaultNativeLanguageId = 1;
-        private const int DefaultLearningLanguageId = 3;
+        public HomeController(Helper helper)
+        {
+            this.helper = helper;
+        }
 
+        [DefaultBreadcrumb("Home")]
         public IActionResult Index()
         {
-
-            HttpContext.Session.SetInt32(NativeLanguage, DefaultNativeLanguageId);
-            HttpContext.Session.SetInt32(LearningLanguage, DefaultLearningLanguageId);
+            helper.SetLanguages();
             return View();
         }
 
+        [Breadcrumb("Languages")]
         public IActionResult Languages()
         {
             LanguagesRepository languagesRepository = new LanguagesRepository();
@@ -39,29 +41,15 @@ namespace WebSpeak.Controllers
         [HttpPost]
         public IActionResult Languages(IFormCollection form)
         {
-            int nativeLangId, learningLangId;
-            try
-            {
-                nativeLangId = Convert.ToInt32(form["Language1"]);
-                learningLangId = Convert.ToInt32(form["Language2"]);
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine("Set default languages: Ukrainian(native) and English(learning)");
-                nativeLangId = DefaultNativeLanguageId;
-                learningLangId = DefaultLearningLanguageId;
-            }
-            HttpContext.Session.SetInt32(NativeLanguage, nativeLangId);
-            HttpContext.Session.SetInt32(LearningLanguage, learningLangId);
-
+            helper.SetLanguages(form);
             return RedirectToAction(nameof(Categories));
         }
 
+        [Breadcrumb("Categories")]
         public IActionResult Categories()
         {
             CategoriesRepository categoriesRepository = new CategoriesRepository();
-            Tuple<int, int> ids = GetLanguagesId();
+            Tuple<int, int> ids = helper.GetLanguagesId();
             int nativeLang = ids.Item1;
             int learningLang = ids.Item2;
             List<DTO> DTOs = categoriesRepository.GetDTO(nativeLang, learningLang, null);
@@ -69,20 +57,33 @@ namespace WebSpeak.Controllers
             return View(DTOs);
         }
 
+        [Breadcrumb("Subcategories", FromAction = "Categories", FromController = typeof(HomeController))]
+        [Route("Categories/Subcategories")]
         public IActionResult SubCategories(int id)
         {
+            int idToUse = id;
+            if(idToUse > 0)
+            {
+                helper.SetSubcategory(id);
+            }
+            else
+            {
+                idToUse = helper.GetLastSubcategoryId();
+            }
             CategoriesRepository categoriesRepository = new CategoriesRepository();
-            Tuple<int, int> ids = GetLanguagesId();
+            Tuple<int, int> ids = helper.GetLanguagesId();
             int nativeLang = ids.Item1;
             int learningLang = ids.Item2;
-            List<DTO> DTOs = categoriesRepository.GetDTO(nativeLang, learningLang, id);
+            List<DTO> DTOs = categoriesRepository.GetDTO(nativeLang, learningLang, idToUse);
 
             return View(DTOs);
         }
 
+        [Breadcrumb("Manual View", FromController = typeof(HomeController), FromAction = "SubCategories")]
+        [Route("Categories/Subcategories/Manual")]
         public async Task<IActionResult> Manual(int categoryId)
         {
-            Tuple<int, int> ids = GetLanguagesId();
+            Tuple<int, int> ids = helper.GetLanguagesId();
             int nativeLang = ids.Item1;
             int learningLang = ids.Item2;
             WordsRepository wordsRepository = new WordsRepository();
@@ -91,9 +92,11 @@ namespace WebSpeak.Controllers
             return View(words);
         }
 
+        [Breadcrumb("Slideshow", FromController = typeof(HomeController), FromAction = "SubCategories")]
+        [Route("Categories/Subcategories/Slideshow")]
         public async Task<IActionResult> SlideShow(int categoryId)
         {
-            Tuple<int, int> ids = GetLanguagesId();
+            Tuple<int, int> ids = helper.GetLanguagesId();
             int nativeLang = ids.Item1;
             int learningLang = ids.Item2;
             WordsRepository wordsRepository = new WordsRepository();
@@ -106,24 +109,6 @@ namespace WebSpeak.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        private Tuple<int, int> GetLanguagesId()
-        {
-            int nativeLang, learningLang;
-            try
-            {
-                nativeLang = (int)HttpContext.Session.GetInt32(NativeLanguage);
-                learningLang = (int)HttpContext.Session.GetInt32(LearningLanguage);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.WriteLine("Set default languages: Ukrainian(native) and English(learning)");
-                nativeLang = DefaultNativeLanguageId;
-                learningLang = DefaultLearningLanguageId;
-            }
-            return new Tuple<int, int>(nativeLang, learningLang);
         }
     }
 }
