@@ -36,6 +36,47 @@ namespace DAL.Repositories
             }
         }
 
+        public List<DTO> GetDTO(int nativeLanguage, int learningLanguage)
+        {
+            TestsRepository testsRepository = new TestsRepository();
+            TestsTranslationsRepository testsTranslationsRepository = new TestsTranslationsRepository();
+            List<Tests> tests = testsRepository.GetAll().ToList();
+            List<TestTranslations> testTranslations = testsTranslationsRepository.GetAll().ToList();
+
+            var testsNative = testTranslations.Where(c => c.LangId == nativeLanguage)
+               .Join(tests,
+               tt => tt.TestId,
+               t => t.Id,
+               (tt, t) => new
+               {
+                   Id = t.Id,
+                   Translation = tt.Translation,
+               });
+
+            var testsTrans = testTranslations.Where(c => c.LangId == learningLanguage)
+                .Join(tests,
+                tt => tt.TestId,
+                t => t.Id,
+                (tt, t) => new
+                {
+                    Id = t.Id,
+                    Translation = tt.Translation,
+                    Picture = t.Icon
+                });
+
+            List<DTO> DTOs = (from tn in testsNative
+                              join tt in testsTrans
+                              on tn.Id equals tt.Id
+                              select new DTO()
+                              {
+                                  Id = tn.Id,
+                                  Native = tn.Translation,
+                                  Translation = tt.Translation,
+                                  Picture = tt.Picture
+                              }).ToList();
+            return DTOs;
+        }
+
         private bool disposed = false;
 
         public virtual void Dispose(bool disposing)
