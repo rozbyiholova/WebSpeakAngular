@@ -5,8 +5,8 @@
 }
 
 .child {
-    width: 225px;
-    height: 225px;
+    width: 350px;
+    height: 350px;
     margin: auto;
     position: relative;
     background: #e6edf7;
@@ -21,14 +21,21 @@
 }
 
 .child:hover {
-    -webkit-transform: scale(1.2,1.2);
+    -webkit-transform: scale(1.1,1.1);
     -webkit-transition-timing-function: ease-out;
     -webkit-transition-duration: 550ms;
-    -moz-transform: scale(1.2,1.2);
+    -moz-transform: scale(1.1,1.1);
     -moz-transition-timing-function: ease-out;
     -moz-transition-duration: 550ms;
     cursor: pointer;
     opacity: .7;
+}
+
+.child img {
+    width: 70%;
+    height: 70%;
+    object-fit: cover;
+    object-position: center center;
 }
 
 .link:hover {
@@ -36,11 +43,10 @@
 }
 
 .link {
-    width: 225px;
+    width: 350px;
     align-self: center;
 }
 
-img {
-    height: 128px;
-    width: auto;
+.text {
+    height: 75px;
 }

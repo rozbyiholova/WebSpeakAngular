@@ -11,9 +11,11 @@
     {
     <a class="link" href="~/Home/Categories/SubCategories?id=@category.Id">
         <div class="child">
-            <p>@category.WordNativeLang (@category.WordLearnLang)</p>
+            <div class="text">
+                <p>@category.WordNativeLang (@category.WordLearnLang)</p>
+            </div>
             <img src="../@category.Picture" alt="@category.WordNativeLang">
         </div>
     </a>
-     }
+    }
 </div>

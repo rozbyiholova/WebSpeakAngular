@@ -11,6 +11,7 @@
 #answer {
     margin-top: 150px;
 }
+
 #leftColumn, #rightColumn {
     align-items: center;
     display: flex;

@@ -1,30 +1,30 @@
 ﻿var correctAnswer = Math.floor(Math.random() * 4) + 1;
+var countOptions = 4;
+var totalResult = 0;
+var first = true;
+var randomWwords = [];
 
 if (testNumber == 1) {
     correctAnswer = Math.floor(Math.random() * 2) + 1;
-    testNumber = "1or05";
+    countOptions = 2;
 } 
-
-var result = 0;
-var first = true;
-
-var test4 = false;
-
-if (testNumber == 4) test4 = true;
-if ((testNumber == 2) || (testNumber == 4)) testNumber = "2or03or04or08or09";
 
 check();
 
 function check() {
+    randomWwords = GetTest();
+
     if (($("[type=radio]:checked").val() == correctAnswer)) {
-        $('#result').html(`<b>Score: ${++result}</b>`);
+        $('#result').html(`<b>Score: ${++totalResult}</b>`);
     }
     else if (($("[type=radio]:checked").val() == undefined)) {
         if (!first) {
             $('#error').show();
             $('#error').text("Please select an item!");
+
             return;
         }
+
         first = false;
     }
 
@@ -32,43 +32,64 @@ function check() {
 
     correctAnswer = Math.floor(Math.random() * 4) + 1;
 
-    if (testNumber == "1or05") {
+    if (testNumber == 1) {
         correctAnswer = Math.floor(Math.random() * 2) + 1;
     } 
 
-    $.ajax({
-        type: 'GET',
-        url: `/Home/Categories/SubCategories/Tests/Test0${testNumber}/Test?id=${subCategoryId}`,
-        success: function (result) {
-            var s = '<div class="words">';
-            for (let i = 0; i < Object.keys(result).length; i++) {
-                s += `
-                    <label class="word">
-                        <p>${result[i].wordLearnLang}</p>
-                        <input type="radio" name="test" value="${i + 1}">
-                        <img src="../../../../${result[i].picture}" width="256" height="256" alt="${result[i].wordLearnLang}">
-                    </label>
-                    `;
-            }
-            s += `</div>
-                        <div class="QA">`;
-            for (let i = 0; i < Object.keys(result).length; i++) {
-                if (correctAnswer == i + 1) {
-                    if (test4) {
-                        s += `<audio controls>
-                              <source src="../../../../${result[i].pronounceLearn}" type="audio/mpeg" />
-                              Your browser does not support the audio element.
-                              </audio>`
-                    }
-                    else {
-                        s += `<h1>${result[i].wordLearnLang}</h1>`;
-                    }
-                    break;
-                }
-            }
-            s += `</div>`;
+    var s = '<div class="words">';
 
-            $('#test').html(s);
+    for (let i = 0; i < Object.keys(randomWwords).length; i++) {
+        s += `<label class="word">
+                 <input type="radio" name="test" value="${i + 1}">
+                 <img src="../../../../${randomWwords[i].picture}" width="256" height="256" alt="${randomWwords[i].wordLearnLang}">
+              </label>
+             `;
+    }
+
+    s += `</div>
+             <div class="QA">
+         `;
+
+    for (let i = 0; i < Object.keys(randomWwords).length; i++) {
+        if (correctAnswer == i + 1) {
+            if (testNumber == 4) {
+                s += `<audio controls>
+                         <source src="../../../../${randomWwords[i].pronounceLearn}" type="audio/mpeg" />
+                         Your browser does not support the audio element.
+                      </audio>
+                     `;
+            }
+            else {
+                s += `<h1>${randomWwords[i].wordLearnLang}</h1>`;
+            }
+            break;
         }
-    });
+    }
+
+    s += `</div>`;
+
+    $('#test').html(s);
+}
+
+function GetTest() {
+    var randomWordsId = [];
+    var randomWwords = [];
+
+    for (let i = 0; i < countOptions; ++i) {
+        randomWordsId[i] = Math.floor(Math.random() * (model[model.length - 1].id - model[0].id + 1)) + model[0].id;
+
+        for (let j = 0; j < i; j++) {
+            while (randomWordsId[j] == randomWordsId[i]) {
+                randomWordsId[i] = Math.floor(Math.random() * (model[model.length - 1].id - model[0].id + 1)) + model[0].id;
+            }
+        }
+
+        for (let j = 0; j < model.length; j++) {
+            if (model[j].id == randomWordsId[i]) {
+                randomWwords[i] = model[j];
+            }
+        }
+    }
+
+    return randomWwords;
 }

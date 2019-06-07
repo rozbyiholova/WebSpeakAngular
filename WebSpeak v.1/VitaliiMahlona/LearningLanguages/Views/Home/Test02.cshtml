@@ -1,6 +1,5 @@
 ﻿@using DAL.Models
-@using Microsoft.AspNetCore.Http
-@model Categories
+@model List<DTO>
 
 @{
     ViewData["Title"] = "Test02";
@@ -23,6 +22,7 @@
 
 <script>
     var testNumber = 2;
-    var subCategoryId = @Model.Id;
+    var subCategoryId = @Model.First().SubCategoryId;
+    var model = @Html.Raw(Json.Serialize(Model));
 </script>
 <script src="~/js/Tests-01-02-04.js"></script>
