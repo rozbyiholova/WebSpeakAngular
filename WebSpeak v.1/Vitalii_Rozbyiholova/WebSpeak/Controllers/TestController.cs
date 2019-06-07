@@ -11,29 +11,86 @@ namespace WebSpeak.Controllers
 {
     public class TestController : Controller
     {
-        private readonly Helper helper;
+        private readonly SessionHelper helper;
 
         private int SubcategoryId;
 
-        public TestController(Helper helper)
+        private int NativeLanguageId { get; set; }
+        private int LearningLanguageId { get; set; }
+
+        private List<DTO> Categories { get; set; }
+
+        public TestController(SessionHelper helper)
         {
             this.helper = helper;
+
+            CategoriesRepository categoriesRepository = new CategoriesRepository();
+            Tuple<int, int> ids = helper.GetLanguagesId();
+            NativeLanguageId = ids.Item1;
+            LearningLanguageId = ids.Item2;
+
+            int lastCategoryId = helper.GetLastСategoryId();
+            Categories = categoriesRepository.GetDTO(NativeLanguageId, LearningLanguageId, lastCategoryId);
         }
 
         [Breadcrumb("Tests", FromAction = "SubCategories", FromController =typeof(HomeController))]
         public async Task<IActionResult> Index(int subcategoryId)
         {
-            SubcategoryId = subcategoryId;
+            int idToUse = subcategoryId;
+            if(idToUse > 0)
+            {
+                helper.SetSubcategory(subcategoryId);
+            }
 
             TestsRepository testsRepository = new TestsRepository();
-            Tuple<int, int> ids = helper.GetLanguagesId();
-            int nativeLang = ids.Item1;
-            int learningLang = ids.Item2;
-            List<DTO> DTOs = testsRepository.GetDTO(nativeLang, learningLang);
+            
+            List<DTO> DTOs = testsRepository.GetDTO(NativeLanguageId, LearningLanguageId);
             return View(DTOs);
         }
 
-        public async Task<IActionResult> Test1(int subCategoryId)
+        [Breadcrumb("Testing", FromAction = nameof(Index), FromController = typeof(TestController))]
+        public async Task<IActionResult> Test1()
+        {
+            return View(Categories);
+        }
+
+        public async Task<IActionResult> Test2(int subCategoryId)
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> Test3(int subCategoryId)
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> Test4(int subCategoryId)
+        {
+            return View();
+        }
+        public async Task<IActionResult> Test5(int subCategoryId)
+        {
+            return View();
+        }
+        public async Task<IActionResult> Test6(int subCategoryId)
+        {
+            return View();
+        }
+        public async Task<IActionResult> Test7(int subCategoryId)
+        {
+            return View();
+        }
+        public async Task<IActionResult> Test8(int subCategoryId)
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> Test9(int subCategoryId)
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> Test10(int subCategoryId)
         {
             return View();
         }

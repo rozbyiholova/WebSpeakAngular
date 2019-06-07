@@ -16,9 +16,9 @@ namespace WebSpeak.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly Helper helper;
+        private readonly SessionHelper helper;
 
-        public HomeController(Helper helper)
+        public HomeController(SessionHelper helper)
         {
             this.helper = helper;
         }
@@ -33,8 +33,9 @@ namespace WebSpeak.Controllers
         [Breadcrumb("Languages")]
         public IActionResult Languages()
         {
-            LanguagesRepository languagesRepository = new LanguagesRepository();
-            SelectList languages = new SelectList(languagesRepository.GetAll().ToList(), "Id", "Name");
+            IRepository<Languages> languagesRepository = new LanguagesRepository();
+            List<Languages> languagesList = languagesRepository.GetAll().ToList();
+            SelectList languages = new SelectList(languagesList, "Id", "Name");
             return View(languages);
         }
 
@@ -64,11 +65,11 @@ namespace WebSpeak.Controllers
             int idToUse = id;
             if(idToUse > 0)
             {
-                helper.SetSubcategory(id);
+                helper.SetCategory(id);
             }
             else
             {
-                idToUse = helper.GetLastSubcategoryId();
+                idToUse = helper.GetLastСategoryId();
             }
             CategoriesRepository categoriesRepository = new CategoriesRepository();
             Tuple<int, int> ids = helper.GetLanguagesId();

@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace WebSpeak
 {
-    public class Helper
+    public class SessionHelper
     {
         private const string NativeLanguage = "NativeLanguage";
         private const string LearningLanguage = "LearningLanguage";
+        private const string LastCategoryId = "LastCategoryId";
         private const string LastSubcategoryId = "LastSubcategoryId";
 
         private const int DefaultNativeLanguageId = 1;
@@ -17,7 +18,7 @@ namespace WebSpeak
 
         IHttpContextAccessor _httpContextAccessor;
 
-        public Helper(IHttpContextAccessor httpContextAccessor)
+        public SessionHelper(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }
@@ -40,7 +41,6 @@ namespace WebSpeak
             _httpContextAccessor.HttpContext.Session.SetInt32(NativeLanguage, nativeLangId);
             _httpContextAccessor.HttpContext.Session.SetInt32(LearningLanguage, learningLangId);
         }
-
         public Tuple<int, int> GetLanguagesId()
         {
             int nativeLang, learningLang;
@@ -59,18 +59,34 @@ namespace WebSpeak
             return new Tuple<int, int>(nativeLang, learningLang);
         }
 
-        public void SetSubcategory(int id)
+        public void SetCategory(int id)
         {
             try
             {
-                _httpContextAccessor.HttpContext.Session.SetInt32(LastSubcategoryId, id);
+                _httpContextAccessor.HttpContext.Session.SetInt32(LastCategoryId, id);
             }
             catch(Exception e)
             {
                 Console.WriteLine(e.Message);
             }
         }
+        public int GetLastСategoryId()
+        {
+            int id = (int)_httpContextAccessor.HttpContext.Session.GetInt32(LastCategoryId);
+            return id;
+        }
 
+        public void SetSubcategory(int id)
+        {
+            try
+            {
+                _httpContextAccessor.HttpContext.Session.SetInt32(LastSubcategoryId, id);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
         public int GetLastSubcategoryId()
         {
             int id = (int)_httpContextAccessor.HttpContext.Session.GetInt32(LastSubcategoryId);

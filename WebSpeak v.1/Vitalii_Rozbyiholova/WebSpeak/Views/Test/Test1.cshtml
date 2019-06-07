@@ -1,0 +1,56 @@
+﻿@model List<DTO> 
+@using DAL.Models;
+@{
+    ViewData["Title"] = "Test1";
+}
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<h1>Test1</h1>
+
+<div class="test container">
+    <div class="test_images"></div>
+    <div class="test_word"></div>
+
+    <button class="confirm">Confirm</button>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(LoadNew());
+
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
+
+    function LoadNew() {
+        var test_images = document.getElementsByClassName("test_images")[0];
+        var test_word = document.getElementsByClassName("test_word")[0];
+
+        var categories = @Html.Raw(Json.Serialize(Model.ToArray()));
+        console.log(categories);
+        var selectedCategories = new Array();
+
+        var categoriesLength = categories.length;
+        var firstRandom = getRandomInt(0, categoriesLength);
+        var secondRandom;
+        do {
+            secondRandom = getRandomInt(0, categoriesLength);
+        }
+        while (firstRandom == secondRandom)
+        selectedCategories.push(categories[firstRandom]);
+        selectedCategories.push(categories[secondRandom]);
+
+        var img1 = document.createElement('img');
+        img1.src = '../../' + selectedCategories[0].picture;
+        var img2 = document.createElement('img');
+        img2.src = '../../' + selectedCategories[1].picture;
+        test_images.appendChild(img1);
+        test_images.appendChild(img2);
+
+        var randomTextIndex = getRandomInt(0, 1);
+        var text = selectedCategories[randomTextIndex].translation;
+        var textNode = document.createTextNode(text);
+        test_word.appendChild(textNode);
+    }
+
+    
+</script>
