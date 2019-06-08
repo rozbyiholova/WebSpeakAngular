@@ -6,6 +6,7 @@ namespace DAL
 {
     public static class ConfigurateOptions
     {
+        private static string _connectionString = string.Empty;
         public static DbContextOptions<LearningLanguagesContext> GetOptions()
         {
             var builder = new ConfigurationBuilder();
@@ -13,14 +14,18 @@ namespace DAL
             builder.AddJsonFile("appsettings.json");
             var config = builder.Build();
 
-            string connectionString = config.GetConnectionString("LearningLanguages");
+            _connectionString = config.GetConnectionString("LearningLanguages");
 
             var optionsBuilder = new DbContextOptionsBuilder<LearningLanguagesContext>();
             var options = optionsBuilder
-                .UseSqlServer(connectionString)
+                .UseSqlServer(_connectionString)
                 .Options;
 
             return options;
+        }
+        public static string ConnectionString
+        {
+            get => _connectionString;
         }
     }
 }

@@ -16,7 +16,7 @@ namespace DAL.ModelConfiguration
 
             builder.Property(e => e.TestDate)
                 .HasColumnName("testDate")
-                .HasColumnType("date");
+                .HasColumnType("datetime");
 
             builder.Property(e => e.TestId).HasColumnName("test_id");
 

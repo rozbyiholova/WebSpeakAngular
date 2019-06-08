@@ -30,6 +30,11 @@ namespace DAL.Repositories
             return await db.Users.FindAsync(id);
         }
 
+        public async Task<Users> GetItem(string id)
+        {
+            return await db.Users.FindAsync(id);
+        }
+
         public async Task<IEnumerable<Users>> GetList()
         {
             return await db.Users.ToListAsync();

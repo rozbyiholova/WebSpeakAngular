@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 
 namespace DAL.Models
 {
-    public partial class Users
+    public partial class Users : IdentityUser
     {
         public Users()
         {
@@ -11,7 +11,7 @@ namespace DAL.Models
             TotalScores = new HashSet<TotalScores>();
         }
 
-        public string Id { get; set; }
+        //public string Id { get; set; }
 
         public virtual ICollection<TestResults> TestResults { get; set; }
         public virtual ICollection<TotalScores> TotalScores { get; set; }

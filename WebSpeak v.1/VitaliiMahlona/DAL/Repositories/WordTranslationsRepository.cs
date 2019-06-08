@@ -69,5 +69,10 @@ namespace DAL.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public Task<WordTranslations> GetItem(string value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

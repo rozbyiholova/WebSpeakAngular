@@ -29,6 +29,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
@@ -50,37 +51,39 @@
                     string[] route = new string[Url.RouteUrl(ViewContext.RouteData.Values).Split('/').Length];
                     route = Url.RouteUrl(ViewContext.RouteData.Values).Split('/');
 
-                    //skip Index
-                    for (int i = 2; i < route.Length; i++)
-                    {
-                        if (route[i] == "Categories")
+                    if (ViewContext.RouteData.Values["controller"].ToString() == "Home") {
+                        //skip Index
+                        for (int i = 2; i < route.Length; i++)
                         {
+                            if (route[i] == "Categories")
+                            {
                             <li>@Html.ActionLink(route[i], route[i], ViewContext.RouteData.Values["controller"].ToString())</li>
-                        }
-                        if (route[i] == "SubCategories")
-                        {
-                            if (Model is IEnumerable<DTO>)
+                            }
+                            if (route[i] == "SubCategories")
                             {
+                                if (Model is IEnumerable<DTO>)
+                                {
                                 <li>@Html.ActionLink(route[i], route[i], ViewContext.RouteData.Values["controller"].ToString(), new { id = Model[0].CategoryId })</li>
-                            }
-                            else
-                            {
+                                }
+                                else
+                                {
                                 <li>@Html.ActionLink(route[i], route[i], ViewContext.RouteData.Values["controller"].ToString(), new { id = Model.ParentId })</li>
+                                }
                             }
-                        }
-                        else if(route[i] != "Categories")
-                        {
-                            if (Model is IEnumerable<DTO>)
+                            else if (route[i] != "Categories")
                             {
+                                if (Model is IEnumerable<DTO>)
+                                {
                                 <li>@Html.ActionLink(route[i], route[i], ViewContext.RouteData.Values["controller"].ToString(), new { id = Model[0].SubCategoryId })</li>
-                            }
-                            else
-                            {
+                                }
+                                else
+                                {
                                 <li>@Html.ActionLink(route[i], route[i], ViewContext.RouteData.Values["controller"].ToString(), new { id = Model.Id })</li>
+                                    }
+                                }
                             }
                         }
                     }
-                }
             </ol>
         </nav>
 
@@ -123,6 +126,11 @@
             select[select.length - 1].className += "breadcrumb-item active";
             select[select.length - 1].setAttribute("aria-current", "page");
             select[select.length - 1].textContent = "@ViewContext.RouteData.Values["action"].ToString()";
+
+            var selectNavLog = document.querySelectorAll('.navbar-collapse .navbar-nav li a');
+            for (var i = 0; i < selectNavLog.length - 1; i++) {
+                selectNavLog[i].className += "nav-link";
+            }
 
     </script>
 

@@ -1,0 +1,23 @@
+﻿@model DAL.ViewModels.LoginViewModel
+
+<h2>Login</h2>
+<form method="post" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl" class="w-50 p-3">
+    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+    <div>
+        <label asp-for="Email"></label><br />
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="Password"></label><br />
+        <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div>
+        <label asp-for="RememberMe"></label><br />
+        <input asp-for="RememberMe" class="form-control" />
+    </div>
+    <div>
+        <input class="btn btn-primary" type="submit" value="Sign in" />
+    </div>
+</form>

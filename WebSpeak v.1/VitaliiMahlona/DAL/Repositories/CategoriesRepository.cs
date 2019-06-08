@@ -97,5 +97,10 @@ namespace DAL.Repositories
 
             return NativeLearnLangCat;
         }
+
+        public Task<Categories> GetItem(string value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

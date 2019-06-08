@@ -15,9 +15,9 @@ namespace DAL.Repositories
             this.db = new LearningLanguagesContext(ConfigurateOptions.GetOptions());
         }
 
-        public void Create(TestResults item)
+        public async void Create(TestResults item)
         {
-            throw new NotImplementedException();
+            await db.TestResults.AddAsync(item);
         }
 
         public void Delete(int id)
@@ -66,6 +66,11 @@ namespace DAL.Repositories
         }
 
         Task<List<DTO>> IRepository<TestResults>.GetTranslations(int idLangLearn, int idLangNative, int? parentId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TestResults> GetItem(string value)
         {
             throw new NotImplementedException();
         }

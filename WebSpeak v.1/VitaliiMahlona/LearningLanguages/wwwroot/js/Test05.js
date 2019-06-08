@@ -3,15 +3,42 @@ var countOptions = 2;
 var totalResult = 0;
 var first = true;
 var randomWords = [];
+var questionNumber = 0;
+var totalQuestions = 10;
 
 check();
 
 function check(event) {
-    randomWords = GetTest();
-
     if ((event != null) && (event.target.value == correctAnswer)) {
         $('#result').html(`<b>Score: ${++totalResult}</b>`);
     }
+
+    if (questionNumber == totalQuestions) {
+        $.ajax({
+            type: 'POST',
+            url: '/Home/Test05',
+            data: {
+                totalResult,
+                subCategoryId
+            },
+            success: function (result) {
+                $('#test').hide();
+
+                var s = '<button type="submit" class="btn btn-primary" onclick="again()">Again</button>';
+
+                if (result.isUser) {
+                    s += `<a class="btn btn-secondary" href="#" role="button">To general statistics</a>`;
+                }
+
+                $('.buttonsSubmit').html(s);
+            }
+        })
+        return;
+    }
+
+    questionNumber++;
+
+    randomWords = GetTest();
 
     correctAnswer = Math.floor(Math.random() * 2) + 1;
 
@@ -51,4 +78,8 @@ function GetTest() {
     }
 
     return randomWords;
+}
+
+function again() {
+    location.reload();
 }

@@ -96,5 +96,10 @@ namespace DAL.Repositories
 
             return NativeLearnLangTests;
         }
+
+        public Task<Tests> GetItem(string value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

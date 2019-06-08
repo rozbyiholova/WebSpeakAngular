@@ -10,11 +10,17 @@ using DAL.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace LearningLanguages.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly UserManager<Users> _userManager;
+
+        private readonly SignInManager<Users> _signInManager;
+
         IRepository<Categories> _categories = new CategoriesRepository();
 
         IRepository<Languages> _languages = new LanguagesRepository();
@@ -22,6 +28,10 @@ namespace LearningLanguages.Controllers
         IRepository<Words> _words = new WordsRepository();
 
         IRepository<Tests> _tests = new TestsRepository();
+
+        IRepository<Users> _users = new UsersRepository();
+
+        IRepository<TestResults> _testsResults = new TestResultsRepository();
 
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -195,6 +205,7 @@ namespace LearningLanguages.Controllers
         }
 
         [Route("Home/Categories/SubCategories/Tests/Test05")]
+        [HttpGet]
         public async Task<IActionResult> Test05(int id)
         {
             Categories category = await _categories.GetItem(id);
@@ -208,6 +219,30 @@ namespace LearningLanguages.Controllers
             LearnLangWords.First().SubCategoryId = category.Id;
 
             return View(LearnLangWords);
+        }
+
+        [HttpPost]
+        public IActionResult Test05(int totalResult, int subCategoryId)
+        {
+            string currentUserId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (!String.IsNullOrEmpty(currentUserId))
+            {
+                int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
+                DateTime testDate = DateTime.Now;
+
+                TestResults testResult = new TestResults() { Result = totalResult, UserId = currentUserId,
+                                                             LangId = idLangLearn, CategoryId = subCategoryId,
+                                                             TestDate = testDate, TestId = 5 };
+
+                _testsResults.Create(testResult);
+                _testsResults.Save();
+                return new JsonResult(new {totalResult, isUser =  true});
+            }
+            else
+            {
+                return new JsonResult(new { totalResult, isUser = false });
+            }
         }
 
         [Route("Home/Categories/SubCategories/Tests/Test06")]

@@ -16,5 +16,6 @@ namespace DAL
         void Delete(int id); 
         void Save();
         Task<List<DTO>> GetTranslations(int idLangLearn, int idLangNative, int? parentId);
+        Task<T> GetItem(string value);
     }
 }
