@@ -17,9 +17,9 @@ namespace LearningLanguages.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly UserManager<Users> _userManager;
+        //private readonly UserManager<Users> _userManager;
 
-        private readonly SignInManager<Users> _signInManager;
+        //private readonly SignInManager<Users> _signInManager;
 
         IRepository<Categories> _categories = new CategoriesRepository();
 
@@ -31,7 +31,9 @@ namespace LearningLanguages.Controllers
 
         IRepository<Users> _users = new UsersRepository();
 
-        IRepository<TestResults> _testsResults = new TestResultsRepository();
+        IRepository<TestResults> _testResults = new TestResultsRepository();
+
+        IRepository<TotalScores> _totalScores = new TotalScoresRepository();
 
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -140,8 +142,8 @@ namespace LearningLanguages.Controllers
             return View(NativeLearnLangWords);
         }
 
-        [Route("Home/Categories/SubCategories/Tests/Test01")]
-        public async Task<IActionResult> Test01(int id)
+        [Route("Home/Categories/SubCategories/Tests/Test")]
+        public async Task<IActionResult> Test(int id, int idTest)
         {
             Categories category = await _categories.GetItem(id);
 
@@ -152,177 +154,76 @@ namespace LearningLanguages.Controllers
 
             LearnLangWords.First().CategoryId = category.ParentId;
             LearnLangWords.First().SubCategoryId = category.Id;
-
-            return View(LearnLangWords);
-        }
-
-        [Route("Home/Categories/SubCategories/Tests/Test02")]
-        public async Task<IActionResult> Test02(int id)
-        {
-            Categories category = await _categories.GetItem(id);
-
-            int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
-            int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
-
-            var LearnLangWords = await _words.GetTranslations(idLangLearn, idLangNative, id);
-
-            LearnLangWords.First().CategoryId = category.ParentId;
-            LearnLangWords.First().SubCategoryId = category.Id;
-
-            return View(LearnLangWords);
-        }
-
-        [Route("Home/Categories/SubCategories/Tests/Test03")]
-        public async Task<IActionResult> Test03(int id)
-        {
-            Categories category = await _categories.GetItem(id);
-
-            int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
-            int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
-
-            var LearnLangWords = await _words.GetTranslations(idLangLearn, idLangNative, id);
-
-            LearnLangWords.First().CategoryId = category.ParentId;
-            LearnLangWords.First().SubCategoryId = category.Id;
-
-            return View(LearnLangWords);
-        }
-
-        [Route("Home/Categories/SubCategories/Tests/Test04")]
-        public async Task<IActionResult> Test04(int id)
-        {
-            Categories category = await _categories.GetItem(id);
-
-            int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
-            int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
-
-            var LearnLangWords = await _words.GetTranslations(idLangLearn, idLangNative, id);
-
-            LearnLangWords.First().CategoryId = category.ParentId;
-            LearnLangWords.First().SubCategoryId = category.Id;
-
-            return View(LearnLangWords);
-        }
-
-        [Route("Home/Categories/SubCategories/Tests/Test05")]
-        [HttpGet]
-        public async Task<IActionResult> Test05(int id)
-        {
-            Categories category = await _categories.GetItem(id);
-
-            int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
-            int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
-
-            var LearnLangWords = await _words.GetTranslations(idLangLearn, idLangNative, id);
-
-            LearnLangWords.First().CategoryId = category.ParentId;
-            LearnLangWords.First().SubCategoryId = category.Id;
+            LearnLangWords.First().TestId = idTest;
 
             return View(LearnLangWords);
         }
 
         [HttpPost]
-        public IActionResult Test05(int totalResult, int subCategoryId)
+        public async Task<IActionResult> Test(int totalResult, int subCategoryId, int testNumber)
         {
             string currentUserId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (!String.IsNullOrEmpty(currentUserId))
+            if (String.IsNullOrEmpty(currentUserId)) return new JsonResult(new { totalResult, isUser = false });
+
+            int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
+            DateTime testDate = DateTime.Now;
+
+            TestResults testResult = new TestResults()
             {
-                int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
-                DateTime testDate = DateTime.Now;
+                Result = totalResult,
+                UserId = currentUserId,
+                LangId = idLangLearn,
+                CategoryId = subCategoryId,
+                TestDate = testDate,
+                TestId = testNumber
+            };
 
-                TestResults testResult = new TestResults() { Result = totalResult, UserId = currentUserId,
-                                                             LangId = idLangLearn, CategoryId = subCategoryId,
-                                                             TestDate = testDate, TestId = 5 };
+            var testResultsList = await _testResults.GetList();
+            var totalScoresList = await _totalScores.GetList();
 
-                _testsResults.Create(testResult);
-                _testsResults.Save();
-                return new JsonResult(new {totalResult, isUser =  true});
+            var testResultQuery = testResultsList.Where(x => x.TestId == testNumber && x.LangId == idLangLearn && x.CategoryId == subCategoryId);
+            var totalScoresQuery = totalScoresList.Where(x => x.UserId == currentUserId && x.LangId == idLangLearn);
+
+            int maxTestResultBefore = -1;
+            if (testResultQuery.Any()) maxTestResultBefore = testResultQuery.Max(x => x.Result);
+
+            _testResults.Create(testResult);
+
+            if (!totalScoresQuery.Any() && !testResultQuery.Any())
+            {
+                TotalScores totalScore = new TotalScores()
+                {
+                    Total = totalResult,
+                    UserId = currentUserId,
+                    LangId = idLangLearn
+                };
+
+                _totalScores.Create(totalScore);
+            }
+            else if (!testResultQuery.Any())
+            {
+                TotalScores totalScore = totalScoresQuery.First();
+                totalScore.Total += testResult.Result;
+
+                _totalScores.Update(totalScore);
             }
             else
             {
-                return new JsonResult(new { totalResult, isUser = false });
+                TotalScores totalScore = totalScoresQuery.First();
+
+                if (Math.Max(totalResult, maxTestResultBefore) == totalResult)
+                {
+                    totalScore.Total += Math.Abs(totalResult - maxTestResultBefore);
+                }
+
+                _totalScores.Update(totalScore);
             }
-        }
 
-        [Route("Home/Categories/SubCategories/Tests/Test06")]
-        public async Task<IActionResult> Test06(int id)
-        {
-            Categories category = await _categories.GetItem(id);
+            _testResults.Save();
+            _totalScores.Save();
 
-            int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
-            int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
-
-            var LearnLangWords = await _words.GetTranslations(idLangLearn, idLangNative, id);
-
-            LearnLangWords.First().CategoryId = category.ParentId;
-            LearnLangWords.First().SubCategoryId = category.Id;
-
-            return View(LearnLangWords);
-        }
-
-        [Route("Home/Categories/SubCategories/Tests/Test07")]
-        public async Task<IActionResult> Test07(int id)
-        {
-            Categories category = await _categories.GetItem(id);
-
-            int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
-            int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
-
-            var LearnLangWords = await _words.GetTranslations(idLangLearn, idLangNative, id);
-
-            LearnLangWords.First().CategoryId = category.ParentId;
-            LearnLangWords.First().SubCategoryId = category.Id;
-
-            return View(LearnLangWords);
-        }
-
-        [Route("Home/Categories/SubCategories/Tests/Test08")]
-        public async Task<IActionResult> Test08(int id)
-        {
-            Categories category = await _categories.GetItem(id);
-
-            int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
-            int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
-
-            var LearnLangWords = await _words.GetTranslations(idLangLearn, idLangNative, id);
-
-            LearnLangWords.First().CategoryId = category.ParentId;
-            LearnLangWords.First().SubCategoryId = category.Id;
-
-            return View(LearnLangWords);
-        }
-
-        [Route("Home/Categories/SubCategories/Tests/Test09")]
-        public async Task<IActionResult> Test09(int id)
-        {
-            Categories category = await _categories.GetItem(id);
-
-            int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
-            int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
-
-            var LearnLangWords = await _words.GetTranslations(idLangLearn, idLangNative, id);
-
-            LearnLangWords.First().CategoryId = category.ParentId;
-            LearnLangWords.First().SubCategoryId = category.Id;
-
-            return View(LearnLangWords);
-        }
-
-        [Route("Home/Categories/SubCategories/Tests/Test10")]
-        public async Task<IActionResult> Test10(int id)
-        {
-            Categories category = await _categories.GetItem(id);
-
-            int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
-            int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
-
-            var LearnLangWords = await _words.GetTranslations(idLangLearn, idLangNative, id);
-
-            LearnLangWords.First().CategoryId = category.ParentId;
-            LearnLangWords.First().SubCategoryId = category.Id;
-
-            return View(LearnLangWords);
+            return new JsonResult(new { totalResult, isUser = true });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

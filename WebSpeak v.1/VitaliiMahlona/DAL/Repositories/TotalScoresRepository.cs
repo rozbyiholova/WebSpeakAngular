@@ -15,9 +15,9 @@ namespace DAL.Repositories
             this.db = new LearningLanguagesContext(ConfigurateOptions.GetOptions());
         }
 
-        public void Create(TotalScores item)
+        public async void Create(TotalScores item)
         {
-            throw new NotImplementedException();
+            await db.TotalScores.AddAsync(item);
         }
 
         public void Delete(int id)
@@ -42,7 +42,7 @@ namespace DAL.Repositories
 
         public void Update(TotalScores item)
         {
-            throw new NotImplementedException();
+            db.TotalScores.Update(item);
         }
 
         private bool disposed = false;

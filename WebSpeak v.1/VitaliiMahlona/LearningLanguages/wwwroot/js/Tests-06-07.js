@@ -3,12 +3,13 @@ var countOptions = 2;
 var correctAnswer = Math.random();
 var randomWord;
 var first = true;
+var questionNumber = 0;
+var totalQuestions = model.length;
+model = model.sort(compareRandom);
 
 check();
 
 function check() {
-    randomWord = GetTest();
-
     if (($("#resultInput").val() == correctAnswer)) {
         $('#result').html(`<b>Score: ${++totalResult}</b>`);
     }
@@ -24,6 +25,33 @@ function check() {
     }
 
     $('#error').hide();
+
+    if (questionNumber == totalQuestions) {
+        $.ajax({
+            type: 'POST',
+            url: '/Home/Test',
+            data: {
+                totalResult,
+                subCategoryId,
+                testNumber
+            },
+            success: function (result) {
+                $('#test').hide();
+
+                var s = '<button type="submit" class="btn btn-primary" onclick="again()">Again</button>';
+
+                if (result.isUser) {
+                    s += `<a class="btn btn-secondary" href="#" role="button">To general statistics</a>`;
+                }
+
+                $('.buttonSubmit').html(s);
+            }
+        })
+        return;
+    }
+    questionNumber++;
+
+    randomWord = GetTest();
 
     correctAnswer = randomWord.wordLearnLang;
 
@@ -57,13 +85,15 @@ function check() {
 
 
 function GetTest() {
-    var randomWordId = Math.floor(Math.random() * (model[model.length - 1].id - model[0].id + 1)) + model[0].id;
-
-    for (let j = 0; j < model.length; j++) {
-        if (model[j].id == randomWordId) {
-            randomWord = model[j];
-        }
-    }
+    randomWord = model[questionNumber - 1];
 
     return randomWord;
+}
+
+function again() {
+    location.reload();
+}
+
+function compareRandom(a, b) {
+    return Math.random() - 0.5;
 }

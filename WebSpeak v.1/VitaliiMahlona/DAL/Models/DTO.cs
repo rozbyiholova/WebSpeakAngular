@@ -19,5 +19,6 @@ namespace DAL.Models
         public string EnableSound { get; set; }
         public string EnablePronounceNativeLang { get; set; }
         public string EnablePronounceLearnLang { get; set; }
+        public int TestId { get; set; }
     }
 }

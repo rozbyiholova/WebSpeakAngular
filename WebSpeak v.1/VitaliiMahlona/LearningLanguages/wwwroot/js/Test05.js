@@ -4,7 +4,8 @@ var totalResult = 0;
 var first = true;
 var randomWords = [];
 var questionNumber = 0;
-var totalQuestions = 10;
+var totalQuestions = model.length;
+model = model.sort(compareRandom);
 
 check();
 
@@ -16,10 +17,11 @@ function check(event) {
     if (questionNumber == totalQuestions) {
         $.ajax({
             type: 'POST',
-            url: '/Home/Test05',
+            url: '/Home/Test',
             data: {
                 totalResult,
-                subCategoryId
+                subCategoryId,
+                testNumber
             },
             success: function (result) {
                 $('#test').hide();
@@ -30,7 +32,7 @@ function check(event) {
                     s += `<a class="btn btn-secondary" href="#" role="button">To general statistics</a>`;
                 }
 
-                $('.buttonsSubmit').html(s);
+                $('.buttonSubmit').html(s);
             }
         })
         return;
@@ -60,8 +62,10 @@ function check(event) {
 
 function GetTest() {
     var randomWordsId = [];
+    randomWords[0] = model[questionNumber - 1];
+    randomWordsId[0] = model[questionNumber - 1].id;
 
-    for (let i = 0; i < countOptions; ++i) {
+    for (let i = 1; i < countOptions; ++i) {
         randomWordsId[i] = Math.floor(Math.random() * (model[model.length - 1].id - model[0].id + 1)) + model[0].id;
 
         for (let j = 0; j < i; j++) {
@@ -82,4 +86,8 @@ function GetTest() {
 
 function again() {
     location.reload();
+}
+
+function compareRandom(a, b) {
+    return Math.random() - 0.5;
 }
