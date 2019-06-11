@@ -4,21 +4,52 @@ var result = 0;
 var numberQA = 0;
 var fourWords = [];
 var randomTestWordsId = [1, 2, 3, 4];
+var questionNumber = 0;
+var totalQuestions = model.length;
+model = model.sort(compareRandom);
 
 check(false);
 
 
 function check(cancel) {
     if (cancel == false) {
+
+        if (questionNumber == totalQuestions) {
+            $.ajax({
+                type: 'POST',
+                url: '/Home/Test',
+                data: {
+                    totalResult,
+                    subCategoryId,
+                    testNumber
+                },
+                success: function (result) {
+                    $('#test').hide();
+
+                    var s = '<button type="submit" class="btn btn-primary" onclick="again()">Again</button>';
+
+                    if (result.isUser) {
+                        s += `<a class="btn btn-secondary" href="#" role="button">To general statistics</a>`;
+                    }
+
+                    $('.buttonSubmit').html(s);
+                }
+            })
+            return;
+        }
+
+        questionNumber++;
+
         fourWords = GetTest();
         randomTestWordsId.sort(compareRandom);
     }
 
-    $('#result').html(`<b>Score: ${totalResult+=result}</b>`);
+    $('#result').html(`<b>Score: ${totalResult += result}</b>`);
+    result = 0;
 
-    $('#buttons').html(`<button type="button" class="btn btn-primary" onclick="next()">Next</button>
-                        <button type="button" class="btn btn-danger" onclick="cancel()">Cancel</button>
-                       `);
+    $('#buttonSubmit').html(`<button type="button" class="btn btn-primary" onclick="next()">Next</button>
+                             <button type="button" class="btn btn-danger" onclick="cancel()">Cancel</button>
+                            `);
 
     $('#answer').html('<h3>Your answer: </h3>');
 
@@ -73,8 +104,8 @@ function next()
         $("[name=rightColumn]:checked").detach();
 
         if (numberQA == 4) {
-            $('#buttons').html(`<button id="submit" type="submit" class="btn btn-success" onclick="check(false)">Submit</button>
-                                <button type="button" class="btn btn-danger" onclick="cancel()">Cancel</button>`);
+            $('#buttonSubmit').html(`<button id="submit" type="submit" class="btn btn-success" onclick="check(false)">Submit</button>
+                                     <button type="button" class="btn btn-danger" onclick="cancel()">Cancel</button>`);
             numberQA = 0;
         }
     }
@@ -96,8 +127,10 @@ function GetTest() {
     var countOptions = 4;
     var randomWordsId = [];
     var fourWords = [];
+    fourWords[0] = model[questionNumber - 1];
+    randomWordsId[0] = model[questionNumber - 1].id;
 
-    for (let i = 0; i < countOptions; ++i)
+    for (let i = 1; i < countOptions; ++i)
     {
         randomWordsId[i] = Math.floor(Math.random() * (model[model.length - 1].id - model[0].id + 1)) + model[0].id;
 

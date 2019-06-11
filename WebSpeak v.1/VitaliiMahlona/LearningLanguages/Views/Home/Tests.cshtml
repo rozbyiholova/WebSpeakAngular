@@ -12,15 +12,16 @@
 </div>
 
 <div class="parent">
+    @{ int numberTest = 1; }
     @foreach (var test in Model)
     {
-        //73 - 62 (substring)
-        <a class="link" href="~/Home/Categories/SubCategories/Tests/@test.Picture.Substring(73, 6)?id=@Model.First().SubCategoryId">
+        <a class="link" href="~/Home/Categories/SubCategories/Tests/Test?id=@Model.First().SubCategoryId&idTest=@numberTest">
             <div class="child">
                 <p>@test.WordNativeLang (@test.WordLearnLang)</p>
                 <img src="../../../@test.Picture" alt="@test.WordNativeLang">
             </div>
         </a>
+        numberTest++;
     }
 </div>
 

@@ -2,18 +2,21 @@
 var countOptions = 4;
 var totalResult = 0;
 var first = true;
-var randomWwords = [];
+var randomWords = [];
+var questionNumber = 0;
+var totalQuestions = model.length;
+var randomTestWordsId = [1, 2, 3, 4];
+model = model.sort(compareRandom);
 
 if (testNumber == 1) {
     correctAnswer = Math.floor(Math.random() * 2) + 1;
     countOptions = 2;
+    randomTestWordsId = [1, 2];
 } 
 
 check();
 
 function check() {
-    randomWwords = GetTest();
-
     if (($("[type=radio]:checked").val() == correctAnswer)) {
         $('#result').html(`<b>Score: ${++totalResult}</b>`);
     }
@@ -30,18 +33,43 @@ function check() {
 
     $('#error').hide();
 
-    correctAnswer = Math.floor(Math.random() * 4) + 1;
+    if (questionNumber == totalQuestions) {
+        $.ajax({
+            type: 'POST',
+            url: '/Home/Test',
+            data: {
+                totalResult,
+                subCategoryId,
+                testNumber
+            },
+            success: function (result) {
+                $('#test').hide();
 
-    if (testNumber == 1) {
-        correctAnswer = Math.floor(Math.random() * 2) + 1;
-    } 
+                var s = '<button type="submit" class="btn btn-primary" onclick="again()">Again</button>';
+
+                if (result.isUser) {
+                    s += `<a class="btn btn-secondary" href="#" role="button">To general statistics</a>`;
+                }
+
+                $('.buttonSubmit').html(s);
+            }
+        })
+        return;
+    }
+
+    questionNumber++;
+
+    randomTestWordsId.sort(compareRandom);
+
+    randomWords = GetTest();
 
     var s = '<div class="words">';
 
-    for (let i = 0; i < Object.keys(randomWwords).length; i++) {
+    for (let i = 0; i < Object.keys(randomWords).length; i++) {
+        if (randomTestWordsId[i] - 1 == 0) correctAnswer = i + 1;
         s += `<label class="word">
                  <input type="radio" name="test" value="${i + 1}">
-                 <img src="../../../../${randomWwords[i].picture}" width="256" height="256" alt="${randomWwords[i].wordLearnLang}">
+                 <img src="../../../../${randomWords[randomTestWordsId[i] - 1].picture}" width="256" height="256" alt="${randomWords[randomTestWordsId[i] - 1].wordLearnLang}">
               </label>
              `;
     }
@@ -50,17 +78,17 @@ function check() {
              <div class="QA">
          `;
 
-    for (let i = 0; i < Object.keys(randomWwords).length; i++) {
+    for (let i = 0; i < Object.keys(randomWords).length; i++) {
         if (correctAnswer == i + 1) {
             if (testNumber == 4) {
                 s += `<audio controls>
-                         <source src="../../../../${randomWwords[i].pronounceLearn}" type="audio/mpeg" />
+                         <source src="../../../../${randomWords[0].pronounceLearn}" type="audio/mpeg" />
                          Your browser does not support the audio element.
                       </audio>
                      `;
             }
             else {
-                s += `<h1>${randomWwords[i].wordLearnLang}</h1>`;
+                s += `<h1>${randomWords[0].wordLearnLang}</h1>`;
             }
             break;
         }
@@ -73,9 +101,10 @@ function check() {
 
 function GetTest() {
     var randomWordsId = [];
-    var randomWwords = [];
+    randomWords[0] = model[questionNumber - 1];
+    randomWordsId[0] = model[questionNumber - 1].id;
 
-    for (let i = 0; i < countOptions; ++i) {
+    for (let i = 1; i < countOptions; i++) {
         randomWordsId[i] = Math.floor(Math.random() * (model[model.length - 1].id - model[0].id + 1)) + model[0].id;
 
         for (let j = 0; j < i; j++) {
@@ -86,10 +115,18 @@ function GetTest() {
 
         for (let j = 0; j < model.length; j++) {
             if (model[j].id == randomWordsId[i]) {
-                randomWwords[i] = model[j];
+                randomWords[i] = model[j];
             }
         }
     }
 
-    return randomWwords;
+    return randomWords;
+}
+
+function again() {
+    location.reload();
+}
+
+function compareRandom(a, b) {
+    return Math.random() - 0.5;
 }

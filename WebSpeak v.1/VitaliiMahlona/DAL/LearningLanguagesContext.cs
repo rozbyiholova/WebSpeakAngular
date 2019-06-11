@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using DAL.Models;
 using DAL.ModelConfiguration;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace DAL
 {
-    public partial class LearningLanguagesContext : DbContext
+    public partial class LearningLanguagesContext : IdentityDbContext<Users>
     {
         public LearningLanguagesContext()
         {
@@ -23,21 +24,23 @@ namespace DAL
         public virtual DbSet<TestTranslations> TestTranslations { get; set; }
         public virtual DbSet<Tests> Tests { get; set; }
         public virtual DbSet<TotalScores> TotalScores { get; set; }
-        public virtual DbSet<Users> Users { get; set; }
+        //public new virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<WordTranslations> WordTranslations { get; set; }
         public virtual DbSet<Words> Words { get; set; }
 
-//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//        {
-//            if (!optionsBuilder.IsConfigured)
-//            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-//                optionsBuilder.UseSqlServer("Server=VINW0221;Database=LearningLanguages;Trusted_Connection=True;");
-//            }
-//        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                ConfigurateOptions.GetOptions();
+                optionsBuilder.UseSqlServer(ConfigurateOptions.ConnectionString);
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
 
             modelBuilder.ApplyConfiguration(new CategoriesConfiguration());

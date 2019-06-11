@@ -101,5 +101,10 @@ namespace DAL.Repositories
 
             return NativeLearnLangWords;
         }
+
+        public Task<Words> GetItem(string value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

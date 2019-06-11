@@ -1,0 +1,90 @@
+﻿@using DAL.Models
+@model List<DTO>
+
+@{
+    ViewData["Title"] = "Test";
+}
+
+@if (Model.First().TestId == 1 || Model.First().TestId == 2 || Model.First().TestId == 4)
+{
+    <link rel="stylesheet" href="~/css/Tests-01-02-04.css" />
+}
+@if (Model.First().TestId == 3 || Model.First().TestId == 8 || Model.First().TestId == 9)
+{
+    <link rel="stylesheet" href="~/css/Tests-03-08-09.css" />
+}
+@if (Model.First().TestId == 5)
+{
+    <link rel="stylesheet" href="~/css/Test05.css" />
+}
+@if (Model.First().TestId == 6 || Model.First().TestId == 7)
+{
+    <link rel="stylesheet" href="~/css/Tests-06-07.css" />
+}
+@if (Model.First().TestId == 10)
+{
+    <link rel="stylesheet" href="~/css/Test10.css" />
+}
+
+<div id="result">
+    <b>Score: 0</b>
+</div>
+<div id="test">
+
+</div>
+@if (Model.First().TestId == 5)
+{
+    <div class="buttonSubmit">
+        <button type="submit" class="btn btn-success" value="1" onclick="check(event)">True</button>
+        <button type="submit" class="btn btn-danger" value="2" onclick="check(event)">False</button>
+    </div>
+}
+else if (Model.First().TestId == 10)
+{
+    <div id="error" class="alert alert-danger" role="alert">
+
+    </div>
+    <div id="answer">
+
+    </div>
+    <div id="buttonSubmit">
+        <button type="button" class="btn btn-primary" onclick="next()">Next</button>
+        <button type="button" class="btn btn-danger" onclick="cancel()">Cancel</button>
+    </div>
+}
+else
+{
+    <div id="error" class="alert alert-danger" role="alert">
+
+    </div>
+    <div class="buttonSubmit">
+        <button type="submit" class="btn btn-success" onclick="check()">Submit</button>
+    </div>
+}
+
+<script>
+    var testNumber = @Model.First().TestId;
+    var subCategoryId = @Model.First().SubCategoryId;
+    var model = @Html.Raw(Json.Serialize(Model));
+</script>
+
+@if (Model.First().TestId == 1 || Model.First().TestId == 2 || Model.First().TestId == 4)
+{
+    <script src="~/js/Tests-01-02-04.js"></script>
+}
+@if (Model.First().TestId == 3 || Model.First().TestId == 8 || Model.First().TestId == 9)
+{
+    <script src="~/js/Tests-03-08-09.js"></script>
+}
+@if (Model.First().TestId == 5)
+{
+    <script src="~/js/Test05.js"></script>
+}
+@if (Model.First().TestId == 6 || Model.First().TestId == 7)
+{
+    <script src="~/js/Tests-06-07.js"></script>
+}
+@if (Model.First().TestId == 10)
+{
+    <script src="~/js/Test10.js"></script>
+}

@@ -8,6 +8,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using DAL.Models;
+using DAL;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace LearningLanguages
 {
@@ -41,6 +45,12 @@ namespace LearningLanguages
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddDbContext<LearningLanguagesContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("LearningLanguages")));
+
+            services.AddIdentity<Users, IdentityRole>()
+                .AddEntityFrameworkStores<LearningLanguagesContext>();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -62,7 +72,8 @@ namespace LearningLanguages
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseSession();
-
+            app.UseAuthentication();
+             
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
