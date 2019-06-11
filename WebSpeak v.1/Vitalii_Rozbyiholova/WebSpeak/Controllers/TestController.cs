@@ -13,24 +13,31 @@ namespace WebSpeak.Controllers
     {
         private readonly SessionHelper helper;
 
-        private int SubcategoryId;
+        private int NativeLanguageId { get; }
+        private int LearningLanguageId { get; }
 
-        private int NativeLanguageId { get; set; }
-        private int LearningLanguageId { get; set; }
+        private int SubcategoryId {
+            get
+            {
+                return helper.GetLastSubcategoryId();
+            }
+        }
 
-        private List<DTO> Categories { get; set; }
+        private List<DTO> Words {
+            get
+            {
+                WordsRepository wordsRepository = new WordsRepository();
+                return wordsRepository.GetDTO(NativeLanguageId, LearningLanguageId, SubcategoryId);
+            }
+        }
 
         public TestController(SessionHelper helper)
         {
             this.helper = helper;
 
-            CategoriesRepository categoriesRepository = new CategoriesRepository();
             Tuple<int, int> ids = helper.GetLanguagesId();
             NativeLanguageId = ids.Item1;
-            LearningLanguageId = ids.Item2;
-
-            int lastCategoryId = helper.GetLastСategoryId();
-            Categories = categoriesRepository.GetDTO(NativeLanguageId, LearningLanguageId, lastCategoryId);
+            LearningLanguageId = ids.Item2;;
         }
 
         [Breadcrumb("Tests", FromAction = "SubCategories", FromController =typeof(HomeController))]
@@ -44,14 +51,14 @@ namespace WebSpeak.Controllers
 
             TestsRepository testsRepository = new TestsRepository();
             
-            List<DTO> DTOs = testsRepository.GetDTO(NativeLanguageId, LearningLanguageId);
+            List<DTO> DTOs = await Task.Run(() => testsRepository.GetDTO(NativeLanguageId, LearningLanguageId));
             return View(DTOs);
         }
 
         [Breadcrumb("Testing", FromAction = nameof(Index), FromController = typeof(TestController))]
         public async Task<IActionResult> Test1()
         {
-            return View(Categories);
+            return View(Words);
         }
 
         public async Task<IActionResult> Test2(int subCategoryId)
