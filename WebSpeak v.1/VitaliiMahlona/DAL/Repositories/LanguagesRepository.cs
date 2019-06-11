@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DAL.Models;
 using Microsoft.EntityFrameworkCore;
@@ -65,9 +66,21 @@ namespace DAL.Repositories
             GC.SuppressFinalize(this);
         }
 
-        Task<List<DTO>> IRepository<Languages>.GetTranslations(int idLangLearn, int idLangNative, int? parentId)
+        public async Task<List<DTO>> GetTranslations(int idLangLearn, int idLangNative, int? parentId)
         {
-            throw new NotImplementedException();
+            List<DTO> NativeLearnLang = await db.Languages
+                .Join(
+                    db.LanguageTranslations.Where(s => s.LangId == idLangNative),
+                    lang => lang.Id,
+                    langTrans => langTrans.LangId,
+                    (lang, langTrans) => new DTO
+                    {
+                        Id = langTrans.NativeLangId,
+                        WordNativeLang = langTrans.Translation,
+                    }
+            ).ToListAsync();
+
+            return NativeLearnLang;
         }
 
         public Task<Languages> GetItem(string value)

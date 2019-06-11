@@ -45,7 +45,6 @@
 
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                @using DAL.Models
                 <li>@Html.ActionLink("Index", "Index", "Home")</li>
                 @{
                     string[] route = new string[Url.RouteUrl(ViewContext.RouteData.Values).Split('/').Length];

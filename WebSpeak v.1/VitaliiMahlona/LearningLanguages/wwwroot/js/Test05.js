@@ -5,6 +5,8 @@ var first = true;
 var randomWords = [];
 var questionNumber = 0;
 var totalQuestions = model.length;
+var firstId = model[0].id;
+var lastId = model[model.length - 1].id;
 model = model.sort(compareRandom);
 
 check();
@@ -29,7 +31,7 @@ function check(event) {
                 var s = '<button type="submit" class="btn btn-primary" onclick="again()">Again</button>';
 
                 if (result.isUser) {
-                    s += `<a class="btn btn-secondary" href="#" role="button">To general statistics</a>`;
+                    s += `<a class="btn btn-secondary" href="/Account/Statistics" role="button">To general statistics</a>`;
                 }
 
                 $('.buttonSubmit').html(s);
@@ -65,14 +67,19 @@ function GetTest() {
     randomWords[0] = model[questionNumber - 1];
     randomWordsId[0] = model[questionNumber - 1].id;
 
-    for (let i = 1; i < countOptions; ++i) {
-        randomWordsId[i] = Math.floor(Math.random() * (model[model.length - 1].id - model[0].id + 1)) + model[0].id;
+    var randomIds = [];
 
-        for (let j = 0; j < i; j++) {
-            while (randomWordsId[j] == randomWordsId[i]) {
-                randomWordsId[i] = Math.floor(Math.random() * (model[model.length - 1].id - model[0].id + 1)) + model[0].id;
-            }
-        }
+    for (let i = firstId; i <= lastId; ++i) {
+        randomIds.push(i);
+    }
+
+    randomIds.splice(randomIds.indexOf(randomWordsId[0]), 1);
+
+    randomIds.sort(compareRandom);
+
+    for (let i = 1; i < countOptions; i++) {
+        randomWordsId[i] = randomIds[0];
+        randomIds.splice(0, 1);
 
         for (let j = 0; j < model.length; j++) {
             if (model[j].id == randomWordsId[i]) {

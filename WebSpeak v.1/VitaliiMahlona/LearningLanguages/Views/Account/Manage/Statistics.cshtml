@@ -1,0 +1,66 @@
+﻿@model IEnumerable<DTOTestResults>
+@{
+    ViewData["Title"] = "Statistics";
+    ViewData["ActivePage"] = ManageNavPages.Statistics;
+}
+
+@{
+    Layout = "~/Views/Account/Manage/_Layout.cshtml";
+}
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Test
+            </th>
+            <th>
+                Language
+            </th>
+            <th>
+                Category
+            </th>
+            <th>
+                SubCategory
+            </th>
+            <th>
+                Test Date
+            </th>
+            <th>
+                Result
+            </th>
+            <th>
+                Total
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TestName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LangName)
+                </td>
+                                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SubCategoryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TestDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Result)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Total)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

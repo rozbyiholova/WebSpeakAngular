@@ -3,6 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using DAL.ViewModels;
 using DAL.Models;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using DAL;
+using DAL.Repositories;
+using System.Linq;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace LearningLanguages.Controllers
 {
@@ -10,6 +17,20 @@ namespace LearningLanguages.Controllers
     {
         private readonly UserManager<Users> _userManager;
         private readonly SignInManager<Users> _signInManager;
+
+        IRepository<Categories> _categories = new CategoriesRepository();
+
+        IRepository<Languages> _languages = new LanguagesRepository();
+
+        IRepository<Words> _words = new WordsRepository();
+
+        IRepository<Tests> _tests = new TestsRepository();
+
+        IRepository<Users> _users = new UsersRepository();
+
+        IRepository<TestResults> _testResults = new TestResultsRepository();
+
+        IRepository<TotalScores> _totalScores = new TotalScoresRepository();
 
         public AccountController(UserManager<Users> userManager, SignInManager<Users> signInManager)
         {
@@ -80,6 +101,65 @@ namespace LearningLanguages.Controllers
                 }
             }
             return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Statistics()
+        {
+            string currentUserId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var testResultsList = await _testResults.GetList();
+            var totalScoresList = await _totalScores.GetList();
+
+            var testResultQuery = testResultsList.Where(x => x.UserId == currentUserId);
+            var totalScoresQuery = totalScoresList.Where(x => x.UserId == currentUserId);
+
+            int idLangLearn = -1;
+            int idLangNative = -1;
+            int defaultLangId = 3;
+
+            if (HttpContext?.Session?.GetInt32("idLangLearn") != null) idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
+            if (HttpContext?.Session?.GetInt32("idLangLearn") != null) idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
+
+            List<DTO> NativeLearnLangTests;
+            List<DTO> NativeLearnLang;
+            List<DTO> NativeLearnLangSubCat;
+            List<DTO> NativeLearnLangCat;
+
+            if (idLangLearn != -1 && idLangNative != -1)
+            {
+                NativeLearnLangTests = await _tests.GetTranslations(idLangLearn, idLangNative, null);
+                NativeLearnLang = await _languages.GetTranslations(idLangLearn, idLangNative, null);
+                NativeLearnLangSubCat = await _categories.GetTranslations(idLangLearn, idLangNative, -1);
+                NativeLearnLangCat = await _categories.GetTranslations(idLangLearn, idLangNative, null);
+            }
+            else
+            {
+                NativeLearnLangTests = await _tests.GetTranslations(defaultLangId, defaultLangId, null);
+                NativeLearnLang = await _languages.GetTranslations(defaultLangId, defaultLangId, null);
+                NativeLearnLangSubCat = await _categories.GetTranslations(defaultLangId, defaultLangId, -1);
+                NativeLearnLangCat = await _categories.GetTranslations(defaultLangId, defaultLangId, null);
+            }
+
+            List<DTOTestResults> LearnLangCat = testResultsList
+               .Join(
+                   totalScoresList,
+                   testResult => testResult.LangId,
+                   totalScore => totalScore.LangId,
+                   (testResult, totalScore) => new DTOTestResults
+                   {
+                       Id = testResult.Id,
+                       TestName = NativeLearnLangTests.Find(item => item.Id == testResult.TestId).WordNativeLang,
+                       LangName = NativeLearnLang.Find(item => item.Id == testResult.LangId).WordNativeLang,
+                       SubCategoryName = NativeLearnLangSubCat.Find(item => item.Id == testResult.CategoryId).WordNativeLang,
+                       CategoryName = NativeLearnLangCat.Find(item => testResult?.Category?.ParentId != null && item.Id == testResult?.Category?.ParentId).WordNativeLang,
+                       TestDate = testResult.TestDate,
+                       Result = testResult.Result,
+                       Total = totalScore.Total
+                   }
+            ).ToList();
+
+            return View("./Manage/Statistics", LearnLangCat);
         }
 
         [HttpPost]
