@@ -35,33 +35,23 @@ namespace LearningLanguages.Controllers
 
         IRepository<TotalScores> _totalScores = new TotalScoresRepository();
 
-        [HttpGet]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            SelectList languagesList = new SelectList(await _languages.GetList(), "Id", "Name");
+            int defaultLang = 3;
 
-            return View(languagesList);
+            if (HttpContext.Session.GetInt32("idLangNative") == null)
+            {
+                HttpContext.Session.SetInt32("idLangNative", defaultLang);
+            }
+
+            if (HttpContext.Session.GetInt32("idLangLearn") == null)
+            {
+                HttpContext.Session.SetInt32("idLangLearn", defaultLang);
+            }
+
+            return View();
         }
 
-        [HttpPost]
-        public IActionResult Index(IFormCollection form)
-        {
-            int idLangNative = Convert.ToInt32(form["idLangNative"]);
-            int idLangLearn = Convert.ToInt32(form["idLangLearn"]);
-            string enableNativeLang = Convert.ToString(form["enableNativeLang"]);
-            string enableSound = Convert.ToString(form["enableSound"]);
-            string enablePronounceNativeLang = Convert.ToString(form["enablePronounceNativeLang"]);
-            string enablePronounceLearnLang = Convert.ToString(form["enablePronounceLearnLang"]);
-
-            HttpContext.Session.SetInt32("idLangNative", idLangNative);
-            HttpContext.Session.SetInt32("idLangLearn", idLangLearn);
-            HttpContext.Session.SetString("enableNativeLang", enableNativeLang);
-            HttpContext.Session.SetString("enableSound", enableSound);
-            HttpContext.Session.SetString("enablePronounceNativeLang", enablePronounceNativeLang);
-            HttpContext.Session.SetString("enablePronounceLearnLang", enablePronounceLearnLang);
-
-            return RedirectToAction("Categories");
-        }
         [Route("Home/Categories")]
         public async Task<IActionResult> Categories()
         {

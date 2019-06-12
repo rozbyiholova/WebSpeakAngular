@@ -78,7 +78,20 @@ namespace DAL.Repositories
                         Id = langTrans.NativeLangId,
                         WordNativeLang = langTrans.Translation,
                     }
-            ).ToListAsync();
+                )
+                .Join(
+                    db.TotalScores,
+                    lang => lang.Id,
+                    total => total.LangId,
+                    (lang, total) => new DTO
+                    {
+                        Id = lang.Id,
+                        WordNativeLang = lang.WordNativeLang,
+                        Total = total.Total,
+                        UserId = total.UserId
+                    }
+                )
+               .Distinct().ToListAsync();
 
             return NativeLearnLang;
         }
