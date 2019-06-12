@@ -16,5 +16,6 @@ namespace DAL.DTO
         public string Sound { get; set; }
         public string PronounceNative { get; set; }
         public string PronounceLearn { get; set; }
+        public string TestName { get; set; }
     }
 }

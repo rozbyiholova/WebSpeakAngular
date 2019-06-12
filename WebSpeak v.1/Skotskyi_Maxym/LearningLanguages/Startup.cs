@@ -12,6 +12,7 @@ using DAL;
 using DAL.Models;
 using DAL.IRepository;
 using Microsoft.EntityFrameworkCore;
+using SmartBreadcrumbs.Extensions;
 
 namespace LearningLanguages
 {
@@ -43,6 +44,11 @@ namespace LearningLanguages
                 options.Cookie.IsEssential = true;
             });
 
+
+            services.AddBreadcrumbs(GetType().Assembly);
+
+
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -50,7 +56,7 @@ namespace LearningLanguages
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-
+            
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

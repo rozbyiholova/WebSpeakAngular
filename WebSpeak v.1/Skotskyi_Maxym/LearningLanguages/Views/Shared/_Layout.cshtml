@@ -44,8 +44,8 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="CategoriesView">CategoriesView</a>
-                                <a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="SubCategoriesView">SubCategoriesView</a>
+                                <a class="dropdown-item"  asp-controller="Home" asp-action="CategoriesView">CategoriesView</a>
+                                <a class="dropdown-item" asp-controller="Home" asp-action="SubCategoriesView">SubCategoriesView</a>
                                 <a class="dropdown-item" href="#">Something else here</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="#">Separated link</a>
@@ -88,16 +88,22 @@
                         </li>
 
 
+                        </li>
 
                     </ul>
                 </div>
+
+
+
             </div>
         </nav>
     </header>
     <div class="container">
         <partial name="_CookieConsentPartial" />
         <main role="main" class="pb-3">
+            <breadcrumb></breadcrumb>
             @RenderBody()
+
         </main>
     </div>
 

@@ -1,0 +1,40 @@
+﻿@model IEnumerable<DAL.DTO.CategoriesDTO>
+@using DAL.DTO
+
+@{
+    ViewData["Title"] = "TestList";
+}
+
+<h1>SubCategoriesView</h1>
+
+<h1>Categories</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Translation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Picture)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (CategoriesDTO item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.ActionLink(item.Translation + "(" + item.Native + ")", "Testing", "Home", new { id = item.CategoryId})
+                </td>
+                <td>
+                    <img class="img-fluid" src="../../@item.Picture" style="	filter: invert(100%)" width="300" height="300" />
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
