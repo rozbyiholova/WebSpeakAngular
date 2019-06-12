@@ -25,7 +25,7 @@
     margin: auto;
 }
 
-#buttonSubmit {
+.buttonSubmit {
     margin-top: 50px;
     text-align: center;
 }

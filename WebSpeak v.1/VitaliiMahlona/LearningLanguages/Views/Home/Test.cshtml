@@ -1,5 +1,4 @@
-﻿@using DAL.Models
-@model List<DTO>
+﻿@model List<DTO>
 
 @{
     ViewData["Title"] = "Test";
@@ -47,7 +46,7 @@ else if (Model.First().TestId == 10)
     <div id="answer">
 
     </div>
-    <div id="buttonSubmit">
+    <div class="buttonSubmit">
         <button type="button" class="btn btn-primary" onclick="next()">Next</button>
         <button type="button" class="btn btn-danger" onclick="cancel()">Cancel</button>
     </div>

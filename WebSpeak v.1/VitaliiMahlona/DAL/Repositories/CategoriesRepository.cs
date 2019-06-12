@@ -68,34 +68,68 @@ namespace DAL.Repositories
 
         public async Task<List<DTO>> GetTranslations(int idLangLearn, int idLangNative, int? parentId)
         {
-            var LearnLangCat = await db.Categories.Where(s => s.ParentId == parentId)
-                .Join(
-                    db.CategoriesTranslations.Where(s => s.LangId == idLangLearn),
-                    category => category.Id,
-                    categoryTrans => categoryTrans.CategoryId,
-                    (category, categoryTrans) => new
-                    {
-                        Id = category.Id,
-                        Name = categoryTrans.Translation
-                    }
-            ).ToListAsync();
+            if (parentId == -1)
+            {
+                var LearnLangCat = await db.Categories
+                    .Join(
+                        db.CategoriesTranslations.Where(s => s.LangId == idLangLearn),
+                        category => category.Id,
+                        categoryTrans => categoryTrans.CategoryId,
+                        (category, categoryTrans) => new
+                        {
+                            Id = category.Id,
+                            Name = categoryTrans.Translation
+                        }
+                ).ToListAsync();
 
-            List<DTO> NativeLearnLangCat = await db.Categories.Where(s => s.ParentId == parentId)
-                .Join(
-                    db.CategoriesTranslations.Where(s => s.LangId == idLangNative),
-                    category => category.Id,
-                    categoryTrans => categoryTrans.CategoryId,
-                    (category, categoryTrans) => new DTO
-                    {
-                        Id = category.Id,
-                        WordNativeLang = categoryTrans.Translation,
-                        Picture = category.Picture,
-                        WordLearnLang = LearnLangCat.Find(x => x.Id == category.Id).Name,
-                        CategoryId = category.ParentId
-                    }
-            ).ToListAsync();
+                List<DTO> NativeLearnLangCat = await db.Categories
+                    .Join(
+                        db.CategoriesTranslations.Where(s => s.LangId == idLangNative),
+                        category => category.Id,
+                        categoryTrans => categoryTrans.CategoryId,
+                        (category, categoryTrans) => new DTO
+                        {
+                            Id = category.Id,
+                            WordNativeLang = categoryTrans.Translation,
+                            Picture = category.Picture,
+                            WordLearnLang = LearnLangCat.Find(x => x.Id == category.Id).Name,
+                            CategoryId = category.ParentId
+                        }
+                ).ToListAsync();
 
-            return NativeLearnLangCat;
+                return NativeLearnLangCat;
+            }
+            else
+            {
+                var LearnLangCat = await db.Categories.Where(s => s.ParentId == parentId)
+                    .Join(
+                        db.CategoriesTranslations.Where(s => s.LangId == idLangLearn),
+                        category => category.Id,
+                        categoryTrans => categoryTrans.CategoryId,
+                        (category, categoryTrans) => new
+                        {
+                            Id = category.Id,
+                            Name = categoryTrans.Translation
+                        }
+                ).ToListAsync();
+
+                List<DTO> NativeLearnLangCat = await db.Categories.Where(s => s.ParentId == parentId)
+                    .Join(
+                        db.CategoriesTranslations.Where(s => s.LangId == idLangNative),
+                        category => category.Id,
+                        categoryTrans => categoryTrans.CategoryId,
+                        (category, categoryTrans) => new DTO
+                        {
+                            Id = category.Id,
+                            WordNativeLang = categoryTrans.Translation,
+                            Picture = category.Picture,
+                            WordLearnLang = LearnLangCat.Find(x => x.Id == category.Id).Name,
+                            CategoryId = category.ParentId
+                        }
+                ).ToListAsync();
+
+                return NativeLearnLangCat;
+            }
         }
 
         public Task<Categories> GetItem(string value)

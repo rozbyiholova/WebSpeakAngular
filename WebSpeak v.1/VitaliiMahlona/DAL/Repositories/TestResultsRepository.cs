@@ -32,7 +32,7 @@ namespace DAL.Repositories
 
         public async Task<IEnumerable<TestResults>> GetList()
         {
-            return await db.TestResults.ToListAsync();
+            return await db.TestResults.Include(t => t.Category).ToListAsync();
         }
 
         public void Save()

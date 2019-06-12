@@ -41,7 +41,7 @@ function check() {
                 var s = '<button type="submit" class="btn btn-primary" onclick="again()">Again</button>';
 
                 if (result.isUser) {
-                    s += `<a class="btn btn-secondary" href="#" role="button">To general statistics</a>`;
+                    s += `<a class="btn btn-secondary" href="/Account/Statistics" role="button">To general statistics</a>`;
                 }
 
                 $('.buttonSubmit').html(s);

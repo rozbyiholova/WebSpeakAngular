@@ -1,17 +1,24 @@
-﻿var correctAnswer;
+﻿var countOptions = 4;
 var totalResult = 0;
 var result = 0;
 var numberQA = 0;
+var randomWords = [];
 var fourWords = [];
 var randomTestWordsId = [1, 2, 3, 4];
 var questionNumber = 0;
-var totalQuestions = model.length;
+var firstId = model[0].id;
+var lastId = model[model.length - 1].id;
 model = model.sort(compareRandom);
+randomWords = model;
+
+GetExtra();
+
+var totalQuestions = randomWords.length;
 
 check(false);
 
-
 function check(cancel) {
+    result = 0;
     if (cancel == false) {
 
         if (questionNumber == totalQuestions) {
@@ -25,11 +32,12 @@ function check(cancel) {
                 },
                 success: function (result) {
                     $('#test').hide();
+                    $('#answer').hide();
 
                     var s = '<button type="submit" class="btn btn-primary" onclick="again()">Again</button>';
 
                     if (result.isUser) {
-                        s += `<a class="btn btn-secondary" href="#" role="button">To general statistics</a>`;
+                        s += `<a class="btn btn-secondary" href="/Account/Statistics" role="button">To general statistics</a>`;
                     }
 
                     $('.buttonSubmit').html(s);
@@ -38,16 +46,14 @@ function check(cancel) {
             return;
         }
 
-        questionNumber++;
-
-        fourWords = GetTest();
+        GetTest();
+        
         randomTestWordsId.sort(compareRandom);
     }
 
-    $('#result').html(`<b>Score: ${totalResult += result}</b>`);
-    result = 0;
+    $('#result').html(`<b>Score: ${totalResult}</b>`);
 
-    $('#buttonSubmit').html(`<button type="button" class="btn btn-primary" onclick="next()">Next</button>
+    $('.buttonSubmit').html(`<button type="button" class="btn btn-primary" onclick="next()">Next</button>
                              <button type="button" class="btn btn-danger" onclick="cancel()">Cancel</button>
                             `);
 
@@ -86,6 +92,8 @@ function check(cancel) {
 
 function next()
 {
+    questionNumber++;
+
     $('#error').hide();
 
     if (($("[name=leftColumn]:checked").val() != undefined) && ($("[name=rightColumn]:checked").val() != undefined)) {
@@ -94,6 +102,7 @@ function next()
         numberQA++;
 
         if ($("[name=leftColumn]:checked").val() == $("[name=rightColumn]:checked").val()) {
+            $('#result').html(`<b>Score: ${++totalResult}</b>`);
             result++;
         }
 
@@ -104,7 +113,7 @@ function next()
         $("[name=rightColumn]:checked").detach();
 
         if (numberQA == 4) {
-            $('#buttonSubmit').html(`<button id="submit" type="submit" class="btn btn-success" onclick="check(false)">Submit</button>
+            $('.buttonSubmit').html(`<button id="submit" type="submit" class="btn btn-success" onclick="check(false)">Submit</button>
                                      <button type="button" class="btn btn-danger" onclick="cancel()">Cancel</button>`);
             numberQA = 0;
         }
@@ -118,37 +127,44 @@ function next()
 }
 
 function cancel() {
+    totalResult -= result;
+    questionNumber -= result;
     numberQA = 0;
-    result = 0;
     check(true);
 }
 
 function GetTest() {
-    var countOptions = 4;
-    var randomWordsId = [];
-    var fourWords = [];
-    fourWords[0] = model[questionNumber - 1];
-    randomWordsId[0] = model[questionNumber - 1].id;
-
-    for (let i = 1; i < countOptions; ++i)
+    for (let i = 0; i < countOptions; i++)
     {
-        randomWordsId[i] = Math.floor(Math.random() * (model[model.length - 1].id - model[0].id + 1)) + model[0].id;
+        fourWords[i] = randomWords[0];
+        randomWords.splice(0, 1);
+    }
+}
 
-        for (let j = 0; j < i; j++)
-        {
-            while (randomWordsId[j] == randomWordsId[i]) {
-                randomWordsId[i] = Math.floor(Math.random() * (model[model.length - 1].id - model[0].id + 1)) + model[0].id;
-            }
-        }
+function GetExtra() {
+    var remainderOfDivision = randomWords.length % countOptions;
 
-        for (let j = 0; j < model.length; j++) {
-            if (model[j].id == randomWordsId[i]) {
-                fourWords[i] = model[j];
-            }
-        }
+    if (remainderOfDivision == 0) return;
+
+    var randomIds = [];
+
+    for (let i = firstId; i <= lastId; ++i) {
+        randomIds.push(i);
     }
 
-    return fourWords;
+    for (let i = 0; i < remainderOfDivision; ++i) {
+        randomIds.splice(randomIds.indexOf(randomWords[randomWords.length - i - 1].id), 1);
+    }
+
+    randomIds.sort(compareRandom);
+
+    for (let i = 0; i < 4 - remainderOfDivision; ++i) {
+        randomWords.push(model[i]);
+    }
+}
+
+function again() {
+    location.reload();
 }
 
 function compareRandom(a, b) {
