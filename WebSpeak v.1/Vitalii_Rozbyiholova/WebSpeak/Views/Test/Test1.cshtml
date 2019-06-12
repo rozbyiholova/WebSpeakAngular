@@ -2,9 +2,7 @@
 @using DAL.Models;
 @{
     ViewData["Title"] = "Test1";
-    Random rnd = new Random();
-    DTO[] array = Model.OrderBy(x => rnd.Next()).Distinct().ToArray();
-    var Data = Html.Raw(Json.Serialize(array));
+    var Data = Html.Raw(Json.Serialize(Model.ToArray()));
 }
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/js/Tests.js"></script>
@@ -14,8 +12,6 @@
 
     </div>
     <div class="test_word"></div>
-
-    <button class="confirm" onclick="LoadFewPicturesWithText(returnData(), 2, 1)">Next</button>
 </div>
 
 <style>
@@ -42,11 +38,15 @@
     .img-fluid {
         object-fit: cover;
         height: 20vw;
+        cursor: pointer;
     }
 </style>
 
 <script type="text/javascript">
-    $(document).ready(LoadFewPicturesWithText(@Data, 2, 1))
+    $(document).ready(() => {
+        InitNewTest(@Data, 2, 1, 0);
+        NextTest();
+    })
 
     function returnData() {
         return @Html.Raw(Json.Serialize(Model.ToArray()));
