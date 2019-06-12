@@ -1,0 +1,90 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model IEnumerable<DAL.DTO.CategoriesDTO>
+@using DAL.DTO
+@using System.Web.Helpers;
+@using System.Web.Mvc;
+@using System.Web.Razor;
+@using System.Web.WebPages;
+@inject IJsonHelper Json;
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Serialization;
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using System.Reflection;
+@using System.Text.Encodings.Web;
+
+
+
+@{
+    ViewData["Title"] = "Testing";
+}
+
+<h1>Testing</h1>
+
+
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Translation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Picture)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PronounceNative)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PronounceLearn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TestName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+</table>
+<div class="container">
+    <div class="row" id="score">
+
+
+    </div>
+
+    <div class="row" id="picture">
+
+
+    </div>
+
+    <div class="row" id="word">
+
+    </div>
+
+
+    <button id="next" type="button" class="btn btn-success" onclick="next()">next</button>
+</div>
+
+    <script>
+        var Model  = @Json.Serialize(Model);
+    </script>
+
+    <script type="text/javascript">
+    var testId = "@Model.ElementAt(0).TestName.ToString()";
+    var cuted = testId.split("Test0")[1];
+    cuted = cuted.split('.')[0];
+    document.write(`<script src="../../js/Test01.js" asp-append-version="true">`);
+    document.write('</');
+    document.write('script>');
+    </script>
+
+
+
+
+
+

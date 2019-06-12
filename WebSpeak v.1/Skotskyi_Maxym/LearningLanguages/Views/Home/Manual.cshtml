@@ -17,7 +17,7 @@
 <div id="carouselExampleControls" class="carousel slide" data-interval="false" data-ride="carousel">
     <div class="carousel-inner">
          <div class="carousel-item active">
-            <img class="d-block w-100" src="../../@Model.ElementAt(0).Picture" alt="First slide">
+            <img class="d-block w-75 h-75 img-fluid" src="../../@Model.ElementAt(0).Picture" alt="First slide">
             <div class=" d-none d-md-block text-danger text-center">
                 <h5>@Model.ElementAt(0).Translation</h5>
 
@@ -37,7 +37,7 @@
         @foreach (CategoriesDTO item in Model.Skip(1))
         {
             <div class="carousel-item">
-                <img class="d-block w-100" src="../../@item.Picture" alt="Second slide">
+                <img class="d-block w-75 h-75 img-fluid" src="../../@item.Picture" alt="Second slide">
                 <div class=" d-none d-md-block text-danger text-center">
                     <h5>@item.Translation</h5>
 

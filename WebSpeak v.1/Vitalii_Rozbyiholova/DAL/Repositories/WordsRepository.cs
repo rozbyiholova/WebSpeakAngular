@@ -43,45 +43,88 @@ namespace DAL.Repositories
             List<Words> words = wordsRepository.GetAll().ToList();
             List<WordTranslations> wordsTranslations = wordsTranslationsRepository.GetAll().ToList();
 
-            var wordsNative = wordsTranslations.Where(c => c.LangId == nativeLanguage)
-               .Join(words,
-               wt => wt.WordId,
-               w => w.Id,
-               (wt, w) => new
-               {
-                   Id = w.Id,
-                   Translation = wt.Translation,
-                   NPronounce = wt.Pronounce
-               });
 
-            var wordsTrans = wordsTranslations.Where(c => c.LangId == learningLanguage)
-                .Join(words,
-                wt => wt.WordId,
-                w => w.Id,
-                (wt, w) => new
+            var wordsNative = words.Where(w => w.CategoryId == categoryId)
+                .Join(wordsTranslations,
+                word => word.Id,
+                wordTrans => wordTrans.WordId,
+                (word, wordTrans) => new
                 {
-                    Id = w.Id,
-                    Translation = wt.Translation,
-                    Picture = w.Picture,
-                    Sound = w.Sound,
-                    LPronounce = wt.Pronounce,
-                    CategoryId = w.CategoryId
+                    Id = word.Id,
+                    Translation = wordTrans.Translation,
+                    NativePronounce = wordTrans.Pronounce,
+                    NativeLanguageId = wordTrans.LangId
                 });
 
-            List<DTO> DTOs = (from wn in wordsNative
-                              join wt in wordsTrans
-                              on wn.Id equals wt.Id
-                              where wt.CategoryId == categoryId
-                              select new DTO()
-                              {
-                                  Id = wn.Id,
-                                  Native = wn.Translation,
-                                  Translation = wt.Translation,
-                                  Picture = wt.Picture,
-                                  Sound = wt.Sound,
-                                  NativePronounce = wn.NPronounce,
-                                  TranslationPronounce = wt.LPronounce
-                              }).ToList();
+            var wordsTranslation = words.Where(w => w.CategoryId == categoryId)
+                .Join(wordsTranslations,
+                word => word.Id,
+                wordTrans => wordTrans.WordId,
+                (word, wordTrans) => new
+                {
+                    Id = word.Id,
+                    Translation = wordTrans.Translation,
+                    TransPronounce = wordTrans.Pronounce,
+                    Picture = word.Picture,
+                    Sound = word.Sound,
+                    TransLanguageId = wordTrans.LangId
+                });
+
+            List<DTO> DTOs = wordsNative.Where(wordNative => wordNative.NativeLanguageId == nativeLanguage)
+                .Join(wordsTranslation.Where(wordTrans => wordTrans.TransLanguageId == learningLanguage),
+                wordsN => wordsN.Id,
+                wordsT => wordsT.Id,
+                (wordsN, wordsT) => new DTO()
+                {
+                    Id = wordsN.Id,
+                    Native = wordsN.Translation,
+                    NativePronounce = wordsN.NativePronounce,
+                    Picture = wordsT.Picture,
+                    Sound = wordsT.Sound,
+                    Translation = wordsT.Translation,
+                    TranslationPronounce = wordsT.TransPronounce
+                }).ToList();
+
+
+            //var wordsNative = wordsTranslations.Where(c => c.LangId == nativeLanguage)
+            //   .Join(words,
+            //   wt => wt.WordId,
+            //   w => w.Id,
+            //   (wt, w) => new
+            //   {
+            //       Id = w.Id,
+            //       Translation = wt.Translation,
+            //       NPronounce = wt.Pronounce
+            //   });
+
+            //var wordsTrans = wordsTranslations.Where(c => c.LangId == learningLanguage)
+            //    .Join(words,
+            //    wt => wt.WordId,
+            //    w => w.Id,
+            //    (wt, w) => new
+            //    {
+            //        Id = w.Id,
+            //        Translation = wt.Translation,
+            //        Picture = w.Picture,
+            //        Sound = w.Sound,
+            //        LPronounce = wt.Pronounce,
+            //        CategoryId = w.CategoryId
+            //    });
+
+            //List<DTO> DTOs = (from wn in wordsNative
+            //                  join wt in wordsTrans
+            //                  on wn.Id equals wt.Id
+            //                  where wt.CategoryId == categoryId
+            //                  select new DTO()
+            //                  {
+            //                      Id = wn.Id,
+            //                      Native = wn.Translation,
+            //                      Translation = wt.Translation,
+            //                      Picture = wt.Picture,
+            //                      Sound = wt.Sound,
+            //                      NativePronounce = wn.NPronounce,
+            //                      TranslationPronounce = wt.LPronounce
+            //                  }).ToList();
             return DTOs;
         }
 

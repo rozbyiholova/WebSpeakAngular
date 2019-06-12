@@ -11,8 +11,14 @@ namespace DAL.IRepository
 
         public TestsRepository()
         {
-            this.db = new Languages_bdContext();
+            db = new Languages_bdContext(ConfigurateOptions.GetOptions());
         }
+
+        public IEnumerable<Tests> GetAll()
+        {
+            return db.Tests;
+        }
+
         public void Create(Tests item)
         {
             throw new NotImplementedException();

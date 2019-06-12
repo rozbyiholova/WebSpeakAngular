@@ -5,18 +5,30 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function InitNewTest(categoriesArray, picturesCount, textCount, soundsCount) {
-
-    //shufle categories array
-
-    this.info = new Info(categoriesArray, picturesCount, textCount, soundsCount);
+function shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
 }
 
-function NextTest(array, picturesCount, textCount) {
+function InitNewTest(categoriesArray, picturesCount, textCount, soundsCount) {
 
+    shuffle(categoriesArray);
+    console.log(categoriesArray);
+    info = new TestInfo(categoriesArray, picturesCount, textCount, soundsCount);
+}
 
-    index.indexIncrease();
-    
+function NextTest() {
+
+    if (info.currentIndex < info.categories.length) {
+        LoadPictures();
+        LoadText();
+        info.indexIncrease();
+    } else {
+        window.location = "Index";
+    }
 }
 
 function LoadPictures() {
@@ -25,64 +37,79 @@ function LoadPictures() {
     var test_images = document.getElementsByClassName(TEST_IMAGES)[0];
     $("." + TEST_IMAGES).empty();
 
-    var info = this.info;
+    var picturesInfo = this.info;
 
     var selectedCategories = new Array();
 
-    var categoriesLength = info.categories.length;
-    selectedCategories[0] = info.categories[info.currentIndex];
+    var categoriesLength = picturesInfo.categories.length;
+    selectedCategories[0] = picturesInfo.categories[info.currentIndex];
     let i = 1;
-    while (i < index.picturesCount) {
+    while (i < picturesInfo.picturesCount) {
         let random = getRandomInt(0, categoriesLength);
-        var category = info.categories[random];
+        var category = picturesInfo.categories[random];
         if (!selectedCategories.includes(category)) {
             selectedCategories.push(category);
-        }
-
-        //shufle selected categories array
-        for (let i = 0; i < selectedCategories.length; i++) {
-            var category = selectedCategories[i];
-            var div = document.createElement('div');
-            div.className = "col-md-6"
-            var img = document.createElement('img');
-            img.src = '../../' + category.picture;
-            img.className = "img-fluid";
-            div.appendChild(img);
-            test_images.appendChild(div);
             i++;
-        }
-    }    
+        }       
+    }  
+    shuffle(selectedCategories);
+    for (let j = 0; j < selectedCategories.length; j++) {
+        var category = selectedCategories[j];
+        var div = document.createElement('div');
+        div.className = "col-md-6"
+        var img = document.createElement('img');
+        img.src = '../../' + category.picture;
+        img.className = "img-fluid";
+        img.alt = category.translation;
+        img.onclick = function () { CheckPictureWithText(this) };
+        div.appendChild(img);
+        test_images.appendChild(div);
+    }
 }
 
-function LoadText(array, count) {
+function LoadText() {
     const TEST_WORD = "test_word";
-    var test_word = document.getElementsByClassName(TEST_WORD)[0];
+    let test_word = document.getElementsByClassName(TEST_WORD)[0];
     $("." + TEST_WORD).empty();
 
-    var indexes = new Array();
-    let i = 0;
-    do {
-        var randomTextIndex = getRandomInt(0, 2);
+    let textInfo = this.info;
+    let indexes = new Array();
+    indexes[0] = textInfo.currentIndex;
+
+    let i = 1;
+    while (i < textInfo.textsCount)
+    {
+        let randomTextIndex = getRandomInt(0, 2);
         if (!indexes.includes(randomTextIndex)) {
-            var text = array[randomTextIndex].translation;
-            var h3 = document.createElement("h3");
-            var textNode = document.createTextNode(text);
-            h3.appendChild(textNode);
-            test_word.appendChild(h3);
+            indexes.push(randomTextIndex);
             i++;
         }
     }
-    while (i < count);
+
+    for (let j = 0; j < indexes.length; j++) {
+
+        let text = textInfo.categories[indexes[j]].translation;
+        let h3 = document.createElement("h3");
+        let textNode = document.createTextNode(text);
+        h3.appendChild(textNode);
+        test_word.appendChild(h3);
+    }
+
+
+
 }
 
-function CheckPictureWithText(category, picture) {
+function CheckPictureWithText(picture) {
     const TEST_WORD = "test_word";
-    var test_word = document.getElementsByClassName(TEST_WORD)[0];
-    
-    if (category.translation == test_word.firstChild) {
-        picture.setAttribute("style:borderColor", "#00FF00");
+    let test_word_div = document.getElementsByClassName(TEST_WORD)[0];
+    let word = test_word_div.childNodes[0].innerText;
+
+    if (picture.alt == word) {
+        this.info.increaseScore();
+        NextTest();
+        console.log(this.info.currentScore);
     } else {
-        picture.classList.add("uncorrect");
+        NextTest();
     }
 }
 
@@ -93,9 +120,11 @@ class TestInfo {
     picturesCount;
     textsCount;
     soundsCount;
+    currentScore;
 
     constructor(array, pictures, texts, sounds) {
         this.currentIndex = 0;
+        this.currentScore = 0;
         this.categories = array;
         this.picturesCount = pictures;
         this.textsCount = texts;
@@ -104,5 +133,9 @@ class TestInfo {
 
     indexIncrease = () => {
         this.currentIndex = this.currentIndex + 1;
+    }
+
+    increaseScore = () => {
+        this.currentScore = this.currentScore + 1;
     }
 }
