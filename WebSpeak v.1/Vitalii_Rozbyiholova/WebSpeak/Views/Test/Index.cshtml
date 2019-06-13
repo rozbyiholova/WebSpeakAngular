@@ -22,11 +22,11 @@
         @foreach (DTO item in Model)
         {
             string output = String.Format("{0} ({1})", item.Translation, item.Native);
-            string actionName = String.Format("Test{0}", item.Id);
+            string actionName = String.Format("Test");
         <tr>
 
             <td>
-                @Html.ActionLink(output, actionName, "Test", null)
+                @Html.ActionLink(output, actionName, "Test", new {testID = item.Id })
             </td>
             <td>
                 <img src="../../@item.Picture" width="300" height="300" />

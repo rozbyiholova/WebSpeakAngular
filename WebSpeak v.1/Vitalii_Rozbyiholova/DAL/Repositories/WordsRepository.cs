@@ -82,49 +82,10 @@ namespace DAL.Repositories
                     Picture = wordsT.Picture,
                     Sound = wordsT.Sound,
                     Translation = wordsT.Translation,
-                    TranslationPronounce = wordsT.TransPronounce
+                    TranslationPronounce = wordsT.TransPronounce,
+                    Type = DTOType.Word
                 }).ToList();
-
-
-            //var wordsNative = wordsTranslations.Where(c => c.LangId == nativeLanguage)
-            //   .Join(words,
-            //   wt => wt.WordId,
-            //   w => w.Id,
-            //   (wt, w) => new
-            //   {
-            //       Id = w.Id,
-            //       Translation = wt.Translation,
-            //       NPronounce = wt.Pronounce
-            //   });
-
-            //var wordsTrans = wordsTranslations.Where(c => c.LangId == learningLanguage)
-            //    .Join(words,
-            //    wt => wt.WordId,
-            //    w => w.Id,
-            //    (wt, w) => new
-            //    {
-            //        Id = w.Id,
-            //        Translation = wt.Translation,
-            //        Picture = w.Picture,
-            //        Sound = w.Sound,
-            //        LPronounce = wt.Pronounce,
-            //        CategoryId = w.CategoryId
-            //    });
-
-            //List<DTO> DTOs = (from wn in wordsNative
-            //                  join wt in wordsTrans
-            //                  on wn.Id equals wt.Id
-            //                  where wt.CategoryId == categoryId
-            //                  select new DTO()
-            //                  {
-            //                      Id = wn.Id,
-            //                      Native = wn.Translation,
-            //                      Translation = wt.Translation,
-            //                      Picture = wt.Picture,
-            //                      Sound = wt.Sound,
-            //                      NativePronounce = wn.NPronounce,
-            //                      TranslationPronounce = wt.LPronounce
-            //                  }).ToList();
+                                   
             return DTOs;
         }
 

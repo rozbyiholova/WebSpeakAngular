@@ -225,7 +225,14 @@ namespace DbFillingTool
                     if (pictures.Length > 0)
                     {
                         command.CommandText = $"insert into Categories (name, parent_id, picture) values (@name, @parent_id, @picture)";
-                        command.Parameters.Add("@picture", SqlDbType.NVarChar, 200).Value = pictures[i].FullName.Substring(3);
+                        if (pictures[i] != null)
+                        {
+                            command.Parameters.Add("@picture", SqlDbType.NVarChar, 200).Value = pictures[i].FullName.Substring(3);
+                        }
+                        else
+                        {
+                            throw new NullReferenceException();
+                        }
                     }
                     else
                     {
@@ -318,7 +325,14 @@ namespace DbFillingTool
                     {
                         throw new Exception("Can not find picture");
                     }
-                    wordInsert.Parameters.Add("@picture", SqlDbType.VarChar, 200).Value = picture.FullName.Substring(3);
+                    if (picture != null)
+                    {
+                        wordInsert.Parameters.Add("@picture", SqlDbType.VarChar, 200).Value = picture.FullName.Substring(3);
+                    }
+                    else
+                    {
+                        throw new NullReferenceException();
+                    }
                     wordInsert.ExecuteNonQuery();
                     wordInsert.Parameters.Clear();
                 }
@@ -342,7 +356,14 @@ namespace DbFillingTool
                             wordTranslationCommand.Parameters.Add("@lang_id", SqlDbType.Int).Value = lang_id;
                             wordTranslationCommand.Parameters.Add("@translation", SqlDbType.NVarChar).Value = properties[j];
                             wordTranslationCommand.Parameters.Add("@word_id", SqlDbType.Int).Value = word_id;
-                            wordTranslationCommand.Parameters.Add("@pronounce", SqlDbType.VarChar, 200).Value = pronounceToInsert.FullName.Substring(3);
+                            if (pronounceToInsert != null)
+                            {
+                                wordTranslationCommand.Parameters.Add("@pronounce", SqlDbType.VarChar, 200).Value = pronounceToInsert.FullName.Substring(3);
+                            }
+                            else
+                            {
+                                throw new NullReferenceException();
+                            }
                             wordTranslationCommand.ExecuteNonQuery();
                             wordTranslationCommand.Parameters.Clear();
                         }
