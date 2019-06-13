@@ -1,5 +1,6 @@
 ﻿
 var info;
+var testResult;
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
@@ -16,8 +17,8 @@ function shuffle(a) {
 function InitNewTest(categoriesArray, picturesCount, textCount, soundsCount) {
 
     shuffle(categoriesArray);
-    console.log(categoriesArray);
     info = new TestInfo(categoriesArray, picturesCount, textCount, soundsCount);
+    testResult = new TestResult();
 }
 
 function NextTest() {
@@ -27,7 +28,7 @@ function NextTest() {
         LoadText();
         info.indexIncrease();
     } else {
-        window.location = "Index";
+        GenerateResult(this.testResult);
     }
 }
 
@@ -106,10 +107,60 @@ function CheckPictureWithText(picture) {
 
     if (picture.alt == word) {
         this.info.increaseScore();
+        this.testResult.QuestionNames.push(word);
+        this.testResult.QuestionResults.push(true);
         NextTest();
-        console.log(this.info.currentScore);
     } else {
+        this.testResult.QuestionNames.push(word);
+        this.testResult.QuestionResults.push(false);
         NextTest();
+    }
+}
+
+function GenerateResult(result) {
+    
+    if (result != null) {
+        const TEST = "test";
+        const TEST_RESULT = "test_result";
+        let testResult_div = document.getElementsByClassName(TEST_RESULT)[0];
+        let test_div = document.getElementsByClassName(TEST)[0];
+        let names = result.QuestionNames;
+        let testResults = result.QuestionResults;
+
+
+        console.log(test_div);
+        console.log(testResult_div);
+        test_div.style.display = "none";
+        testResult_div.setAttribute("style", "display: block;");
+
+        let table = document.createElement('table');
+
+        for (let i = 0; i < result.GetLength(); i++) {
+            let tr = document.createElement('tr');
+            let NameTextNode = document.createTextNode(result.QuestionNames[i]);
+            let ResultTextNode = document.createTextNode(result.QuestionResults[i]);
+
+            let tdName = document.createElement('td');
+            let tdResult = document.createElement('td');
+            tdName.appendChild(NameTextNode);
+            tdResult.appendChild(ResultTextNode);
+
+            tr.appendChild(tdName);
+            tr.appendChild(tdResult);
+            table.appendChild(tr);
+        }
+
+        let trTotal = document.createElement('tr');
+        let total = result.getTotal();
+        trTotal.innerHTML = "<td>Total</td>";
+        trTotal.innerHTML += "<td>" + total + "</td>";
+        table.appendChild(trTotal);
+
+        testResult_div.appendChild(table);
+
+    } else {
+
+        return;
     }
 }
 
@@ -137,5 +188,27 @@ class TestInfo {
 
     increaseScore = () => {
         this.currentScore = this.currentScore + 1;
+    }
+}
+
+class TestResult {
+    QuestionNames;
+    QuestionResults;
+
+    constructor() {
+        this.QuestionNames = new Array();
+        this.QuestionResults = new Array();
+    }
+
+    GetLength = () => {
+        return this.QuestionNames.length;
+    }
+
+    getTotal = () => {
+        let sum = 0;
+        for (let item in this.QuestionResults) {
+            if (item) { sum++; }
+        }
+        return sum;
     }
 }

@@ -66,16 +66,17 @@ namespace DAL.Repositories
                 });
 
             List<DTO> DTOs = (from cn in categoriesNative
-                                        join ct in categoriesTrans
-                                        on cn.Id equals ct.Id
-                                        where ct.ParentId == parrentId
-                                        select new DTO()
-                                        {
-                                            Id = cn.Id,
-                                            Native = cn.Translation,
-                                            Translation = ct.Translation,
-                                            Picture = ct.Picture
-                                        }).ToList();
+                              join ct in categoriesTrans
+                              on cn.Id equals ct.Id
+                              where ct.ParentId == parrentId
+                              select new DTO()
+                              {
+                                  Id = cn.Id,
+                                  Native = cn.Translation,
+                                  Translation = ct.Translation,
+                                  Picture = ct.Picture,
+                                  Type = DTOType.Category
+                              }).ToList();
             return DTOs;
         }
 

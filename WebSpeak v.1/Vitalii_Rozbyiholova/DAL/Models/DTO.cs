@@ -6,6 +6,7 @@ namespace DAL.Models
 {
     public class DTO
     {
+        public DTOType Type { get; set; }
         public int Id { get; set; }
         public string Native { get; set; }
         public string Translation { get; set; }

@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using DAL.Models;
 using DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using SmartBreadcrumbs.Attributes;
+using WebSpeak.Models;
 
 namespace WebSpeak.Controllers
 {
@@ -56,50 +58,25 @@ namespace WebSpeak.Controllers
         }
 
         [Breadcrumb("Testing", FromAction = nameof(Index), FromController = typeof(TestController))]
-        public async Task<IActionResult> Test1()
+       public IActionResult Test(int testID)
         {
-            return View(Words);
+            string viewName = String.Format("Test{0}", testID);
+            return View(viewName, Words);
         }
 
-        public async Task<IActionResult> Test2(int subCategoryId)
+        [HttpPost]
+        public IActionResult Result(object testResult)
         {
-            return View();
+            TestResultViewModel model = JsonConvert.DeserializeObject<TestResultViewModel>(testResult.ToString());
+            return View(testResult);
         }
 
-        public async Task<IActionResult> Test3(int subCategoryId)
-        {
-            return View();
-        }
-
-        public async Task<IActionResult> Test4(int subCategoryId)
-        {
-            return View();
-        }
-        public async Task<IActionResult> Test5(int subCategoryId)
-        {
-            return View();
-        }
-        public async Task<IActionResult> Test6(int subCategoryId)
-        {
-            return View();
-        }
-        public async Task<IActionResult> Test7(int subCategoryId)
-        {
-            return View();
-        }
-        public async Task<IActionResult> Test8(int subCategoryId)
-        {
-            return View();
-        }
-
-        public async Task<IActionResult> Test9(int subCategoryId)
-        {
-            return View();
-        }
-
-        public async Task<IActionResult> Test10(int subCategoryId)
-        {
-            return View();
-        }
+       //public IActionResult Result(int score)
+       // {
+       //     CategoriesTranslationsRepository categoriesTranslations = new CategoriesTranslationsRepository();
+       //     string categoryName = categoriesTranslations.GetById(SubcategoryId).Translation;
+       //     Tuple<string, int> result = new Tuple<string, int>(categoryName, score);
+       //     return View(result);
+       // }
     }
 }
