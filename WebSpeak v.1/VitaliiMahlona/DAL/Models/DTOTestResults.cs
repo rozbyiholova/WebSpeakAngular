@@ -13,6 +13,5 @@ namespace DAL.Models
         public string SubCategoryName { get; set; }
         public string CategoryName { get; set; }
         public DateTime TestDate { get; set; }
-        public int Total { get; set; }
     }
 }

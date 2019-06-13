@@ -20,5 +20,7 @@ namespace DAL.Models
         public string EnablePronounceNativeLang { get; set; }
         public string EnablePronounceLearnLang { get; set; }
         public int TestId { get; set; }
+        public int Total { get; set; }
+        public string UserId { get; set; }
     }
 }

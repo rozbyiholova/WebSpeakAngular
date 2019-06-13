@@ -5,7 +5,7 @@
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="nav-item">
-            @Html.ActionLink($"Hello, {User.Identity.Name}!", "Statistics", "Account")
+            @Html.ActionLink($"Hello, {User.Identity.Name}!", "Index", "Account")
         </li>
         <li class="nav-item">
             <form class="form-inline" asp-controller="Account" asp-action="LogOff">
@@ -16,7 +16,7 @@
     else
     {
         <li class="nav-item">
-            <a href="#">Hello, PES!</a>
+            @Html.ActionLink($"Hello, PES!", "Index", "Account")
         </li>
         <li class="nav-item">
             @Html.ActionLink("Register", "Register", "Account")

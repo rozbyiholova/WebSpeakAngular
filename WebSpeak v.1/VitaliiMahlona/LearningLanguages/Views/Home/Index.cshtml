@@ -1,36 +1,13 @@
-﻿@model SelectList
-@{
-    ViewData["Title"] = "Select lang";
+﻿@{
+    ViewData["Title"] = "Learning Languages";
 }
 
-@using (Html.BeginForm())
-{
-<div class="form-group w-50 p-3">
-    <p>Native language:</p>
-    @Html.DropDownList("idLangNative", Model as SelectList)
-
-    <p>Learning language:</p>
-    @Html.DropDownList("idLangLearn", Model as SelectList)
-
-    <p>Enable translation of words in their native language:</p>
-    @Html.CheckBox("enableNativeLang")
-
-    <p>Enable sound of words:</p>
-    @Html.CheckBox("enableSound")
-
-    <p>Enable pronounce of words in their native language:</p>
-    @Html.CheckBox("enablePronounceNativeLang")
-
-    <p>Enable pronounce of words in learning language:</p>
-    @Html.CheckBox("enablePronounceLearnLang")
-
-    <button type="submit" class="btn btn-success">Submit</button>
+<div>
+    <p id="LearnLang">LEARNING LANGUAGES</p>
 </div>
-}
 
-<script>
-    var select = document.querySelectorAll('select, input');
-    for (var i = 0; i < select.length; i++) {
-        select[i].className += "form-control";
+<style>
+    #LearnLang {
+        font-size: 100px;
     }
-</script>
+</style>

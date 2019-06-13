@@ -10,6 +10,8 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 
 namespace LearningLanguages.Controllers
 {
@@ -104,6 +106,34 @@ namespace LearningLanguages.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            SelectList languagesList = new SelectList(await _languages.GetList(), "Id", "Name");
+
+            return View("./Manage/Index", languagesList);
+        }
+
+        [HttpPost]
+        public IActionResult Index(IFormCollection form)
+        {
+            int idLangNative = Convert.ToInt32(form["idLangNative"]);
+            int idLangLearn = Convert.ToInt32(form["idLangLearn"]);
+            string enableNativeLang = Convert.ToString(form["enableNativeLang"]);
+            string enableSound = Convert.ToString(form["enableSound"]);
+            string enablePronounceNativeLang = Convert.ToString(form["enablePronounceNativeLang"]);
+            string enablePronounceLearnLang = Convert.ToString(form["enablePronounceLearnLang"]);
+
+            HttpContext.Session.SetInt32("idLangNative", idLangNative);
+            HttpContext.Session.SetInt32("idLangLearn", idLangLearn);
+            HttpContext.Session.SetString("enableNativeLang", enableNativeLang);
+            HttpContext.Session.SetString("enableSound", enableSound);
+            HttpContext.Session.SetString("enablePronounceNativeLang", enablePronounceNativeLang);
+            HttpContext.Session.SetString("enablePronounceLearnLang", enablePronounceLearnLang);
+
+            return RedirectToAction("Index", "Account");
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Statistics()
         {
             string currentUserId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -141,9 +171,11 @@ namespace LearningLanguages.Controllers
                 NativeLearnLangCat = await _categories.GetTranslations(defaultLangId, defaultLangId, null);
             }
 
-            List<DTOTestResults> LearnLangCat = testResultsList
+            NativeLearnLang = NativeLearnLang.Where(x => x.UserId == currentUserId).ToList();
+
+            List<DTOTestResults> LearnLangCat = testResultQuery
                .Join(
-                   totalScoresList,
+                   totalScoresQuery,
                    testResult => testResult.LangId,
                    totalScore => totalScore.LangId,
                    (testResult, totalScore) => new DTOTestResults
@@ -154,12 +186,19 @@ namespace LearningLanguages.Controllers
                        SubCategoryName = NativeLearnLangSubCat.Find(item => item.Id == testResult.CategoryId).WordNativeLang,
                        CategoryName = NativeLearnLangCat.Find(item => testResult?.Category?.ParentId != null && item.Id == testResult?.Category?.ParentId).WordNativeLang,
                        TestDate = testResult.TestDate,
-                       Result = testResult.Result,
-                       Total = totalScore.Total
+                       Result = testResult.Result
                    }
             ).ToList();
 
-            return View("./Manage/Statistics", LearnLangCat);
+            DTOStatistics statistics = new DTOStatistics()
+            {
+                testResults = LearnLangCat,
+                LangList = NativeLearnLang,
+                CatList = NativeLearnLangCat,
+                SubCatList = NativeLearnLangSubCat
+            };
+
+            return View("./Manage/Statistics", statistics);
         }
 
         [HttpPost]

@@ -9,13 +9,19 @@ namespace DAL.IRepository
     {
         private Languages_bdContext db;
 
-        public TestTranslationsRepository()
-        {
-            this.db = new Languages_bdContext();
-        }
         public void Create(TestTranslations item)
         {
             throw new NotImplementedException();
+        }
+
+        public TestTranslationsRepository()
+        {
+            db = new Languages_bdContext(ConfigurateOptions.GetOptions());
+        }
+
+        public IEnumerable<TestTranslations> GetAll()
+        {
+            return db.TestTranslations;
         }
 
         public void Delete(int id)
