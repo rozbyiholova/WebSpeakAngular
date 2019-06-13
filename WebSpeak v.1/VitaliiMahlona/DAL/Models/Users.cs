@@ -11,8 +11,6 @@ namespace DAL.Models
             TotalScores = new HashSet<TotalScores>();
         }
 
-        //public string Id { get; set; }
-
         public virtual ICollection<TestResults> TestResults { get; set; }
         public virtual ICollection<TotalScores> TotalScores { get; set; }
     }

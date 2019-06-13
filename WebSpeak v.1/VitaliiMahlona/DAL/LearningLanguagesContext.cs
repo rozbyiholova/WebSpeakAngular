@@ -24,7 +24,6 @@ namespace DAL
         public virtual DbSet<TestTranslations> TestTranslations { get; set; }
         public virtual DbSet<Tests> Tests { get; set; }
         public virtual DbSet<TotalScores> TotalScores { get; set; }
-        //public new virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<WordTranslations> WordTranslations { get; set; }
         public virtual DbSet<Words> Words { get; set; }
 

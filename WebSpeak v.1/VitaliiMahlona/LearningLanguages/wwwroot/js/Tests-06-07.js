@@ -1,20 +1,19 @@
-﻿var totalResult = 0;
-var countOptions = 2;
+﻿var countOptions = 2;
 var correctAnswer = Math.random();
 var randomWord;
-var first = true;
-var questionNumber = 0;
-var totalQuestions = model.length;
-model = model.sort(compareRandom);
 
 check();
 
-function check() {
-    if (($("#resultInput").val() == correctAnswer)) {
+function check()
+{
+    if (($("#resultInput").val() == correctAnswer))
+    {
         $('#result').html(`<b>Score: ${++totalResult}</b>`);
     }
-    else if (($.trim($("#resultInput").val())) == 0) {
-        if (!first) {
+    else if (($.trim($("#resultInput").val())) == 0)
+    {
+        if (!first)
+        {
             $('#error').show();
             $('#error').text("Please fill out the field!");
 
@@ -26,29 +25,11 @@ function check() {
 
     $('#error').hide();
 
-    if (questionNumber == totalQuestions) {
-        $.ajax({
-            type: 'POST',
-            url: '/Home/Test',
-            data: {
-                totalResult,
-                subCategoryId,
-                testNumber
-            },
-            success: function (result) {
-                $('#test').hide();
-
-                var s = '<button type="submit" class="btn btn-primary" onclick="again()">Again</button>';
-
-                if (result.isUser) {
-                    s += `<a class="btn btn-secondary" href="/Account/Statistics" role="button">To general statistics</a>`;
-                }
-
-                $('.buttonSubmit').html(s);
-            }
-        })
-        return;
+    if (questionNumber == totalQuestions)
+    {
+        SendAjaxRequest();
     }
+
     questionNumber++;
 
     randomWord = GetTest();
@@ -57,14 +38,16 @@ function check() {
 
     var s = '';
 
-    if (testNumber == 6) {
+    if (testNumber == 6)
+    {
         s += `<div class="image">
                  <img src="../../../../${randomWord.picture}" alt="${randomWord.wordNativeLang}">
               </div>
              `;
     }
 
-    if (testNumber == 7) {
+    if (testNumber == 7)
+    {
         s += `<div class="audio">
                  <audio controls>
                     <source src="../../../../${randomWord.pronounceLearn}" type="audio/mpeg" />
@@ -84,16 +67,9 @@ function check() {
 }
 
 
-function GetTest() {
+function GetTest()
+{
     randomWord = model[questionNumber - 1];
 
     return randomWord;
-}
-
-function again() {
-    location.reload();
-}
-
-function compareRandom(a, b) {
-    return Math.random() - 0.5;
 }

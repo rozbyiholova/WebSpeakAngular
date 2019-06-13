@@ -1,0 +1,53 @@
+﻿div.languages, div.categories, div.subCategories, div.tests {
+    border: 1px solid #CCC;
+    box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);
+    cursor: pointer;
+    vertical-align: middle;
+    max-width: 100%;
+    padding: 5px;
+    text-align: center;
+}
+
+div.languages.active, div.categories.active, div.subCategories.active, div.tests.active {
+    padding: 0px;
+}
+
+div.languages.active {
+    background: #D4F4D4;
+}
+
+div.categories.active {
+    background: #B1F4B1;
+}
+
+div.subCategories.active {
+    background: #88F488;
+}
+
+div.tests.active {
+    background: #4AF94A;
+}
+
+div.languages:active, div.categories:active, div.subCategories:active, div.tests:active {
+    box-shadow: 0 0 5px -1px rgba(0,0,0,1);
+}
+
+div.categories, div.subCategories, div.testResults, div.tests {
+    display: none;
+}
+
+div.categories {
+    background: #E2F1E2;
+}
+
+div.subCategories {
+    background: #C9D5C9;
+}
+
+div.tests {
+    background: #8D988D;
+}
+
+div.testResults {
+    background: #717971;
+}

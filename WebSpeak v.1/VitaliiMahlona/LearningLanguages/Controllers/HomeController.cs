@@ -17,10 +17,6 @@ namespace LearningLanguages.Controllers
 {
     public class HomeController : Controller
     {
-        //private readonly UserManager<Users> _userManager;
-
-        //private readonly SignInManager<Users> _signInManager;
-
         IRepository<Categories> _categories = new CategoriesRepository();
 
         IRepository<Languages> _languages = new LanguagesRepository();
@@ -70,7 +66,7 @@ namespace LearningLanguages.Controllers
             int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
             int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
 
-            List<DTO> NativeLearnLangSubCat =await _categories.GetTranslations(idLangLearn, idLangNative, id);
+            List<DTO> NativeLearnLangSubCat = await _categories.GetTranslations(idLangLearn, idLangNative, id);
 
             return View(NativeLearnLangSubCat);
         }
@@ -154,7 +150,10 @@ namespace LearningLanguages.Controllers
         {
             string currentUserId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (String.IsNullOrEmpty(currentUserId)) return new JsonResult(new { totalResult, isUser = false });
+            if (String.IsNullOrEmpty(currentUserId))
+            {
+                return new JsonResult(new { totalResult, isUser = false });
+            }
 
             int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
             DateTime testDate = DateTime.Now;
@@ -176,7 +175,11 @@ namespace LearningLanguages.Controllers
             var totalScoresQuery = totalScoresList.Where(x => x.UserId == currentUserId && x.LangId == idLangLearn);
 
             int maxTestResultBefore = -1;
-            if (testResultQuery.Any()) maxTestResultBefore = testResultQuery.Max(x => x.Result);
+
+            if (testResultQuery.Any())
+            {
+                maxTestResultBefore = testResultQuery.Max(x => x.Result);
+            }
 
             _testResults.Create(testResult);
 

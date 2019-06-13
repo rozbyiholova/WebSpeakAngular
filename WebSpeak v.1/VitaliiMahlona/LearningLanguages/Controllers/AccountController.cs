@@ -18,6 +18,7 @@ namespace LearningLanguages.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<Users> _userManager;
+         
         private readonly SignInManager<Users> _signInManager;
 
         IRepository<Categories> _categories = new CategoriesRepository();
@@ -86,6 +87,7 @@ namespace LearningLanguages.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+
                 if (result.Succeeded)
                 {
                     if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
@@ -148,8 +150,15 @@ namespace LearningLanguages.Controllers
             int idLangNative = -1;
             int defaultLangId = 3;
 
-            if (HttpContext?.Session?.GetInt32("idLangLearn") != null) idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
-            if (HttpContext?.Session?.GetInt32("idLangLearn") != null) idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
+            if (HttpContext?.Session?.GetInt32("idLangLearn") != null)
+            {
+                idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
+            }
+
+            if (HttpContext?.Session?.GetInt32("idLangLearn") != null)
+            {
+                idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
+            }
 
             List<DTO> NativeLearnLangTests;
             List<DTO> NativeLearnLang;
@@ -184,7 +193,8 @@ namespace LearningLanguages.Controllers
                        TestName = NativeLearnLangTests.Find(item => item.Id == testResult.TestId).WordNativeLang,
                        LangName = NativeLearnLang.Find(item => item.Id == testResult.LangId).WordNativeLang,
                        SubCategoryName = NativeLearnLangSubCat.Find(item => item.Id == testResult.CategoryId).WordNativeLang,
-                       CategoryName = NativeLearnLangCat.Find(item => testResult?.Category?.ParentId != null && item.Id == testResult?.Category?.ParentId).WordNativeLang,
+                       CategoryName = NativeLearnLangCat.Find(item => testResult?.Category?.ParentId != null && 
+                                                                      item.Id == testResult?.Category?.ParentId).WordNativeLang,
                        TestDate = testResult.TestDate,
                        Result = testResult.Result
                    }
@@ -199,6 +209,54 @@ namespace LearningLanguages.Controllers
             };
 
             return View("./Manage/Statistics", statistics);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ChangePassword()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            return View("./Manage/ChangePassword");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("./Manage/ChangePassword");
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            string oldPassword = Convert.ToString(model.OldPassword);
+            string newPassword = Convert.ToString(model.NewPassword);
+
+            var changePasswordResult = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+
+            if (!changePasswordResult.Succeeded)
+            {
+                foreach (var error in changePasswordResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+
+                return View("./Manage/ChangePassword");
+            }
+
+            await _signInManager.RefreshSignInAsync(user);
+
+            return RedirectToAction("ChangePassword", "Account");
         }
 
         [HttpPost]
