@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DAL.Models;
 using Microsoft.EntityFrameworkCore;
@@ -65,7 +66,7 @@ namespace DAL.Repositories
             GC.SuppressFinalize(this);
         }
 
-        Task<List<DTO>> IRepository<WordTranslations>.GetTranslations(int idLangLearn, int idLangNative, int? parentId)
+        public Task<List<DTO>> GetTranslations(int idLangLearn, int idLangNative, int? parentId)
         {
             throw new NotImplementedException();
         }
@@ -73,6 +74,11 @@ namespace DAL.Repositories
         public Task<WordTranslations> GetItem(string value)
         {
             throw new NotImplementedException();
+        }
+
+        public IQueryable<WordTranslations> GetAll()
+        {
+            return db.WordTranslations;
         }
     }
 }

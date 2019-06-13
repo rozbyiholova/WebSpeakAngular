@@ -25,6 +25,8 @@ namespace LearningLanguages.Controllers
 
         IRepository<Languages> _languages = new LanguagesRepository();
 
+        IRepository<LanguageTranslations> _languageTranslations = new LanguageTranslationsRepository();
+
         IRepository<Words> _words = new WordsRepository();
 
         IRepository<Tests> _tests = new TestsRepository();
@@ -140,11 +142,8 @@ namespace LearningLanguages.Controllers
         {
             string currentUserId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var testResultsList = await _testResults.GetList();
-            var totalScoresList = await _totalScores.GetList();
-
-            var testResultQuery = testResultsList.Where(x => x.UserId == currentUserId);
-            var totalScoresQuery = totalScoresList.Where(x => x.UserId == currentUserId);
+            var testResultQuery = _testResults.GetAll().Where(x => x.UserId == currentUserId);
+            var totalScoresQuery = _totalScores.GetAll().Where(x => x.UserId == currentUserId);
 
             int idLangLearn = -1;
             int idLangNative = -1;
@@ -160,29 +159,49 @@ namespace LearningLanguages.Controllers
                 idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
             }
 
+            List<DTO> NativeLearnLang = await _languages.GetAll()
+                .Join(
+                    _languageTranslations.GetAll().Where(s => s.LangId == idLangNative),
+                    lang => lang.Id,
+                    langTrans => langTrans.LangId,
+                    (lang, langTrans) => new DTO
+                    {
+                        Id = langTrans.NativeLangId,
+                        WordNativeLang = langTrans.Translation,
+                    }
+                )
+                .Join(
+                    _totalScores.GetAll(),
+                    lang => lang.Id,
+                    total => total.LangId,
+                    (lang, total) => new DTO
+                    {
+                        Id = lang.Id,
+                        WordNativeLang = lang.WordNativeLang,
+                        Total = total.Total,
+                        UserId = total.UserId
+                    }
+                )
+               .Where(x => x.UserId == currentUserId).Distinct().ToListAsync();
+
             List<DTO> NativeLearnLangTests;
-            List<DTO> NativeLearnLang;
             List<DTO> NativeLearnLangSubCat;
             List<DTO> NativeLearnLangCat;
 
             if (idLangLearn != -1 && idLangNative != -1)
             {
                 NativeLearnLangTests = await _tests.GetTranslations(idLangLearn, idLangNative, null);
-                NativeLearnLang = await _languages.GetTranslations(idLangLearn, idLangNative, null);
                 NativeLearnLangSubCat = await _categories.GetTranslations(idLangLearn, idLangNative, -1);
                 NativeLearnLangCat = await _categories.GetTranslations(idLangLearn, idLangNative, null);
             }
             else
             {
                 NativeLearnLangTests = await _tests.GetTranslations(defaultLangId, defaultLangId, null);
-                NativeLearnLang = await _languages.GetTranslations(defaultLangId, defaultLangId, null);
                 NativeLearnLangSubCat = await _categories.GetTranslations(defaultLangId, defaultLangId, -1);
                 NativeLearnLangCat = await _categories.GetTranslations(defaultLangId, defaultLangId, null);
             }
 
-            NativeLearnLang = NativeLearnLang.Where(x => x.UserId == currentUserId).ToList();
-
-            List<DTOTestResults> LearnLangCat = testResultQuery
+            List<DTOTestResults> LearnLangCat = await testResultQuery
                .Join(
                    totalScoresQuery,
                    testResult => testResult.LangId,
@@ -193,12 +212,11 @@ namespace LearningLanguages.Controllers
                        TestName = NativeLearnLangTests.Find(item => item.Id == testResult.TestId).WordNativeLang,
                        LangName = NativeLearnLang.Find(item => item.Id == testResult.LangId).WordNativeLang,
                        SubCategoryName = NativeLearnLangSubCat.Find(item => item.Id == testResult.CategoryId).WordNativeLang,
-                       CategoryName = NativeLearnLangCat.Find(item => testResult?.Category?.ParentId != null && 
-                                                                      item.Id == testResult?.Category?.ParentId).WordNativeLang,
+                       CategoryName = NativeLearnLangCat.Find(item => item.Id == testResult.Category.ParentId).WordNativeLang,
                        TestDate = testResult.TestDate,
                        Result = testResult.Result
                    }
-            ).ToList();
+            ).ToListAsync();
 
             DTOStatistics statistics = new DTOStatistics()
             {

@@ -66,39 +66,19 @@ namespace DAL.Repositories
             GC.SuppressFinalize(this);
         }
 
-        public async Task<List<DTO>> GetTranslations(int idLangLearn, int idLangNative, int? parentId)
+        public Task<List<DTO>> GetTranslations(int idLangLearn, int idLangNative, int? parentId)
         {
-            List<DTO> NativeLearnLang = await db.Languages
-                .Join(
-                    db.LanguageTranslations.Where(s => s.LangId == idLangNative),
-                    lang => lang.Id,
-                    langTrans => langTrans.LangId,
-                    (lang, langTrans) => new DTO
-                    {
-                        Id = langTrans.NativeLangId,
-                        WordNativeLang = langTrans.Translation,
-                    }
-                )
-                .Join(
-                    db.TotalScores,
-                    lang => lang.Id,
-                    total => total.LangId,
-                    (lang, total) => new DTO
-                    {
-                        Id = lang.Id,
-                        WordNativeLang = lang.WordNativeLang,
-                        Total = total.Total,
-                        UserId = total.UserId
-                    }
-                )
-               .Distinct().ToListAsync();
-
-            return NativeLearnLang;
+            throw new NotImplementedException();
         }
 
         public Task<Languages> GetItem(string value)
         {
             throw new NotImplementedException();
+        }
+
+        public IQueryable<Languages> GetAll()
+        {
+            return db.Languages;
         }
     }
 }

@@ -137,5 +137,10 @@ namespace DAL.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public IQueryable<Categories> GetAll()
+        {
+            return db.Categories;
+        }
     }
 }

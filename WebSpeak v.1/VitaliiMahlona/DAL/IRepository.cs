@@ -1,6 +1,7 @@
 ﻿using DAL.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,6 +12,7 @@ namespace DAL
     {
         Task<IEnumerable<T>> GetList(); 
         Task<T> GetItem(int id);
+        IQueryable<T> GetAll();
         void Create(T item); 
         void Update(T item); 
         void Delete(int id); 
