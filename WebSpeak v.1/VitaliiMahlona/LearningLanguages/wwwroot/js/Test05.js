@@ -13,6 +13,8 @@ function check(event)
     if (questionNumber == totalQuestions)
     {
         SendAjaxRequest();
+
+        return;
     }
 
     questionNumber++;

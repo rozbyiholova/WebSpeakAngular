@@ -45,8 +45,6 @@ function SendAjaxRequest()
             $('.buttonSubmit').html(s);
         }
     })
-
-    return;
 }
 
 function GetTestRandom()

@@ -1,0 +1,71 @@
+﻿@model DTOStatistics
+@inject SignInManager<Users> SignInManager
+@inject UserManager<Users> UserManager
+
+@{
+    ViewData["Title"] = "Rating";
+    ViewData["ActivePage"] = ManageNavPages.Rating;
+}
+
+@{
+    Layout = "~/Views/Account/Manage/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/Rating.css" />
+<div id="totalRating">
+    @{ 
+        int idLine = 1;
+    }
+
+    @foreach (var item in Model.LangList.GroupBy(x => x.UserId).Select(g => new { UserId = g.Key, Total = g.Sum(x => x.Total) }).OrderByDescending(o => o.Total).ToList())
+    {
+        <div class="languages">
+            @{
+                string UserEmail = (await UserManager.FindByIdAsync(item.UserId)).Email;
+            }
+            @idLine:  @UserEmail - @item.Total
+        </div>
+        idLine++;
+    }
+
+    @{
+        List<string> langs = new List<string>();
+
+        @foreach (var item in Model.LangList)
+        {
+            langs.Add(item.WordNativeLang);
+        }
+
+        HashSet<string> uniqueLangs = new HashSet<string>(langs);
+    }
+</div>
+
+<div id="totalRatingLang">
+    @foreach (var lang in Model.LangList)
+    {
+        if (!uniqueLangs.Contains(lang.WordNativeLang))
+        {
+            continue;
+        }
+        else
+        {
+            uniqueLangs.Remove(lang.WordNativeLang);
+        }
+
+        <div class="languages text-dark" id="@lang.Id">
+            @lang.WordNativeLang
+
+            @foreach (var item in Model.LangList.Where(item => item.WordNativeLang == lang.WordNativeLang).OrderByDescending(o => o.Total).ToList())
+            {
+                <div class="users" id="@lang.Id">
+                    @{
+                        string UserEmail = (await UserManager.FindByIdAsync(item.UserId)).Email;
+                    }
+                    @UserEmail - @item.Total
+                </div>
+            }
+
+        </div>
+    }
+</div>
+    <script src="~/js/Rating.js"></script>

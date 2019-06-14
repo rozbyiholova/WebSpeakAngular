@@ -145,19 +145,8 @@ namespace LearningLanguages.Controllers
             var testResultQuery = _testResults.GetAll().Where(x => x.UserId == currentUserId);
             var totalScoresQuery = _totalScores.GetAll().Where(x => x.UserId == currentUserId);
 
-            int idLangLearn = -1;
-            int idLangNative = -1;
-            int defaultLangId = 3;
-
-            if (HttpContext?.Session?.GetInt32("idLangLearn") != null)
-            {
-                idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
-            }
-
-            if (HttpContext?.Session?.GetInt32("idLangLearn") != null)
-            {
-                idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
-            }
+            int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
+            int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
 
             List<DTO> NativeLearnLang = await _languages.GetAll()
                 .Join(
@@ -188,18 +177,9 @@ namespace LearningLanguages.Controllers
             List<DTO> NativeLearnLangSubCat;
             List<DTO> NativeLearnLangCat;
 
-            if (idLangLearn != -1 && idLangNative != -1)
-            {
-                NativeLearnLangTests = await _tests.GetTranslations(idLangLearn, idLangNative, null);
-                NativeLearnLangSubCat = await _categories.GetTranslations(idLangLearn, idLangNative, -1);
-                NativeLearnLangCat = await _categories.GetTranslations(idLangLearn, idLangNative, null);
-            }
-            else
-            {
-                NativeLearnLangTests = await _tests.GetTranslations(defaultLangId, defaultLangId, null);
-                NativeLearnLangSubCat = await _categories.GetTranslations(defaultLangId, defaultLangId, -1);
-                NativeLearnLangCat = await _categories.GetTranslations(defaultLangId, defaultLangId, null);
-            }
+            NativeLearnLangTests = await _tests.GetTranslations(idLangLearn, idLangNative, null);
+            NativeLearnLangSubCat = await _categories.GetTranslations(idLangLearn, idLangNative, -1);
+            NativeLearnLangCat = await _categories.GetTranslations(idLangLearn, idLangNative, null);
 
             List<DTOTestResults> LearnLangCat = await testResultQuery
                .Join(
@@ -275,6 +255,47 @@ namespace LearningLanguages.Controllers
             await _signInManager.RefreshSignInAsync(user);
 
             return RedirectToAction("ChangePassword", "Account");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Rating()
+        {
+            var totalScoresQuery = _totalScores.GetAll();
+
+            int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
+            int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
+
+            List<DTO> NativeLearnLang = await _languages.GetAll()
+                .Join(
+                    _languageTranslations.GetAll().Where(s => s.LangId == idLangNative),
+                    lang => lang.Id,
+                    langTrans => langTrans.LangId,
+                    (lang, langTrans) => new DTO
+                    {
+                        Id = langTrans.NativeLangId,
+                        WordNativeLang = langTrans.Translation,
+                    }
+                ).Distinct()
+                .Join(
+                    _totalScores.GetAll(),
+                    lang => lang.Id,
+                    total => total.LangId,
+                    (lang, total) => new DTO
+                    {
+                        Id = lang.Id,
+                        WordNativeLang = lang.WordNativeLang,
+                        Total = total.Total,
+                        UserId = total.UserId
+                    }
+                )
+               .Distinct().ToListAsync();
+
+            DTOStatistics statistics = new DTOStatistics()
+            {
+                LangList = NativeLearnLang
+            };
+
+            return View("./Manage/Rating", statistics);
         }
 
         [HttpPost]

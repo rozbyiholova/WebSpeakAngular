@@ -18,6 +18,8 @@ function check(cancel)
         if (questionNumber == totalQuestions)
         {
             SendAjaxRequest();
+
+            return;
         }
 
         GetTest();

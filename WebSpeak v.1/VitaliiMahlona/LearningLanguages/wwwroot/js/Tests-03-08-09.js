@@ -27,6 +27,8 @@ function check()
     if (questionNumber == totalQuestions)
     {
         SendAjaxRequest();
+
+        return;
     }
 
     questionNumber++;
