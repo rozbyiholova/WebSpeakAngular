@@ -5,6 +5,8 @@ namespace LearningLanguages.Models
 {
     public static class ManageNavPages
     {
+        public static string PersonalInfo => "PersonalInfo";
+
         public static string Rating => "Rating";
 
         public static string Statistics => "Statistics";
@@ -18,6 +20,8 @@ namespace LearningLanguages.Models
         public static string PersonalData => "PersonalData";
 
         public static string TwoFactorAuthentication => "TwoFactorAuthentication";
+
+        public static string PersonalInfoNavClass(ViewContext viewContext) => PageNavClass(viewContext, PersonalInfo);
 
         public static string RatingNavClass(ViewContext viewContext) => PageNavClass(viewContext, Rating);
 

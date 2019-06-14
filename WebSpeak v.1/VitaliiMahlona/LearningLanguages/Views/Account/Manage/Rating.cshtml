@@ -20,10 +20,14 @@
     @foreach (var item in Model.LangList.GroupBy(x => x.UserId).Select(g => new { UserId = g.Key, Total = g.Sum(x => x.Total) }).OrderByDescending(o => o.Total).ToList())
     {
         <div class="languages">
+
             @{
-                string UserEmail = (await UserManager.FindByIdAsync(item.UserId)).Email;
+                var user = await UserManager.FindByIdAsync(item.UserId);
+                string firstName = user.FirstName;
+                string lastName = user.LastName;
             }
-            @idLine:  @UserEmail - @item.Total
+
+            @idLine:  @firstName @lastName - @item.Total
         </div>
         idLine++;
     }
@@ -58,10 +62,14 @@
             @foreach (var item in Model.LangList.Where(item => item.WordNativeLang == lang.WordNativeLang).OrderByDescending(o => o.Total).ToList())
             {
                 <div class="users" id="@lang.Id">
-                    @{
-                        string UserEmail = (await UserManager.FindByIdAsync(item.UserId)).Email;
-                    }
-                    @UserEmail - @item.Total
+
+                @{
+                    var user = await UserManager.FindByIdAsync(item.UserId);
+                    string firstName = user.FirstName;
+                    string lastName = user.LastName;
+                }
+
+                @firstName @lastName - @item.Total
                 </div>
             }
 
