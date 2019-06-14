@@ -18,7 +18,7 @@ namespace LearningLanguages.Controllers
 {
     public class AccountController : Controller
     {
-        public ExternalLoginViewModel externalLoginViewModel { get; set; }
+        public ExternalLoginViewModel externalLoginViewModel = new ExternalLoginViewModel();
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
@@ -152,12 +152,13 @@ namespace LearningLanguages.Controllers
         [HttpPost]
         public IActionResult ExternalLogin(string provider, string returnUrl = null)
         {
-            var redirectUrl = Url.Action("Callback", values: new { returnUrl });
+            var redirectUrl = Url.Action("Callback", new { returnUrl });
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
 
             return new ChallengeResult(provider, properties);
         }
 
+        [HttpGet]
         public async Task<IActionResult> Callback(string returnUrl = null, string remoteError = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
@@ -165,7 +166,7 @@ namespace LearningLanguages.Controllers
             if (remoteError != null)
             {
                 ErrorMessage = $"Error from external provider: {remoteError}";
-                return RedirectToAction("./Login", new { ReturnUrl = returnUrl });
+                return RedirectToAction("Login", new { ReturnUrl = returnUrl });
             }
 
             var info = await _signInManager.GetExternalLoginInfoAsync();
@@ -173,7 +174,7 @@ namespace LearningLanguages.Controllers
             if (info == null)
             {
                 ErrorMessage = "Error loading external login information.";
-                return RedirectToAction("./Login", new { ReturnUrl = returnUrl });
+                return RedirectToAction("Login", new { ReturnUrl = returnUrl });
             }
 
             // Sign in the user with this external login provider if the user already has a login.
@@ -203,6 +204,49 @@ namespace LearningLanguages.Controllers
                 }
                 return View("./ExternalLogin",externalLoginViewModel);
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Callback(ExternalLoginViewModel externalLoginViewModel)
+        {
+            externalLoginViewModel.ReturnUrl = externalLoginViewModel.ReturnUrl ?? Url.Content("~/");
+
+            // Get the information about the user from the external login provider
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+
+            if (info == null)
+            {
+                ErrorMessage = "Error loading external login information during confirmation.";
+
+                return RedirectToAction("Login", new { externalLoginViewModel.ReturnUrl });
+            }
+
+            if (ModelState.IsValid)
+            {
+                var user = new Users { UserName = externalLoginViewModel.Email, Email = externalLoginViewModel.Email };
+                var result = await _userManager.CreateAsync(user);
+
+                if (result.Succeeded)
+                {
+                    result = await _userManager.AddLoginAsync(user, info);
+
+                    if (result.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+
+                        return LocalRedirect(externalLoginViewModel.ReturnUrl);
+                    }
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
+            externalLoginViewModel.LoginProvider = info.LoginProvider;
+
+            return View("./ExternalLogin", externalLoginViewModel);
         }
 
         [HttpGet]
