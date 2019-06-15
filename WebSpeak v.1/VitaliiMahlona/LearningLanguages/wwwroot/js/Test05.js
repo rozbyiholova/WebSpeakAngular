@@ -7,11 +7,15 @@ function check(event)
 {
     if ((event != null) && (event.target.value == correctAnswer))
     {
-        $('#result').html(`<b>Score: ${++totalResult}</b>`);
+        ++totalResult;
     }
+
+    $('#result').html(`<b>Score: ${totalResult}  Question ${questionNumber + 1}/${totalQuestions}</b>`);
 
     if (questionNumber == totalQuestions)
     {
+        $('#result').html(`<b>Score: ${totalResult}  Total Question : ${totalQuestions}</b>`);
+
         SendAjaxRequest();
 
         return;

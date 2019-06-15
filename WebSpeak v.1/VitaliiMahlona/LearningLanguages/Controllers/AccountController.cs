@@ -13,17 +13,18 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using Microsoft.AspNetCore.Authentication;
+using System.IO;
 
 namespace LearningLanguages.Controllers
 {
     public class AccountController : Controller
     {
-        public ExternalLoginViewModel externalLoginViewModel = new ExternalLoginViewModel();
+        private ExternalLoginViewModel externalLoginViewModel = new ExternalLoginViewModel();
 
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }
+        private IList<AuthenticationScheme> ExternalLogins { get; set; }
 
         [TempData]
-        public string ErrorMessage { get; set; }
+        private string ErrorMessage { get; set; }
 
         private readonly UserManager<Users> _userManager;
          
@@ -65,10 +66,20 @@ namespace LearningLanguages.Controllers
                 Users user = new Users
                 {
                     Email = model.Email,
-                    UserName = model.Email,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName
+                    UserName = model.Email
                 };
+
+                if (model.Avatar != null)
+                {
+                    byte[] imageData = null;
+
+                    using (var binaryReader = new BinaryReader(model.Avatar.OpenReadStream()))
+                    {
+                        imageData = binaryReader.ReadBytes((int)model.Avatar.Length);
+                    }
+
+                    user.Avatar = imageData;
+                }
 
                 var addedUser = await _userManager.CreateAsync(user, model.Password);
 
@@ -410,12 +421,14 @@ namespace LearningLanguages.Controllers
             var email = await _userManager.GetEmailAsync(user);
             var firstName = user.FirstName;
             var lastName = user.LastName;
+            var username = user.UserName;
 
             PersonalInfoViewModel personalInfo = new PersonalInfoViewModel
             {
                 Email = email,
                 FirstName = firstName,
-                LastName = lastName
+                LastName = lastName,
+                Username = username
             };
 
             return View("./Manage/PersonalInfo", personalInfo);
@@ -451,6 +464,7 @@ namespace LearningLanguages.Controllers
 
             string firstName = Convert.ToString(model.FirstName);
             string lastName = Convert.ToString(model.LastName);
+            string username = Convert.ToString(model.Username);
 
             if (firstName != user.FirstName)
             {
@@ -460,6 +474,23 @@ namespace LearningLanguages.Controllers
             if (lastName != user.LastName)
             {
                 user.LastName = lastName;
+            }
+
+            if (username != user.UserName)
+            {
+                user.UserName = username;
+            }
+
+            if (model.Avatar != null)
+            {
+                byte[] imageData = null;
+
+                using (var binaryReader = new BinaryReader(model.Avatar.OpenReadStream()))
+                {
+                    imageData = binaryReader.ReadBytes((int)model.Avatar.Length);
+                }
+
+                user.Avatar = imageData;
             }
 
             await _userManager.UpdateAsync(user);
@@ -509,7 +540,7 @@ namespace LearningLanguages.Controllers
 
             return View("./Manage/Rating", statistics);
         }
-
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LogOff()

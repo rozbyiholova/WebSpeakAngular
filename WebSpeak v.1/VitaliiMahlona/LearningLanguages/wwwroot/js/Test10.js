@@ -12,11 +12,12 @@ check(false);
 
 function check(cancel)
 {
-    result = 0;
     if (cancel == false)
     {
         if (questionNumber == totalQuestions)
         {
+            $('#result').html(`<b>Score: ${totalResult}  Total Question : ${totalQuestions / countOptions}</b>`);
+
             SendAjaxRequest();
 
             return;
@@ -27,7 +28,9 @@ function check(cancel)
         randomTestWordsId.sort(compareRandom);
     }
 
-    $('#result').html(`<b>Score: ${totalResult}</b>`);
+    $('#result').html(`<b>Score: ${totalResult += result}  Question ${Math.floor((questionNumber + countOptions) / countOptions)}/${totalQuestions / countOptions}</b>`);
+
+    result = 0;
 
     $('.buttonSubmit').html(`<button type="button" class="btn btn-primary" onclick="next()">Next</button>
                              <button type="button" class="btn btn-danger" onclick="cancel()">Cancel</button>
@@ -80,7 +83,7 @@ function next()
 
         if ($("[name=leftColumn]:checked").val() == $("[name=rightColumn]:checked").val())
         {
-            $('#result').html(`<b>Score: ${++totalResult}</b>`);
+            $('#result').html(`<b>Score: ${totalResult}  Question ${Math.floor((questionNumber + countOptions - 1) / countOptions)}/${totalQuestions / countOptions}</b>`);
             result++;
         }
 
@@ -108,8 +111,8 @@ function next()
 
 function cancel()
 {
-    totalResult -= result;
     questionNumber -= result;
+    result = 0;
     numberQA = 0;
     check(true);
 }

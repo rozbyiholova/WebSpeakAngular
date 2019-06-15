@@ -15,6 +15,8 @@ namespace DAL.Models
 
         public string LastName { get; set; }
 
+        public byte[] Avatar { get; set; }
+
         public virtual ICollection<TestResults> TestResults { get; set; }
         public virtual ICollection<TotalScores> TotalScores { get; set; }
     }

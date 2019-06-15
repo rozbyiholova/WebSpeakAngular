@@ -14,7 +14,7 @@ function check()
 {
     if (($("[type=radio]:checked").val() == correctAnswer))
     {
-        $('#result').html(`<b>Score: ${++totalResult}</b>`);
+        ++totalResult;
     }
     else if (($("[type=radio]:checked").val() == undefined))
     {
@@ -29,10 +29,14 @@ function check()
         first = false;
     }
 
+    $('#result').html(`<b>Score: ${totalResult}  Question ${questionNumber + 1}/${totalQuestions}</b>`);
+
     $('#error').hide();
 
     if (questionNumber == totalQuestions)
     {
+        $('#result').html(`<b>Score: ${totalResult}  Total Question : ${totalQuestions}</b>`);
+
         SendAjaxRequest();
 
         return;
