@@ -63,20 +63,6 @@ namespace WebSpeak.Controllers
             string viewName = String.Format("Test{0}", testID);
             return View(viewName, Words);
         }
-
-        [HttpPost]
-        public IActionResult Result(object testResult)
-        {
-            TestResultViewModel model = JsonConvert.DeserializeObject<TestResultViewModel>(testResult.ToString());
-            return View(testResult);
-        }
-
-       //public IActionResult Result(int score)
-       // {
-       //     CategoriesTranslationsRepository categoriesTranslations = new CategoriesTranslationsRepository();
-       //     string categoryName = categoriesTranslations.GetById(SubcategoryId).Translation;
-       //     Tuple<string, int> result = new Tuple<string, int>(categoryName, score);
-       //     return View(result);
-       // }
+        
     }
 }

@@ -22,24 +22,25 @@ function InitNewTest(categoriesArray, picturesCount, textCount, soundsCount) {
 }
 
 function NextTest() {
-
     if (info.currentIndex < info.categories.length) {
         LoadPictures();
         LoadText();
+        LoadSounds();
         info.indexIncrease();
     } else {
-        GenerateResult(this.testResult);
+        GenerateResult(testResult);
     }
 }
 
 function LoadPictures() {
 
+    let picturesInfo = this.info;
+    if (picturesInfo.picturesCount < 1) { return; }
+
     const TEST_IMAGES = "test_images";
     var test_images = document.getElementsByClassName(TEST_IMAGES)[0];
     $("." + TEST_IMAGES).empty();
-
-    var picturesInfo = this.info;
-
+    
     var selectedCategories = new Array();
 
     var categoriesLength = picturesInfo.categories.length;
@@ -55,25 +56,40 @@ function LoadPictures() {
     }  
     shuffle(selectedCategories);
     for (let j = 0; j < selectedCategories.length; j++) {
+
         var category = selectedCategories[j];
-        var div = document.createElement('div');
-        div.className = "col-md-6"
+
+        var radio = document.createElement('input');
+        radio.type = "radio";
+        let IdText = "rd" + j;
+        radio.id = IdText
+        var label = document.createElement('label');
+        label.for = IdText;
+
         var img = document.createElement('img');
         img.src = '../../' + category.picture;
         img.className = "img-fluid";
         img.alt = category.translation;
-        img.onclick = function () { CheckPictureWithText(this) };
-        div.appendChild(img);
-        test_images.appendChild(div);
+
+        label.appendChild(img);
+        test_images.appendChild(radio);
+        test_images.appendChild(label);
+
+        $('.' + TEST_IMAGES + ' input:radio').addClass('input_hidden');
+        $('.' + TEST_IMAGES + ' label').click(function () {
+            $(this).addClass('selected').siblings().removeClass('selected');
+        });
     }
 }
 
 function LoadText() {
+    let textInfo = info;
+    if (textInfo.textsCount < 1) { return; }
+
     const TEST_WORD = "test_word";
     let test_word = document.getElementsByClassName(TEST_WORD)[0];
     $("." + TEST_WORD).empty();
 
-    let textInfo = this.info;
     let indexes = new Array();
     indexes[0] = textInfo.currentIndex;
 
@@ -87,6 +103,7 @@ function LoadText() {
         }
     }
 
+    shuffle(indexes);
     for (let j = 0; j < indexes.length; j++) {
 
         let text = textInfo.categories[indexes[j]].translation;
@@ -95,30 +112,41 @@ function LoadText() {
         h3.appendChild(textNode);
         test_word.appendChild(h3);
     }
-
-
-
 }
 
-function CheckPictureWithText(picture) {
-    const TEST_WORD = "test_word";
-    let test_word_div = document.getElementsByClassName(TEST_WORD)[0];
-    let word = test_word_div.childNodes[0].innerText;
+function LoadSounds() {
+    let soundsInfo = this.info;
+    let count = soundsInfo.soundsCount;
+    if (count < 1 || count > 4) { return; }
 
-    if (picture.alt == word) {
-        this.info.increaseScore();
-        this.testResult.QuestionNames.push(word);
-        this.testResult.QuestionResults.push(true);
-        NextTest();
-    } else {
-        this.testResult.QuestionNames.push(word);
-        this.testResult.QuestionResults.push(false);
-        NextTest();
+    const TEST_SOUNDS = "test_sounds";
+    let sounds = document.querySelector('.' + TEST_SOUNDS);
+    $('.' + TEST_SOUNDS).empty();
+
+    let indexes = new Array();
+    indexes[0] = soundsInfo.currentIndex;
+
+    let i = 1;
+    while (i < count) {
+        let randomIndex = getRandomInt(0, 2);
+        if (!indexes.includes(randomIndex)) {
+            indexes.push(randomIndex);
+            i++;
+        }
     }
-}
+
+    shuffle(indexes);
+    for (let k = 0; k < indexes.length; k++) {
+
+        console.log(soundsInfo.categories[indexes[k]]);
+        let pronounce = soundsInfo.categories[indexes[k]].translationPronounce;
+        let html = '<audio controls="controls" src="../../' + pronounce + '" type="audio/mpeg">';
+        sounds.innerHTML += html;
+    }
+} //do checking
 
 function GenerateResult(result) {
-    
+     
     if (result != null) {
         const TEST = "test";
         const TEST_RESULT = "test_result";
@@ -127,9 +155,6 @@ function GenerateResult(result) {
         let names = result.QuestionNames;
         let testResults = result.QuestionResults;
 
-
-        console.log(test_div);
-        console.log(testResult_div);
         test_div.style.display = "none";
         testResult_div.setAttribute("style", "display: block;");
 
@@ -137,8 +162,8 @@ function GenerateResult(result) {
 
         for (let i = 0; i < result.GetLength(); i++) {
             let tr = document.createElement('tr');
-            let NameTextNode = document.createTextNode(result.QuestionNames[i]);
-            let ResultTextNode = document.createTextNode(result.QuestionResults[i]);
+            let NameTextNode = document.createTextNode(names[i]);
+            let ResultTextNode = document.createTextNode(testResults[i]);
 
             let tdName = document.createElement('td');
             let tdResult = document.createElement('td');
@@ -164,6 +189,57 @@ function GenerateResult(result) {
     }
 }
 
+function CheckPictureWithText() {
+
+    const TEST_WORD = "test_word";
+    let test_word_div = document.querySelector('.' + TEST_WORD);
+    let word = test_word_div.childNodes[0].innerText;
+    let selectedLabel = document.querySelector('.selected');
+
+    if (selectedLabel != undefined && word != undefined) {
+    let picture = selectedLabel.childNodes[0];
+        if (picture.alt == word) {
+            info.increaseScore();
+            testResult.QuestionNames.push(word);
+            testResult.QuestionResults.push(true);
+            selectedLabel.classList.remove('selected');
+            NextTest();
+        } else {
+            testResult.QuestionNames.push(word);
+            testResult.QuestionResults.push(false);
+            selectedLabel.classList.remove('selected');
+            NextTest();
+        }
+    } else {
+        alert("Nothing selected. Please select any item");
+    }    
+}
+
+function CheckPictureWithSound() {
+    const TEST_SOUND = "test_sound";
+    let test_word_div = document.querySelector('.' + TEST_WORD);
+    let word = test_word_div.childNodes[0].innerText;
+    let selectedLabel = document.querySelector('.selected');
+
+    if (selectedLabel != undefined && word != undefined) {
+        let picture = selectedLabel.childNodes[0];
+        if (picture.alt == word) {
+            info.increaseScore();
+            testResult.QuestionNames.push(word);
+            testResult.QuestionResults.push(true);
+            selectedLabel.classList.remove('selected');
+            NextTest();
+        } else {
+            testResult.QuestionNames.push(word);
+            testResult.QuestionResults.push(false);
+            selectedLabel.classList.remove('selected');
+            NextTest();
+        }
+    } else {
+        alert("Nothing selected. Please select any item");
+    }    
+}
+
 class TestInfo {
 
     currentIndex;
@@ -172,6 +248,7 @@ class TestInfo {
     textsCount;
     soundsCount;
     currentScore;
+    checkMethod;
 
     constructor(array, pictures, texts, sounds) {
         this.currentIndex = 0;
@@ -180,6 +257,15 @@ class TestInfo {
         this.picturesCount = pictures;
         this.textsCount = texts;
         this.soundsCount = sounds;
+
+        if (this.picturesCount > 1 && this.textsCount > 0) {
+            this.checkMethod = CheckPictureWithText;
+        } else if (this.picturesCount > 1 && this.soundsCount > 0) {
+            this.checkMethod = 
+        }
+
+        let button = document.querySelector('.confirm');
+        button.onclick = this.checkMethod;
     }
 
     indexIncrease = () => {
@@ -189,6 +275,8 @@ class TestInfo {
     increaseScore = () => {
         this.currentScore = this.currentScore + 1;
     }
+
+    
 }
 
 class TestResult {
@@ -206,8 +294,8 @@ class TestResult {
 
     getTotal = () => {
         let sum = 0;
-        for (let item in this.QuestionResults) {
-            if (item) { sum++; }
+        for (let i = 0; i < this.GetLength(); i++) {
+            if (this.QuestionResults[i]) { sum++;}
         }
         return sum;
     }
