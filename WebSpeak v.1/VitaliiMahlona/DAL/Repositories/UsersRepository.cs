@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DAL.Models;
 using Microsoft.EntityFrameworkCore;
@@ -70,9 +71,14 @@ namespace DAL.Repositories
             GC.SuppressFinalize(this);
         }
 
-        Task<List<DTO>> IRepository<Users>.GetTranslations(int idLangLearn, int idLangNative, int? parentId)
+        public Task<List<DTO>> GetTranslations(int idLangLearn, int idLangNative, int? parentId)
         {
             throw new NotImplementedException();
+        }
+
+        public IQueryable<Users> GetAll()
+        {
+            return db.Users;
         }
     }
 }

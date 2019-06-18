@@ -1,6 +1,7 @@
 ﻿@model DTOStatistics
 @inject SignInManager<Users> SignInManager
 @inject UserManager<Users> UserManager
+
 @{
     ViewData["Title"] = "Statistics";
     ViewData["ActivePage"] = ManageNavPages.Statistics;
@@ -10,14 +11,16 @@
     Layout = "~/Views/Account/Manage/_Layout.cshtml";
 }
 
+<link rel="stylesheet" href="~/css/Statistics.css" />
+
 @if (!SignInManager.IsSignedIn(User))
 {
-<div class="alert alert-warning" role="alert">
-    You must be logged in to view statistics.
-    <div>
-        @Html.ActionLink("Login", "Login", "Account") or @Html.ActionLink("Register", "Register", "Account")
+    <div class="alert alert-warning" role="alert">
+        You must be logged in to view statistics.
+        <div>
+            @Html.ActionLink("Login", "Login", "Account") or @Html.ActionLink("Register", "Register", "Account")
+        </div>
     </div>
-</div>
 }
 
 @foreach (var lang in Model.LangList)
@@ -27,36 +30,47 @@
 
         @{
             List<string> categories = new List<string>();
+
             @foreach (var item in Model.testResults.Where(item => item.LangName == lang.WordNativeLang))
             {
                 categories.Add(item.CategoryName);
             }
+
             HashSet<string> uniqueCat = new HashSet<string>(categories);
         }
+
         @foreach (var item in uniqueCat)
         {
             <div class="categories" id="@lang.Id" cat="@item">
                 @item
+
                 @{
                     List<string> subCategories = new List<string>();
+
                     @foreach (var subCat in Model.testResults.Where(subCat => subCat.LangName == lang.WordNativeLang && subCat.CategoryName == item))
                     {
                         subCategories.Add(subCat.SubCategoryName);
                     }
+
                     HashSet<string> uniqueSubCat = new HashSet<string>(subCategories);
                 }
+
                 @foreach (var subCat in uniqueSubCat)
                 {
                     <div class="subCategories" id="@lang.Id" cat="@item" subCat="@subCat">
                         @subCat
+
                         @{
                             List<string> tests = new List<string>();
+
                             @foreach (var test in Model.testResults.Where(test => test.LangName == lang.WordNativeLang && test.CategoryName == item))
                             {
                                 tests.Add(test.TestName.Replace("\\", "/"));
                             }
+
                             HashSet<string> uniqueTests = new HashSet<string>(tests);
                         }
+
                         @foreach (var test in uniqueTests)
                         {
                             <div class="tests" id="@lang.Id" cat="@item" subCat="@subCat" test="@test">
@@ -74,7 +88,10 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach (var testScore in Model.testResults.Where(testScore => testScore.LangName == lang.WordNativeLang && testScore.CategoryName == item && testScore.SubCategoryName == subCat && testScore.TestName.Replace("\\", "/") == test))
+
+                                            @foreach (var testScore in Model.testResults.Where(testScore => testScore.LangName == lang.WordNativeLang &&
+                                                                                             testScore.CategoryName == item && testScore.SubCategoryName == subCat &&
+                                                                                             testScore.TestName.Replace("\\", "/") == test))
                                             {
                                                 <tr>
                                                     <td>
@@ -85,130 +102,20 @@
                                                     </td>
                                                 </tr>
                                             }
+
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         }
+
                     </div>
                 }
+
             </div>
         }
+
     </div>
 }
 
-<style>
-    div.languages, div.categories, div.subCategories, div.tests {
-        border: 1px solid #CCC;
-        box-shadow: 0 0 5px -1px rgba(0,0,0,0.2);
-        cursor: pointer;
-        vertical-align: middle;
-        max-width: 100%;
-        padding: 5px;
-        text-align: center;
-    }
-
-    div.languages.active, div.categories.active, div.subCategories.active, div.tests.active {
-        padding: 0px;
-    }
-
-    div.languages.active {
-        background: #D4F4D4;
-    }
-
-    div.categories.active {
-        background: #B1F4B1;
-    }
-
-    div.subCategories.active {
-        background: #88F488;
-    }
-
-    div.tests.active {
-        background: #4AF94A;
-    }
-
-    div.languages:active, div.categories:active, div.subCategories:active, div.tests:active {
-        box-shadow: 0 0 5px -1px rgba(0,0,0,1);
-    }
-
-    div.categories, div.subCategories, div.testResults, div.tests {
-        display: none;
-    }
-
-    div.categories {
-        background: #E2F1E2;
-    }
-
-    div.subCategories {
-        background: #C9D5C9;
-    }
-
-    div.tests {
-        background: #8D988D;
-    }
-
-    div.testResults {
-        background: #717971;
-    }
-</style>
-
-<script>
-    $(".languages").click(function (event) {
-        event.stopPropagation();
-        event.stopImmediatePropagation();
-        $(`#${$(this).attr('id')}.categories`).slideToggle(300);
-
-        var siblings = $(this).siblings(".languages");
-
-        checkSiblingChildren(siblings);
-
-        $(this).toggleClass("active");
-    });
-
-    $(".categories").click(function (event) {
-        event.stopPropagation();
-        event.stopImmediatePropagation();
-        $(`#${$(this).attr('id')}.subCategories[cat="${$(this).attr('cat')}"]`).slideToggle(300);
-
-        var siblings = $(this).siblings(".categories");
-
-        checkSiblingChildren(siblings);
-
-        $(this).toggleClass("active");
-    });
-
-    $(".subCategories").click(function (event) {
-        event.stopPropagation();
-        event.stopImmediatePropagation();
-        $(`#${$(this).attr('id')}.tests[cat="${$(this).attr('cat')}"][subCat="${$(this).attr('subCat')}"]`).slideToggle(300);
-
-        var siblings = $(this).siblings(".subCategories");
-
-        checkSiblingChildren(siblings);
-
-        $(this).toggleClass("active");
-    });
-
-    $(".tests").click(function (event) {
-        event.stopPropagation();
-        event.stopImmediatePropagation();
-        $(`#${$(this).attr('id')}.testResults[cat="${$(this).attr('cat')}"][subCat="${$(this).attr('subCat')}"][test="${$(this).attr('test')}"]`).slideToggle(300);
-
-        var siblings = $(this).siblings(".tests");
-
-        checkSiblingChildren(siblings);
-
-        $(this).toggleClass("active");
-    });
-
-    function checkSiblingChildren(siblings) {
-        siblings.removeClass('active');
-
-        while (siblings.children().length > 0 && !siblings.children().hasClass("table")) {
-            siblings.children().hide(300);
-            siblings.children().removeClass('active');
-            siblings = siblings.children();
-        }
-    }
-</script>
+<script src="~/js/Statistics.js"></script>

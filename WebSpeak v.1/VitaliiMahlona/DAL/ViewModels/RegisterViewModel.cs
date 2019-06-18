@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace DAL.ViewModels
 {
@@ -8,7 +9,7 @@ namespace DAL.ViewModels
         [Display(Name = "Email")]
         public string Email { get; set; }
 
-        [Required]
+        [Required] 
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
@@ -18,5 +19,7 @@ namespace DAL.ViewModels
         [DataType(DataType.Password)]
         [Display(Name = "Password confirm")]
         public string PasswordConfirm { get; set; }
+
+        public IFormFile Avatar { get; set; }
     }
 }

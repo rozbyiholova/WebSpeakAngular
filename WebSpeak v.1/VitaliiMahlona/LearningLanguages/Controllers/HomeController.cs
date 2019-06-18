@@ -12,15 +12,12 @@ using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace LearningLanguages.Controllers
 {
     public class HomeController : Controller
     {
-        //private readonly UserManager<Users> _userManager;
-
-        //private readonly SignInManager<Users> _signInManager;
-
         IRepository<Categories> _categories = new CategoriesRepository();
 
         IRepository<Languages> _languages = new LanguagesRepository();
@@ -38,15 +35,16 @@ namespace LearningLanguages.Controllers
         public IActionResult Index()
         {
             int defaultLang = 3;
+            string defaultEnableCheckBox = "true";
 
             if (HttpContext.Session.GetInt32("idLangNative") == null)
             {
                 HttpContext.Session.SetInt32("idLangNative", defaultLang);
-            }
-
-            if (HttpContext.Session.GetInt32("idLangLearn") == null)
-            {
                 HttpContext.Session.SetInt32("idLangLearn", defaultLang);
+                HttpContext.Session.SetString("enableNativeLang", defaultEnableCheckBox);
+                HttpContext.Session.SetString("enableSound", defaultEnableCheckBox);
+                HttpContext.Session.SetString("enablePronounceNativeLang", defaultEnableCheckBox);
+                HttpContext.Session.SetString("enablePronounceLearnLang", defaultEnableCheckBox);
             }
 
             return View();
@@ -70,7 +68,7 @@ namespace LearningLanguages.Controllers
             int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
             int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
 
-            List<DTO> NativeLearnLangSubCat =await _categories.GetTranslations(idLangLearn, idLangNative, id);
+            List<DTO> NativeLearnLangSubCat = await _categories.GetTranslations(idLangLearn, idLangNative, id);
 
             return View(NativeLearnLangSubCat);
         }
@@ -154,7 +152,10 @@ namespace LearningLanguages.Controllers
         {
             string currentUserId = User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (String.IsNullOrEmpty(currentUserId)) return new JsonResult(new { totalResult, isUser = false });
+            if (String.IsNullOrEmpty(currentUserId))
+            {
+                return new JsonResult(new { totalResult, isUser = false });
+            }
 
             int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
             DateTime testDate = DateTime.Now;
@@ -169,18 +170,21 @@ namespace LearningLanguages.Controllers
                 TestId = testNumber
             };
 
-            var testResultsList = await _testResults.GetList();
-            var totalScoresList = await _totalScores.GetList();
-
-            var testResultQuery = testResultsList.Where(x => x.TestId == testNumber && x.LangId == idLangLearn && x.CategoryId == subCategoryId);
-            var totalScoresQuery = totalScoresList.Where(x => x.UserId == currentUserId && x.LangId == idLangLearn);
+            var testResultList = await _testResults.GetAll().Where(x => x.TestId == testNumber && x.LangId == idLangLearn && 
+                                                                         x.CategoryId == subCategoryId).ToListAsync();
+            var totalScoresList = await _totalScores.GetAll().Where(x => x.UserId == currentUserId && 
+                                                                          x.LangId == idLangLearn).ToListAsync();
 
             int maxTestResultBefore = -1;
-            if (testResultQuery.Any()) maxTestResultBefore = testResultQuery.Max(x => x.Result);
+
+            if (testResultList.Any())
+            {
+                maxTestResultBefore = testResultList.Max(x => x.Result);
+            }
 
             _testResults.Create(testResult);
 
-            if (!totalScoresQuery.Any() && !testResultQuery.Any())
+            if (!totalScoresList.Any() && !testResultList.Any())
             {
                 TotalScores totalScore = new TotalScores()
                 {
@@ -191,16 +195,16 @@ namespace LearningLanguages.Controllers
 
                 _totalScores.Create(totalScore);
             }
-            else if (!testResultQuery.Any())
+            else if (!testResultList.Any())
             {
-                TotalScores totalScore = totalScoresQuery.First();
+                TotalScores totalScore = totalScoresList.First();
                 totalScore.Total += testResult.Result;
 
                 _totalScores.Update(totalScore);
             }
             else
             {
-                TotalScores totalScore = totalScoresQuery.First();
+                TotalScores totalScore = totalScoresList.First();
 
                 if (Math.Max(totalResult, maxTestResultBefore) == totalResult)
                 {

@@ -4,14 +4,16 @@ using DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DAL.Migrations
 {
     [DbContext(typeof(LearningLanguagesContext))]
-    partial class LearningLanguagesContextModelSnapshot : ModelSnapshot
+    [Migration("20190614142705_PersonalInfo")]
+    partial class PersonalInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -239,8 +241,6 @@ namespace DAL.Migrations
                         .IsUnicode(false);
 
                     b.Property<int>("AccessFailedCount");
-
-                    b.Property<byte[]>("Avatar");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();

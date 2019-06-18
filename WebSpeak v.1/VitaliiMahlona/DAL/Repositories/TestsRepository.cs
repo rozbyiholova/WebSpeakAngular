@@ -101,5 +101,10 @@ namespace DAL.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public IQueryable<Tests> GetAll()
+        {
+            return db.Tests;
+        }
     }
 }

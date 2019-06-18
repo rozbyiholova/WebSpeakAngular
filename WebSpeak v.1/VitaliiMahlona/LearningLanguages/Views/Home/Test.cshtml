@@ -67,6 +67,8 @@ else
     var model = @Html.Raw(Json.Serialize(Model));
 </script>
 
+<script src="~/js/TestCommonMethods.js"></script>
+
 @if (Model.First().TestId == 1 || Model.First().TestId == 2 || Model.First().TestId == 4)
 {
     <script src="~/js/Tests-01-02-04.js"></script>
