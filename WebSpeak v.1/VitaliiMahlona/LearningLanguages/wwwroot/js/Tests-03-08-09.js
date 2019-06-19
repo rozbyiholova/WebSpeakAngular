@@ -8,6 +8,7 @@ function check()
     if (($("[type=radio]:checked").val() == correctAnswer))
     {
         ++totalResult;
+        $('#result').html(`<b><span class="text-success">Score: ${totalResult}</span>  Question ${questionNumber + 1}/${totalQuestions}</b>`);
     }
     else if (($("[type=radio]:checked").val() == undefined))
     {
@@ -18,11 +19,17 @@ function check()
 
             return;
         }
-
-        first = false;
+    }
+    else
+    {
+        $('#result').html(`<b><span class="text-danger">Score: ${totalResult}</span>  Question ${questionNumber + 1}/${totalQuestions}</b>`);
     }
 
-    $('#result').html(`<b>Score: ${totalResult}  Question ${questionNumber + 1}/${totalQuestions}</b>`);
+    if (first)
+    {
+        $('#result').html(`<b>Score: ${totalResult} Question ${questionNumber + 1}/${totalQuestions}</b>`);
+        first = false;
+    }
 
     $('#error').hide();
 

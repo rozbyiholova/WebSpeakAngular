@@ -1,4 +1,4 @@
-﻿@model SelectList
+﻿@model DTO
 @{
     ViewData["Title"] = "Select lang";
     ViewData["ActivePage"] = ManageNavPages.Index;
@@ -10,24 +10,25 @@
 
 @using (Html.BeginForm())
 {
+    SelectList languagesList = new SelectList(Model.LanguagesList, "Id", "Name");
     <div class="form-group w-50 p-3">
         <p>Native language:</p>
-        @Html.DropDownList("idLangNative", Model as SelectList)
+        @Html.DropDownList("IdLangNative", languagesList as SelectList)
 
         <p>Learning language:</p>
-        @Html.DropDownList("idLangLearn", Model as SelectList)
+        @Html.DropDownList("IdLangLearn", languagesList as SelectList)
 
         <p>Enable translation of words in their native language:</p>
-        @Html.CheckBox("enableNativeLang")
+        @Html.CheckBox("EnableNativeLang")
 
         <p>Enable sound of words:</p>
-        @Html.CheckBox("enableSound")
+        @Html.CheckBox("EnableSound")
 
         <p>Enable pronounce of words in their native language:</p>
-        @Html.CheckBox("enablePronounceNativeLang")
+        @Html.CheckBox("EnablePronounceNativeLang")
 
         <p>Enable pronounce of words in learning language:</p>
-        @Html.CheckBox("enablePronounceLearnLang")
+        @Html.CheckBox("EnablePronounceLearnLang")
 
         <button type="submit" class="btn btn-success">Submit</button>
     </div>

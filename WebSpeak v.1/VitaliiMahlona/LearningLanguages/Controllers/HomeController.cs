@@ -119,6 +119,10 @@ namespace LearningLanguages.Controllers
         {
             int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
             int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
+            string enableNativeLang = HttpContext.Session.GetString("enableNativeLang");
+            string enableSound = HttpContext.Session.GetString("enableSound");
+            string enablePronounceNativeLang = HttpContext.Session.GetString("enablePronounceNativeLang");
+            string enablePronounceLearnLang = HttpContext.Session.GetString("enablePronounceLearnLang");
 
             List<DTO> NativeLearnLangWords = await _words.GetTranslations(idLangLearn, idLangNative, id);
 
@@ -126,6 +130,11 @@ namespace LearningLanguages.Controllers
 
             NativeLearnLangWords.First().CategoryId = category.ParentId;
             NativeLearnLangWords.First().SubCategoryId = category.Id;
+
+            NativeLearnLangWords.First().EnableNativeLang = enableNativeLang;
+            NativeLearnLangWords.First().EnableSound = enableSound;
+            NativeLearnLangWords.First().EnablePronounceNativeLang = enablePronounceNativeLang;
+            NativeLearnLangWords.First().EnablePronounceLearnLang = enablePronounceLearnLang;
 
             return View(NativeLearnLangWords);
         }

@@ -4,7 +4,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - LearningLanguages</title>
-
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
 
@@ -53,39 +52,40 @@
                     string[] route = new string[Url.RouteUrl(ViewContext.RouteData.Values).Split('/').Length];
                     route = Url.RouteUrl(ViewContext.RouteData.Values).Split('/');
 
-                    if (ViewContext.RouteData.Values["controller"].ToString() == "Home") {
+                    if (ViewContext.RouteData.Values["controller"].ToString() == "Home")
+                    {
                         //skip Index
                         for (int i = 2; i < route.Length; i++)
                         {
                             if (route[i] == "Categories")
                             {
-                            <li>@Html.ActionLink(route[i], route[i], ViewContext.RouteData.Values["controller"].ToString())</li>
+                                <li>@Html.ActionLink(route[i], route[i], ViewContext.RouteData.Values["controller"].ToString())</li>
                             }
                             if (route[i] == "SubCategories")
                             {
                                 if (Model is IEnumerable<DTO>)
                                 {
-                                <li>@Html.ActionLink(route[i], route[i], ViewContext.RouteData.Values["controller"].ToString(), new { id = Model[0].CategoryId })</li>
+                                    <li>@Html.ActionLink(route[i], route[i], ViewContext.RouteData.Values["controller"].ToString(), new { id = Model[0].CategoryId })</li>
                                 }
                                 else
                                 {
-                                <li>@Html.ActionLink(route[i], route[i], ViewContext.RouteData.Values["controller"].ToString(), new { id = Model.ParentId })</li>
+                                    <li>@Html.ActionLink(route[i], route[i], ViewContext.RouteData.Values["controller"].ToString(), new { id = Model.ParentId })</li>
                                 }
                             }
                             else if (route[i] != "Categories")
                             {
                                 if (Model is IEnumerable<DTO>)
                                 {
-                                <li>@Html.ActionLink(route[i], route[i], ViewContext.RouteData.Values["controller"].ToString(), new { id = Model[0].SubCategoryId })</li>
+                                    <li>@Html.ActionLink(route[i], route[i], ViewContext.RouteData.Values["controller"].ToString(), new { id = Model[0].SubCategoryId })</li>
                                 }
                                 else
                                 {
-                                <li>@Html.ActionLink(route[i], route[i], ViewContext.RouteData.Values["controller"].ToString(), new { id = Model.Id })</li>
-                                    }
+                                    <li>@Html.ActionLink(route[i], route[i], ViewContext.RouteData.Values["controller"].ToString(), new { id = Model.Id })</li>
                                 }
                             }
                         }
                     }
+                }
             </ol>
         </nav>
 
@@ -137,6 +137,5 @@
     </script>
 
     @RenderSection("Scripts", required: false)
-
 </body>
 </html>

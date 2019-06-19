@@ -19,17 +19,42 @@
                         <img class="d-block img-thumbnail" src="../../../../@(Model.ElementAt(0).Picture)" alt="@Model.ElementAt(0).WordNativeLang">
                     </div>
                     <div class="carousel-caption d-none d-md-block">
-                        <h1>@Model.ElementAt(0).WordLearnLang</h1>
+                        <h1>@Model.ElementAt(0).WordLearnLang
+                            @if (Model.ElementAt(0).EnableNativeLang.Contains("true"))
+                            {
+                                <em>( @Model.ElementAt(0).WordNativeLang )</em>
+                            }
+                        </h1>
+                        @if (Model.ElementAt(0).EnableSound.Contains("true") && !String.IsNullOrEmpty(Model.ElementAt(0).Sound))
+                        {
+                            <audio id="@Model.ElementAt(0).Sound">
+                                <source src="../../../../@Model.ElementAt(0).Sound" type="audio/mpeg" />
+                                Your browser does not support the audio element.
+                            </audio>
+                        }
                     </div>
                 </div>
                     @foreach (var word in Model.Skip(1))
                     {
-                        <div class="carousel-item">
+                        <div class="carousel-item" id="">
                             <div class="image">
                                 <img class="d-block img-thumbnail" src="../../../../@word.Picture" alt="@word.WordNativeLang">
                             </div>
                             <div class="carousel-caption d-none d-md-block">
-                                <h1>@word.WordLearnLang</h1>
+                                <h1>
+                                    @word.WordLearnLang
+                                    @if (Model.ElementAt(0).EnableNativeLang.Contains("true"))
+                                    {
+                                        <em>( @word.WordNativeLang )</em>
+                                    }
+                                </h1>
+                                @if (Model.ElementAt(0).EnableSound.Contains("true") && !String.IsNullOrEmpty(Model.ElementAt(0).Sound))
+                                {
+                                    <audio id="@word.Sound">
+                                        <source src="../../../../@word.Sound" type="audio/mpeg" />
+                                        Your browser does not support the audio element.
+                                    </audio>
+                                }
                             </div>
                         </div>
                     }
@@ -55,4 +80,30 @@
         }
         output.innerHTML = this.value;
     }
+
+    var model = @Html.Raw(Json.Serialize(Model));
+
+    $(document).ready(function () {
+        var activeId = $('#slideshow').find('.active .carousel-caption audio').attr('id');
+        var audio = document.getElementById(activeId);
+        audio.play();
+
+        var slideshow = document.getElementsByClassName('carousel-item')
+
+        for (let i = 0; i < slideshow.length; i++) {
+            slideshow[i].style.transitionDelay = audio.duration + "s";
+        }
+    });
+
+    $('#slideshow').on('slide.bs.carousel', function (e) {
+        var activeId = $(this).find('.active .carousel-caption audio').attr('id');
+        var audio = document.getElementById(activeId);
+        audio.play();
+
+        var slideshow = document.getElementsByClassName('carousel-item')
+
+        for (let i = 0; i < slideshow.length; i++) {
+            slideshow[i].style.transitionDelay = audio.duration + "s";
+        }
+    })
 </script>
