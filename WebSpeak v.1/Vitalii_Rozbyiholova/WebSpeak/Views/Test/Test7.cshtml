@@ -1,7 +1,29 @@
-﻿
+﻿@model List<DTO>
+@using DAL.Models;
 @{
-    ViewData["Title"] = "Test7";
+    ViewData["Title"] = "Test 7";
+    var Data = Html.Raw(Json.Serialize(Model.ToArray()));
 }
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/Tests.js"></script>
+<link rel="stylesheet" type="text/css" href="~/css/TestStyle.css" />
 
-<h1>Test7</h1>
+<div class="test container">
+    <div class="test_sounds row">
 
+    </div>
+    <div class="test_input">
+        <input type="text" />
+    </div>
+    <button class="confirm btn-success">Next</button>
+</div>
+
+<div class="test_result" style="display: none;"></div>
+
+
+<script type="text/javascript">
+    $(document).ready(() => {
+        InitNewTest(@Data, 0, 0, 1);
+        NextTest();
+    })
+</script>
