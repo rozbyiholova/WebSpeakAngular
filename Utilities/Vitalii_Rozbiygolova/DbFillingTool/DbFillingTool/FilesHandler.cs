@@ -42,7 +42,9 @@ namespace DbFillingTool
         
         private void LoadTests(SqlConnection connection, string path)
         {
-            ExcelFileRow[] tests = Helper.GetExcel(path);
+            ExcelQueryFactory factory = new ExcelQueryFactory(path);
+            ExcelFileRow[] tests = (from row in factory.Worksheet<ExcelFileRow>(0)
+                                    select row).ToList().DeleteNulls();
             FileInfo[] icons;
             try
             {

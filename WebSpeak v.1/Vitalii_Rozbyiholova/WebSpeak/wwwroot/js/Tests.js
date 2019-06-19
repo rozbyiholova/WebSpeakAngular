@@ -23,9 +23,14 @@ function InitNewTest(categoriesArray, picturesCount, textCount, soundsCount) {
 
 function NextTest() {
     if (info.currentIndex < info.categories.length) {
-        LoadPictures();
-        LoadText();
-        LoadSounds();
+        if (info.picturesCount == 1 && info.textsCount == 1) {
+            LoadPictures();
+            LoadRandomText();
+        } else {
+            LoadPictures();
+            LoadText();
+            LoadSounds();
+        }
         info.indexIncrease();
     } else {
         GenerateResult(testResult);
@@ -77,8 +82,10 @@ function LoadPictures() {
 
         $('.' + TEST_IMAGES + ' input:radio').addClass('input_hidden');
         $('.' + TEST_IMAGES + ' label').click(function () {
-            $(this).addClass('selected').siblings().removeClass('selected');
+            $(this).addClass('selected_picture').siblings().removeClass('selected_picture');
         });
+
+        console.log(img.alt);
     }
 }
 
@@ -94,9 +101,10 @@ function LoadText() {
     indexes[0] = textInfo.currentIndex;
 
     let i = 1;
-    while (i < textInfo.textsCount)
+    let textCount = textInfo.textsCount;
+    while (i < textCount)
     {
-        let randomTextIndex = getRandomInt(0, 2);
+        let randomTextIndex = getRandomInt(0, textCount + 1);
         if (!indexes.includes(randomTextIndex)) {
             indexes.push(randomTextIndex);
             i++;
@@ -106,11 +114,25 @@ function LoadText() {
     shuffle(indexes);
     for (let j = 0; j < indexes.length; j++) {
 
+        var radio = document.createElement('input');
+        radio.type = "radio";
+        let IdText = "rd" + j;
+        radio.id = IdText
+        var label = document.createElement('label');
+        label.for = IdText;
+
         let text = textInfo.categories[indexes[j]].translation;
         let h3 = document.createElement("h3");
         let textNode = document.createTextNode(text);
         h3.appendChild(textNode);
-        test_word.appendChild(h3);
+        label.appendChild(h3);
+        test_word.appendChild(radio);
+        test_word.appendChild(label);
+
+        $('.' + TEST_WORD + ' input:radio').addClass('input_hidden');
+        $('.' + TEST_WORD + ' label').click(function () {
+            $(this).addClass('selected_text').siblings().removeClass('selected_text');
+        });
     }
 }
 
@@ -138,12 +160,65 @@ function LoadSounds() {
     shuffle(indexes);
     for (let k = 0; k < indexes.length; k++) {
 
-        console.log(soundsInfo.categories[indexes[k]]);
         let pronounce = soundsInfo.categories[indexes[k]].translationPronounce;
-        let html = '<audio controls="controls" src="../../' + pronounce + '" type="audio/mpeg">';
-        sounds.innerHTML += html;
+        let translation = soundsInfo.categories[indexes[k]].translation;
+        let audio = document.createElement('audio');
+        audio.controls = "controls";
+        audio.src = `../../${pronounce}`;
+        audio.type = "audio/mpeg";
+        audio.style.alt = translation;
+        sounds.appendChild(audio);
     }
-} //do checking
+}
+
+function LoadRandomText() {
+    let randomTextInfo = info;
+
+    const TEST_WORD = "test_word";
+    let test_word = document.getElementsByClassName(TEST_WORD)[0];
+    $("." + TEST_WORD).empty();
+
+    let current = randomTextInfo.currentIndex;
+    let startIndex = current - 2;
+    let endIndex;
+
+    //do not let indexes be out of the array
+    if (startIndex < 0) {
+        startIndex = 0;
+        endIndex = 6 - current;
+    } else {
+        endIndex = current + 3;
+    }
+
+    let length = randomTextInfo.categories.length;
+    if (endIndex >= length) {
+        startIndex = length - 5
+        endIndex = length;
+    }
+
+    var radio = document.createElement('input');
+    radio.type = "radio";
+    let IdText = "rd" + current;
+    radio.id = IdText
+    var label = document.createElement('label');
+    label.for = IdText;
+
+    let randomIndex = getRandomInt(startIndex, endIndex);
+    let text = randomTextInfo.categories[randomIndex].translation;
+    let h3 = document.createElement("h3");
+    let textNode = document.createTextNode(text);
+    h3.appendChild(textNode);
+    label.appendChild(h3);
+    test_word.appendChild(radio);
+    test_word.appendChild(label);
+
+    $('.' + TEST_WORD + ' input:radio').addClass('input_hidden');
+    $('.' + TEST_WORD + ' label').click(function () {
+        $(this).addClass('selected_text').siblings().removeClass('selected_text');
+    });
+
+    console.log(text);
+}
 
 function GenerateResult(result) {
      
@@ -193,8 +268,9 @@ function CheckPictureWithText() {
 
     const TEST_WORD = "test_word";
     let test_word_div = document.querySelector('.' + TEST_WORD);
-    let word = test_word_div.childNodes[0].innerText;
-    let selectedLabel = document.querySelector('.selected');
+    let label = test_word_div.getElementsByTagName('label')[0];    
+    let word = label.childNodes[0].innerText;
+    let selectedLabel = document.querySelector('.selected_picture');
 
     if (selectedLabel != undefined && word != undefined) {
     let picture = selectedLabel.childNodes[0];
@@ -202,12 +278,12 @@ function CheckPictureWithText() {
             info.increaseScore();
             testResult.QuestionNames.push(word);
             testResult.QuestionResults.push(true);
-            selectedLabel.classList.remove('selected');
+            selectedLabel.classList.remove('selected_picture');
             NextTest();
         } else {
             testResult.QuestionNames.push(word);
             testResult.QuestionResults.push(false);
-            selectedLabel.classList.remove('selected');
+            selectedLabel.classList.remove('selected_picture');
             NextTest();
         }
     } else {
@@ -215,30 +291,149 @@ function CheckPictureWithText() {
     }    
 }
 
-function CheckPictureWithSound() {
-    const TEST_SOUND = "test_sound";
-    let test_word_div = document.querySelector('.' + TEST_WORD);
-    let word = test_word_div.childNodes[0].innerText;
-    let selectedLabel = document.querySelector('.selected');
+function CheckPictureWithSound(){
+    const TEST_SOUND = "test_sounds";
+    let test_sound_div = document.getElementsByClassName(TEST_SOUND)[0];
+    let alt = test_sound_div.childNodes[0].style.alt;
+    let selectedLabel = document.querySelector('.selected_picture');
 
-    if (selectedLabel != undefined && word != undefined) {
+    if (selectedLabel != undefined && alt != undefined) {
         let picture = selectedLabel.childNodes[0];
-        if (picture.alt == word) {
+        if (picture.alt == alt) {
+            info.increaseScore();
+            testResult.QuestionNames.push(alt);
+            testResult.QuestionResults.push(true);
+            selectedLabel.classList.remove('selected_picture');
+            NextTest();
+        } else {
+            testResult.QuestionNames.push(alt);
+            testResult.QuestionResults.push(false);
+            selectedLabel.classList.remove('selected_picture');
+            NextTest();
+        }
+    } else {
+        alert("Nothing selected. Please select any item");
+    }    
+}
+
+function CheckTextWithPicture() {
+
+    const TEST_IMAGES = "test_images";
+    let test_picture_div = document.getElementsByClassName(TEST_IMAGES)[0];
+    let label = test_picture_div.getElementsByTagName('label')[0];
+    let pictureText = label.childNodes[0].alt;
+    let selectedLabel = document.querySelector('.selected_text');
+
+    if (selectedLabel != undefined && pictureText != undefined) {
+        let text = selectedLabel.childNodes[0].innerText;
+        if (pictureText == text) {
+            info.increaseScore();
+            testResult.QuestionNames.push(text);
+            testResult.QuestionResults.push(true);
+            selectedLabel.classList.remove('selected_picture');
+            NextTest();
+        } else {
+            testResult.QuestionNames.push(text);
+            testResult.QuestionResults.push(false);
+            selectedLabel.classList.remove('selected_picture');
+            NextTest();
+        }
+    } else {
+        alert("Nothing selected. Please select any item");
+    }  
+}
+
+function CheckPictureWithInput() {
+
+    const TEST_INPUT = "test_input";
+    const TEST_IMAGE = "test_images"
+
+    let test_input_div = document.querySelector('.' + TEST_INPUT);
+    let input = test_input_div.getElementsByTagName('input')[0];
+    let value = input.value;
+    let test_picture_div = document.querySelector('.' + TEST_IMAGE);
+    let label = test_picture_div.getElementsByTagName('label')[0];
+    let word = label.childNodes[0].alt;
+
+    if (value != undefined && word != undefined) {
+        if (value == word) {
             info.increaseScore();
             testResult.QuestionNames.push(word);
             testResult.QuestionResults.push(true);
-            selectedLabel.classList.remove('selected');
+            label.classList.remove('selected_picture');                
+            NextTest();
+            input.value = "";
+        } else {
+            testResult.QuestionNames.push(word);
+            testResult.QuestionResults.push(false);
+            label.classList.remove('selected_picture');  
+            NextTest();
+            input.value = "";
+        }
+    } else {
+        alert("Input is empty. Please type your answear");
+    } 
+}
+
+function CheckSoundWithInput() {
+    const TEST_INPUT = "test_input";
+    const TEST_SOUND = "test_sounds"
+
+    let test_input_div = document.querySelector('.' + TEST_INPUT);
+    let input = test_input_div.getElementsByTagName('input')[0];
+    let value = input.value;
+    let test_sound_div = document.querySelector('.' + TEST_SOUND);
+    let word = test_sound_div.childNodes[0].style.alt;
+
+    if (input != undefined && word != undefined) {
+        if (value == word) {
+            info.increaseScore();
+            testResult.QuestionNames.push(word);
+            testResult.QuestionResults.push(true);
+            NextTest();
+            input.value = "";
+        } else {
+            testResult.QuestionNames.push(word);
+            testResult.QuestionResults.push(false);
+            NextTest();
+            input.value = "";
+        }
+    } else {
+        alert("Input is empty. Please type your answear");
+    } 
+}
+
+function CheckSoundWithText() {
+    const TEST_SOUND = "test_sounds"
+    
+    let test_sound_div = document.querySelector('.' + TEST_SOUND);
+    let word = test_sound_div.childNodes[0].style.alt;
+
+    let selectedLabel = document.querySelector('.selected_text')
+
+    if (selectedLabel != undefined && word != undefined) {
+        let text = selectedLabel.childNodes[0].innerText;
+
+        if (text == word) {
+            info.increaseScore();
+            testResult.QuestionNames.push(word);
+            testResult.QuestionResults.push(true);
+            selectedLabel.classList.remove('selected_text');
             NextTest();
         } else {
             testResult.QuestionNames.push(word);
             testResult.QuestionResults.push(false);
-            selectedLabel.classList.remove('selected');
+            selectedLabel.classList.remove('selected_text');
             NextTest();
         }
     } else {
         alert("Nothing selected. Please select any item");
-    }    
+    } 
 }
+
+//do checking for 5 test
+//change result table:   "true" -> "correct"
+//                      "false" -> "uncorrect"
 
 class TestInfo {
 
@@ -261,7 +456,15 @@ class TestInfo {
         if (this.picturesCount > 1 && this.textsCount > 0) {
             this.checkMethod = CheckPictureWithText;
         } else if (this.picturesCount > 1 && this.soundsCount > 0) {
-            this.checkMethod = 
+            this.checkMethod = CheckPictureWithSound;
+        } else if (this.textsCount > 1 && this.picturesCount > 0) {
+            this.checkMethod = CheckTextWithPicture;
+        } else if (this.picturesCount == 1 && this.textsCount < 1 && this.soundsCount < 1) {
+            this.checkMethod = CheckPictureWithInput;
+        } else if (this.picturesCount < 1 && this.textsCount < 1 && this.soundsCount > 0) {
+            this.checkMethod = CheckSoundWithInput;
+        } else if (this.textsCount > 3 && this.soundsCount == 1) {
+            this.checkMethod = CheckSoundWithText;
         }
 
         let button = document.querySelector('.confirm');
