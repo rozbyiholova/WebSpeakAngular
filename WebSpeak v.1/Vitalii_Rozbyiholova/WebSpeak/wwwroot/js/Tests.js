@@ -1,4 +1,17 @@
-﻿
+﻿const TEST10 = "test10";
+const TEST_SOUND = "test_sounds";
+const TEST_IMAGES = "test_images";
+const TEST_WORD = "test_word";
+const TEST_INPUT = "test_input";
+const TEST_FOREIGN = "test_foreign";
+const FOREIGN = "foreign_words";
+const NATIVE = "native_words";
+const INTERMEDIATE = "intermediate";
+const SELECTED_F_TEXT = "selected_f_text";
+const SELECTED_N_TEXT = "selected_n_text"
+const SELECTED_TEXT = "selected_text";
+const SELECTED_PICTURE = "selected_picture";
+
 var info;
 var testResult;
 
@@ -26,13 +39,19 @@ function NextTest() {
         if (info.picturesCount == 1 && info.textsCount == 1) {
             LoadPictures();
             LoadRandomText();
+        } else if (info.textsCount == 5) {
+            LoadNativeText();
+        } else if (info.textsCount == 0 && info.soundsCount == 0 && info.picturesCount == 0) {
+            LoadPairs();
         } else {
             LoadPictures();
             LoadText();
             LoadSounds();
         }
         info.indexIncrease();
-    } else {
+    }
+    else
+    {
         GenerateResult(testResult);
     }
 }
@@ -42,7 +61,6 @@ function LoadPictures() {
     let picturesInfo = this.info;
     if (picturesInfo.picturesCount < 1) { return; }
 
-    const TEST_IMAGES = "test_images";
     var test_images = document.getElementsByClassName(TEST_IMAGES)[0];
     $("." + TEST_IMAGES).empty();
     
@@ -82,10 +100,8 @@ function LoadPictures() {
 
         $('.' + TEST_IMAGES + ' input:radio').addClass('input_hidden');
         $('.' + TEST_IMAGES + ' label').click(function () {
-            $(this).addClass('selected_picture').siblings().removeClass('selected_picture');
+            $(this).addClass(SELECTED_PICTURE).siblings().removeClass(SELECTED_PICTURE);
         });
-
-        console.log(img.alt);
     }
 }
 
@@ -93,7 +109,6 @@ function LoadText() {
     let textInfo = info;
     if (textInfo.textsCount < 1) { return; }
 
-    const TEST_WORD = "test_word";
     let test_word = document.getElementsByClassName(TEST_WORD)[0];
     $("." + TEST_WORD).empty();
 
@@ -131,7 +146,7 @@ function LoadText() {
 
         $('.' + TEST_WORD + ' input:radio').addClass('input_hidden');
         $('.' + TEST_WORD + ' label').click(function () {
-            $(this).addClass('selected_text').siblings().removeClass('selected_text');
+            $(this).addClass(SELECTED_TEXT).siblings().removeClass(SELECTED_TEXT);
         });
     }
 }
@@ -179,45 +194,214 @@ function LoadRandomText() {
     $("." + TEST_WORD).empty();
 
     let current = randomTextInfo.currentIndex;
-    let startIndex = current - 2;
-    let endIndex;
+    let startIndex = current;
+    let endIndex = current + 2;
 
     //do not let indexes be out of the array
-    if (startIndex < 0) {
-        startIndex = 0;
-        endIndex = 6 - current;
-    } else {
-        endIndex = current + 3;
-    }
-
     let length = randomTextInfo.categories.length;
-    if (endIndex >= length) {
-        startIndex = length - 5
-        endIndex = length;
+    if (endIndex > length) {
+        startIndex = current - 2;
+        endIndex = current;
     }
-
-    var radio = document.createElement('input');
-    radio.type = "radio";
-    let IdText = "rd" + current;
-    radio.id = IdText
-    var label = document.createElement('label');
-    label.for = IdText;
 
     let randomIndex = getRandomInt(startIndex, endIndex);
     let text = randomTextInfo.categories[randomIndex].translation;
     let h3 = document.createElement("h3");
     let textNode = document.createTextNode(text);
+
     h3.appendChild(textNode);
-    label.appendChild(h3);
-    test_word.appendChild(radio);
-    test_word.appendChild(label);
+    test_word.appendChild(h3);
 
-    $('.' + TEST_WORD + ' input:radio').addClass('input_hidden');
-    $('.' + TEST_WORD + ' label').click(function () {
-        $(this).addClass('selected_text').siblings().removeClass('selected_text');
+    $('.btn-group button').click(function () {
+        $(this).addClass('clicked').siblings().removeClass('clicked');
     });
+}
 
+function LoadNativeText() {
+    let nativeTextInfo = info;
+
+    let test_foreign_word = document.getElementsByClassName(TEST_FOREIGN)[0];
+    let test_native_word = document.getElementsByClassName(TEST_WORD)[0];
+    $("." + TEST_WORD).empty();
+    $("." + TEST_FOREIGN).empty();
+
+    let current = nativeTextInfo.currentIndex;
+    let foreign_text = nativeTextInfo.categories[current].translation;
+    let f_h3 = document.createElement("h3");
+    let f_textNode = document.createTextNode(foreign_text);
+    f_h3.appendChild(f_textNode);
+    test_foreign_word.appendChild(f_h3);
+
+    let indexes = new Array();
+    indexes[0] = nativeTextInfo.currentIndex;
+
+    let i = 1;
+    let textCount = nativeTextInfo.textsCount - 1;
+    while (i < textCount) {
+        let randomTextIndex = getRandomInt(0, textCount + 1);
+        if (!indexes.includes(randomTextIndex)) {
+            indexes.push(randomTextIndex);
+            i++;
+        }
+    }
+
+    shuffle(indexes);
+    for (let j = 0; j < indexes.length; j++) {
+
+        var radio = document.createElement('input');
+        radio.type = "radio";
+        let IdText = "rd" + j;
+        radio.id = IdText
+        var label = document.createElement('label');
+        label.for = IdText;
+
+        let text = nativeTextInfo.categories[indexes[j]].native;
+        let h3 = document.createElement("h3");
+        let textNode = document.createTextNode(text);
+        h3.appendChild(textNode);
+        label.style.alt = nativeTextInfo.categories[indexes[j]].translation;
+        label.appendChild(h3);
+        test_native_word.appendChild(radio);
+        test_native_word.appendChild(label);
+
+        $('.' + TEST_WORD + ' input:radio').addClass('input_hidden');
+        $('.' + TEST_WORD + ' label').click(function () {
+            $(this).addClass(SELECTED_TEXT).siblings().removeClass(SELECTED_TEXT);
+        });
+    }
+}
+
+function LoadPairs() {
+
+    $("." + FOREIGN).empty();
+    $("." + NATIVE).empty();
+
+    let pairsInfo = info;
+
+    let foreign_div = document.getElementsByClassName(FOREIGN)[0];
+    let native_div = document.getElementsByClassName(NATIVE)[0];
+
+    let wordsNumber = 4;
+    let current = pairsInfo.currentIndex;
+    
+    let categories = pairsInfo.categories.slice(current, current + wordsNumber);
+    let native_words_array = new Array();
+    let foreign_words_array = new Array();
+    for (let k = 0; k < categories.length; k++) {
+
+        //push entire category to be able to get word translation when compares selected words
+        native_words_array.push(categories[k]);
+        foreign_words_array.push(categories[k].translation);
+        info.indexIncrease();
+    }
+
+    shuffle(native_words_array);
+    shuffle(foreign_words_array);
+
+        for (let j = 0; j < native_words_array.length; j++) {
+            //translation words
+            let t_radio = document.createElement('input');
+            t_radio.type = "radio";
+            let t_IdText = "f_rd" + j;
+            t_radio.id = t_IdText
+            var t_label = document.createElement('label');
+            t_label.for = t_IdText;
+
+            let t_text = foreign_words_array[j];
+            let t_h3 = document.createElement("h3");
+            let t_textNode = document.createTextNode(t_text);
+            t_h3.appendChild(t_textNode);
+            t_label.appendChild(t_h3);
+            foreign_div.appendChild(t_radio);
+            foreign_div.appendChild(t_label);
+
+            $('.' + FOREIGN + ' input:radio').addClass('input_hidden');
+            $('.' + FOREIGN + ' label').click(function () {
+                $(this).addClass(SELECTED_F_TEXT).siblings().removeClass(SELECTED_F_TEXT);
+            });
+
+            //native words
+            let n_radio = document.createElement('input');
+            n_radio.type = "radio";
+            let n_IdText = "n_rd" + j;
+            n_radio.id = n_IdText
+            var n_label = document.createElement('label');
+            n_label.for = n_IdText;
+
+            let n_text = native_words_array[j].native;
+            let n_h3 = document.createElement("h3");
+            let n_textNode = document.createTextNode(n_text);
+            n_h3.appendChild(n_textNode);
+            n_label.appendChild(n_h3);
+            n_label.style.alt = native_words_array[j].translation;
+            native_div.appendChild(n_radio);
+            native_div.appendChild(n_label);
+
+            $('.' + NATIVE + ' input:radio').addClass('input_hidden');
+            $('.' + NATIVE + ' label').click(function () {
+                $(this).addClass(SELECTED_N_TEXT).siblings().removeClass(SELECTED_N_TEXT);
+            });
+    }
+
+    $('.check').click(function (e) {
+        $.ajax({
+            type: "POST",
+            url: "Test/Test?testID=10",
+            data: {},
+            success: function () {
+                makePair();
+                console.log("making pair");
+            },
+            error: function () {
+                console.log("something wrong");
+            }
+        });
+    });
+}
+
+function makePair() {
+    $("." + INTERMEDIATE).empty();
+
+    let currentTestResults = new TestResult();
+
+    let intermediate = document.getElementsByClassName(INTERMEDIATE)[0];
+    let native_label = document.querySelector('.' + SELECTED_N_TEXT);
+    let native_word = native_label.style.alt;
+    let trans_label = document.querySelector('.' + SELECTED_F_TEXT);
+    let trans_word = trans_label.childNodes[0].innerText;
+
+    let text = `${trans_word} — ${native_label.childNodes[0].innerText}`;
     console.log(text);
+    let comparison = native_word == trans_word;
+    if (comparison) {
+        info.increaseScore();
+        currentTestResults.QuestionNames.push(text);
+        currentTestResults.QuestionResults.push("correct");
+    } else {
+        currentTestResults.QuestionNames.push(text);
+        currentTestResults.QuestionResults.push("uncorrect");
+    }
+
+    native_label.childNodes[0].innerText = "";
+    trans_label.childNodes[0].innerText = "";
+
+    let table = document.createElement('table');
+    for (let i = 0; i < currentTestResults.GetLength(); i++) {
+        let tr = document.createElement('tr');
+        let NameTextNode = document.createTextNode(currentTestResults.QuestionNames[i]);
+        let ResultTextNode = document.createTextNode(currentTestResults.QuestionResults[i]);
+
+        let tdName = document.createElement('td');
+        let tdResult = document.createElement('td');
+        tdName.appendChild(NameTextNode);
+        tdResult.appendChild(ResultTextNode);
+
+        tr.appendChild(tdName);
+        tr.appendChild(tdResult);
+        table.appendChild(tr);
+    }
+
+    intermediate.appendChild(table);
 }
 
 function GenerateResult(result) {
@@ -266,7 +450,6 @@ function GenerateResult(result) {
 
 function CheckPictureWithText() {
 
-    const TEST_WORD = "test_word";
     let test_word_div = document.querySelector('.' + TEST_WORD);
     let label = test_word_div.getElementsByTagName('label')[0];    
     let word = label.childNodes[0].innerText;
@@ -275,16 +458,11 @@ function CheckPictureWithText() {
     if (selectedLabel != undefined && word != undefined) {
     let picture = selectedLabel.childNodes[0];
         if (picture.alt == word) {
-            info.increaseScore();
-            testResult.QuestionNames.push(word);
-            testResult.QuestionResults.push(true);
             selectedLabel.classList.remove('selected_picture');
-            NextTest();
+            testResult.correctAnswear(word);
         } else {
-            testResult.QuestionNames.push(word);
-            testResult.QuestionResults.push(false);
             selectedLabel.classList.remove('selected_picture');
-            NextTest();
+            testResult.uncorrectAnswear(word);
         }
     } else {
         alert("Nothing selected. Please select any item");
@@ -292,7 +470,6 @@ function CheckPictureWithText() {
 }
 
 function CheckPictureWithSound(){
-    const TEST_SOUND = "test_sounds";
     let test_sound_div = document.getElementsByClassName(TEST_SOUND)[0];
     let alt = test_sound_div.childNodes[0].style.alt;
     let selectedLabel = document.querySelector('.selected_picture');
@@ -300,16 +477,11 @@ function CheckPictureWithSound(){
     if (selectedLabel != undefined && alt != undefined) {
         let picture = selectedLabel.childNodes[0];
         if (picture.alt == alt) {
-            info.increaseScore();
-            testResult.QuestionNames.push(alt);
-            testResult.QuestionResults.push(true);
             selectedLabel.classList.remove('selected_picture');
-            NextTest();
+            testResult.correctAnswear(alt);
         } else {
-            testResult.QuestionNames.push(alt);
-            testResult.QuestionResults.push(false);
             selectedLabel.classList.remove('selected_picture');
-            NextTest();
+            testResult.uncorrectAnswear(alt);
         }
     } else {
         alert("Nothing selected. Please select any item");
@@ -318,7 +490,6 @@ function CheckPictureWithSound(){
 
 function CheckTextWithPicture() {
 
-    const TEST_IMAGES = "test_images";
     let test_picture_div = document.getElementsByClassName(TEST_IMAGES)[0];
     let label = test_picture_div.getElementsByTagName('label')[0];
     let pictureText = label.childNodes[0].alt;
@@ -327,16 +498,11 @@ function CheckTextWithPicture() {
     if (selectedLabel != undefined && pictureText != undefined) {
         let text = selectedLabel.childNodes[0].innerText;
         if (pictureText == text) {
-            info.increaseScore();
-            testResult.QuestionNames.push(text);
-            testResult.QuestionResults.push(true);
             selectedLabel.classList.remove('selected_picture');
-            NextTest();
+            testResult.correctAnswear(text);
         } else {
-            testResult.QuestionNames.push(text);
-            testResult.QuestionResults.push(false);
             selectedLabel.classList.remove('selected_picture');
-            NextTest();
+            testResult.uncorrectAnswear(text);
         }
     } else {
         alert("Nothing selected. Please select any item");
@@ -344,9 +510,6 @@ function CheckTextWithPicture() {
 }
 
 function CheckPictureWithInput() {
-
-    const TEST_INPUT = "test_input";
-    const TEST_IMAGE = "test_images"
 
     let test_input_div = document.querySelector('.' + TEST_INPUT);
     let input = test_input_div.getElementsByTagName('input')[0];
@@ -357,17 +520,12 @@ function CheckPictureWithInput() {
 
     if (value != undefined && word != undefined) {
         if (value == word) {
-            info.increaseScore();
-            testResult.QuestionNames.push(word);
-            testResult.QuestionResults.push(true);
-            label.classList.remove('selected_picture');                
-            NextTest();
+            label.classList.remove('selected_picture');
+            testResult.correctAnswear(word);
             input.value = "";
         } else {
-            testResult.QuestionNames.push(word);
-            testResult.QuestionResults.push(false);
-            label.classList.remove('selected_picture');  
-            NextTest();
+            label.classList.remove('selected_picture');
+            testResult.uncorrectAnswear(word);
             input.value = "";
         }
     } else {
@@ -376,8 +534,6 @@ function CheckPictureWithInput() {
 }
 
 function CheckSoundWithInput() {
-    const TEST_INPUT = "test_input";
-    const TEST_SOUND = "test_sounds"
 
     let test_input_div = document.querySelector('.' + TEST_INPUT);
     let input = test_input_div.getElementsByTagName('input')[0];
@@ -387,15 +543,10 @@ function CheckSoundWithInput() {
 
     if (input != undefined && word != undefined) {
         if (value == word) {
-            info.increaseScore();
-            testResult.QuestionNames.push(word);
-            testResult.QuestionResults.push(true);
-            NextTest();
+            testResult.correctAnswear(word);
             input.value = "";
         } else {
-            testResult.QuestionNames.push(word);
-            testResult.QuestionResults.push(false);
-            NextTest();
+            testResult.uncorrectAnswear(word);
             input.value = "";
         }
     } else {
@@ -403,8 +554,7 @@ function CheckSoundWithInput() {
     } 
 }
 
-function CheckSoundWithText() {
-    const TEST_SOUND = "test_sounds"
+function CheckSoundWithText() {    
     
     let test_sound_div = document.querySelector('.' + TEST_SOUND);
     let word = test_sound_div.childNodes[0].style.alt;
@@ -415,25 +565,66 @@ function CheckSoundWithText() {
         let text = selectedLabel.childNodes[0].innerText;
 
         if (text == word) {
-            info.increaseScore();
-            testResult.QuestionNames.push(word);
-            testResult.QuestionResults.push(true);
             selectedLabel.classList.remove('selected_text');
-            NextTest();
+            testResult.correctAnswear(word);
         } else {
-            testResult.QuestionNames.push(word);
-            testResult.QuestionResults.push(false);
             selectedLabel.classList.remove('selected_text');
-            NextTest();
+            testResult.uncorrectAnswear(word);
         }
     } else {
         alert("Nothing selected. Please select any item");
     } 
 }
 
-//do checking for 5 test
-//change result table:   "true" -> "correct"
-//                      "false" -> "uncorrect"
+function CheckTrueOrFalse() {
+    $(document).ready(function () {
+
+        let btn_div = document.getElementsByClassName('buttons')[0];
+        let button_yes = btn_div.childNodes[1];
+        let button_no = btn_div.childNodes[3];
+
+        let picture_div = document.querySelector('.' + TEST_IMAGES);
+        let picture = picture_div.getElementsByTagName('label')[0].childNodes[0];
+        let text = picture.alt;
+        let text_div = document.getElementsByClassName(TEST_WORD)[0];
+        let word = text_div.childNodes[0].innerText;
+
+        if (picture != undefined && word != undefined) {
+
+            let checkText = text == word;
+            let yes_pressed = button_yes.classList.contains('clicked');
+            let no_pressed = button_no.classList.contains('clicked');
+
+            if ((checkText && yes_pressed) || (!checkText && no_pressed)) {
+                testResult.correctAnswear(text);
+            } else {
+                testResult.uncorrectAnswear(text);
+            }
+        }
+
+    });
+    
+}
+
+function CheckTranslationWithNative() {
+
+    let translation_word_div = document.querySelector('.' + TEST_FOREIGN);
+    let word = translation_word_div.childNodes[0].innerText;
+    let selectedLabel = document.querySelector('.selected_text');
+
+    if (selectedLabel != undefined && word != undefined) {
+        let native_word = selectedLabel.style.alt;
+        if (native_word == word) {
+            selectedLabel.classList.remove('selected_picture');
+            testResult.correctAnswear(word);
+        } else {
+            selectedLabel.classList.remove('selected_picture');
+            testResult.uncorrectAnswear(word);
+        }
+    } else {
+        alert("Nothing selected. Please select any item");
+    }    
+}
 
 class TestInfo {
 
@@ -465,10 +656,22 @@ class TestInfo {
             this.checkMethod = CheckSoundWithInput;
         } else if (this.textsCount > 3 && this.soundsCount == 1) {
             this.checkMethod = CheckSoundWithText;
+        } else if (this.textsCount == 1 && this.picturesCount == 1) {
+            this.checkMethod = CheckTrueOrFalse;
+        } else if (this.textsCount == 5) {
+            this.checkMethod = CheckTranslationWithNative;
         }
 
         let button = document.querySelector('.confirm');
-        button.onclick = this.checkMethod;
+        let button_yes, button_no;
+        if (button != null) {
+            button.onclick = this.checkMethod;
+        } else {
+            button_yes = document.querySelector('.button_yes');
+            button_no = document.querySelector('.button_no');
+            button_yes.onclick = this.checkMethod;
+            button_no.onclick = this.checkMethod;
+        }
     }
 
     indexIncrease = () => {
@@ -498,8 +701,22 @@ class TestResult {
     getTotal = () => {
         let sum = 0;
         for (let i = 0; i < this.GetLength(); i++) {
-            if (this.QuestionResults[i]) { sum++;}
+            if (this.QuestionResults[i] == "correct") { sum++;}
         }
         return sum;
     }
+
+    correctAnswear = (word) => {
+        info.increaseScore();
+        this.QuestionNames.push(word);
+        this.QuestionResults.push("correct");
+        NextTest();
+    }
+
+    uncorrectAnswear = (word) => {
+        this.QuestionNames.push(word);
+        this.QuestionResults.push("uncorrect");
+        NextTest();
+    }
 }
+

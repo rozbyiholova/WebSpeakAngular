@@ -4,7 +4,17 @@
 
 .selected_text,
 .selected_picture {
-    background-color: #c1a510;
+    background-color: #1a33ae70;
+}
+
+.selected_f_text {
+    font-size: 1rem;
+    background-color: #2d94bb70
+}
+
+.selected_n_text {
+    font-size: 1rem;
+    background-color: #c7bf2c70
 }
 
 .selected_text label,
@@ -16,6 +26,16 @@
 .selected_text label h3,
 .test_images label img {
     padding: 8px;
+}
+
+h3 {
+    font-size: 2vh;
+}
+
+.selected_f_text label h3,
+.selected_n_text label h3 {
+    display: inline-block;
+    cursor: pointer;
 }
 
 .test {
@@ -53,4 +73,21 @@
     object-fit: cover;
     height: 40vh;
     width: 50vh;
+}
+
+.test10{
+    width: 80%;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+    justify-items: center;
+}
+
+.foreign_words,
+.native_words {
+    display: flex;
+    flex-direction:column;
+    text-wrap: unset;
+    justify-content: center;
+    align-items: center;
 }
