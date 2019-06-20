@@ -9,6 +9,7 @@ function check()
     if (($("#resultInput").val() == correctAnswer))
     {
         ++totalResult;
+        $('#result').html(`<b><span class="text-success">Score: ${totalResult}</span>  Question ${questionNumber + 1}/${totalQuestions}</b>`);
     }
     else if (($.trim($("#resultInput").val())) == 0)
     {
@@ -19,11 +20,17 @@ function check()
 
             return;
         }
-
-        first = false;
+    }
+    else
+    {
+        $('#result').html(`<b><span class="text-danger">Score: ${totalResult}</span>  Question ${questionNumber + 1}/${totalQuestions}</b>`);
     }
 
-    $('#result').html(`<b>Score: ${totalResult}  Question ${questionNumber + 1}/${totalQuestions}</b>`);
+    if (first)
+    {
+        $('#result').html(`<b>Score: ${totalResult} Question ${questionNumber + 1}/${totalQuestions}</b>`);
+        first = false;
+    }
 
     $('#error').hide();
 

@@ -7,10 +7,6 @@
 <link rel="stylesheet" href="~/css/Slideshow.css" />
 
 <div class="container">
-    <div class="slidecontainer">
-        Interval: <div id="valueSlider"></div>
-        <input type="range" min="500" max="5000" value="2250" class="slider" id="myRange">
-    </div>
     <div class="row">
         <div id="slideshow" class="carousel slide container" data-ride="carousel" data-interval="50" data-pause="false">
             <div class="carousel-inner border border-success">
@@ -19,40 +15,80 @@
                         <img class="d-block img-thumbnail" src="../../../../@(Model.ElementAt(0).Picture)" alt="@Model.ElementAt(0).WordNativeLang">
                     </div>
                     <div class="carousel-caption d-none d-md-block">
-                        <h1>@Model.ElementAt(0).WordLearnLang</h1>
+                        <h1>@Model.ElementAt(0).WordLearnLang
+                            @if (Model.ElementAt(0).EnableNativeLang.Contains("true"))
+                            {
+                                <em>( @Model.ElementAt(0).WordNativeLang )</em>
+                            }
+                        </h1>
+                        @if (Model.ElementAt(0).EnableSound.Contains("true") && !String.IsNullOrEmpty(Model.ElementAt(0).Sound))
+                        {
+                            <audio id="@Model.ElementAt(0).Sound" class="sound">
+                                <source src="../../../../@Model.ElementAt(0).Sound" type="audio/mpeg" />
+                                Your browser does not support the audio element.
+                            </audio>
+                        }
+                        @if (Model.ElementAt(0).EnablePronounceLearnLang.Contains("true"))
+                        {
+                            <audio id="@Model.ElementAt(0).PronounceLearn" class="pronounceLearn">
+                                <source src="../../../../@Model.ElementAt(0).PronounceLearn" type="audio/mpeg" />
+                                Your browser does not support the audio element.
+                            </audio>
+                        }
+                        @if (Model.ElementAt(0).EnablePronounceNativeLang.Contains("true"))
+                        {
+                            <audio id="@Model.ElementAt(0).PronounceNative" class="pronounceNative">
+                                <source src="../../../../@Model.ElementAt(0).PronounceNative" type="audio/mpeg" />
+                                Your browser does not support the audio element.
+                            </audio>
+                        }
                     </div>
                 </div>
-                    @foreach (var word in Model.Skip(1))
-                    {
-                        <div class="carousel-item">
-                            <div class="image">
-                                <img class="d-block img-thumbnail" src="../../../../@word.Picture" alt="@word.WordNativeLang">
-                            </div>
-                            <div class="carousel-caption d-none d-md-block">
-                                <h1>@word.WordLearnLang</h1>
-                            </div>
-                        </div>
-                    }
+                @foreach (var word in Model.Skip(1))
+                {
+                <div class="carousel-item" id="">
+                    <div class="image">
+                        <img class="d-block img-thumbnail" src="../../../../@word.Picture" alt="@word.WordNativeLang">
+                    </div>
+                    <div class="carousel-caption d-none d-md-block">
+                        <h1>
+                            @word.WordLearnLang
+                            @if (Model.ElementAt(0).EnableNativeLang.Contains("true"))
+                            {
+                                <em>( @word.WordNativeLang )</em>
+                            }
+                        </h1>
+                        @if (Model.ElementAt(0).EnableSound.Contains("true") && !String.IsNullOrEmpty(Model.ElementAt(0).Sound))
+                        {
+                            <audio id="@word.Sound" class="sound">
+                                <source src="../../../../@word.Sound" type="audio/mpeg" />
+                                Your browser does not support the audio element.
+                            </audio>
+                        }
+                        @if (Model.ElementAt(0).EnablePronounceLearnLang.Contains("true"))
+                        {
+                            <audio id="@word.PronounceLearn" class="pronounceLearn">
+                                <source src="../../../../@word.PronounceLearn" type="audio/mpeg" />
+                                Your browser does not support the audio element.
+                            </audio>
+                        }
+                        @if (Model.ElementAt(0).EnablePronounceNativeLang.Contains("true"))
+                        {
+                            <audio id="@word.PronounceNative" class="pronounceNative">
+                                <source src="../../../../@word.PronounceNative" type="audio/mpeg" />
+                                Your browser does not support the audio element.
+                            </audio>
+                        }
+                    </div>
                 </div>
+                }
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    var slider = document.getElementById("myRange");
-    var output = document.getElementById("valueSlider");
-    var slideshow = document.getElementsByClassName('carousel-item')
-
-    for (let i = 0; i < slideshow.length; i++) {
-        slideshow[i].style.transitionDelay = slider.value + "ms";
-    }
-
-    output.innerHTML = slider.value;
-
-    slider.oninput = function () {
-        for (let i = 0; i < slideshow.length; i++) {
-            slideshow[i].style.transitionDelay = this.value + "ms";
-        }
-        output.innerHTML = this.value;
-    }
+    var model = @Html.Raw(Json.Serialize(Model));
 </script>
+
+<script src="~/js/Slideshow.js"></script>

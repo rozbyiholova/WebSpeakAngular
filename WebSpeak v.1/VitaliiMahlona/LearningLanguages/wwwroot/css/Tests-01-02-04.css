@@ -8,15 +8,15 @@
 }
 
 .words {
-    align-items: center;
+    justify-content: space-around;
     display: flex;
-    height: 300px;
+    flex-wrap: wrap;
 }
 
 .word {
     width: 256px;
     height: 256px;
-    margin: auto;
+    margin: 20px;
 }
 
 .word img {

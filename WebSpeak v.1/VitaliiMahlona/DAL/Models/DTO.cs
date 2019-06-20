@@ -22,5 +22,8 @@ namespace DAL.Models
         public int TestId { get; set; }
         public int Total { get; set; }
         public string UserId { get; set; }
+        public List<Languages> LanguagesList { get; set; }
+        public int IdLangLearn { get; set; }
+        public int IdLangNative { get; set; }
     }
 }

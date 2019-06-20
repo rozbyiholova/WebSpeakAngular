@@ -263,20 +263,37 @@ namespace LearningLanguages.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            SelectList languagesList = new SelectList(await _languages.GetList(), "Id", "Name");
+            var languagesList = await _languages.GetList();
+            int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
+            int idLangNative = (int)HttpContext.Session.GetInt32("idLangNative");
+            string enableNativeLang = HttpContext.Session.GetString("enableNativeLang");
+            string enableSound = HttpContext.Session.GetString("enableSound");
+            string enablePronounceNativeLang = HttpContext.Session.GetString("enablePronounceNativeLang");
+            string enablePronounceLearnLang = HttpContext.Session.GetString("enablePronounceLearnLang");
 
-            return View("./Manage/Index", languagesList);
+            DTO index = new DTO()
+            {
+                LanguagesList = languagesList.ToList(),
+                IdLangLearn = idLangLearn,
+                IdLangNative = idLangNative,
+                EnableNativeLang = enableNativeLang,
+                EnableSound = enableSound,
+                EnablePronounceNativeLang = enablePronounceNativeLang,
+                EnablePronounceLearnLang = enablePronounceLearnLang
+            };
+
+            return View("./Manage/Index", index);
         }
 
         [HttpPost]
-        public IActionResult Index(IFormCollection form)
+        public IActionResult Index(DTO form)
         {
-            int idLangNative = Convert.ToInt32(form["idLangNative"]);
-            int idLangLearn = Convert.ToInt32(form["idLangLearn"]);
-            string enableNativeLang = Convert.ToString(form["enableNativeLang"]);
-            string enableSound = Convert.ToString(form["enableSound"]);
-            string enablePronounceNativeLang = Convert.ToString(form["enablePronounceNativeLang"]);
-            string enablePronounceLearnLang = Convert.ToString(form["enablePronounceLearnLang"]);
+            int idLangNative = form.IdLangNative;
+            int idLangLearn = form.IdLangLearn;
+            string enableNativeLang = form.EnableNativeLang;
+            string enableSound = form.EnableSound;
+            string enablePronounceNativeLang = form.EnablePronounceNativeLang;
+            string enablePronounceLearnLang = form.EnablePronounceLearnLang;
 
             HttpContext.Session.SetInt32("idLangNative", idLangNative);
             HttpContext.Session.SetInt32("idLangLearn", idLangLearn);

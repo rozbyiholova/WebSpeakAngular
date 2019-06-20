@@ -8,9 +8,18 @@ function check(event)
     if ((event != null) && (event.target.value == correctAnswer))
     {
         ++totalResult;
+        $('#result').html(`<b><span class="text-success">Score: ${totalResult}</span>  Question ${questionNumber + 1}/${totalQuestions}</b>`);
+    }
+    else
+    {
+        $('#result').html(`<b><span class="text-danger">Score: ${totalResult}</span>  Question ${questionNumber + 1}/${totalQuestions}</b>`);
     }
 
-    $('#result').html(`<b>Score: ${totalResult}  Question ${questionNumber + 1}/${totalQuestions}</b>`);
+    if (first)
+    {
+        $('#result').html(`<b>Score: ${totalResult} Question ${questionNumber + 1}/${totalQuestions}</b>`);
+        first = false;
+    }
 
     if (questionNumber == totalQuestions)
     {
