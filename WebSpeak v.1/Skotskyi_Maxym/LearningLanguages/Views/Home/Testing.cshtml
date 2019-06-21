@@ -66,8 +66,18 @@
 
     </div>
 
+    <div class="row d-flex justify-content-center" id="pronounce">
 
-    <button id="next" type="button" class="btn btn-success" onclick="next()">next</button>
+    </div>
+
+    <div class="col-md-12 d-flex justify-content-center" id="buttons">
+
+        <button id="next" type="button" class="btn btn-success mx-2" onclick="next()">next</button>
+        <button id="refresh" type="button" class="btn btn-success mx-2 invisible" onclick="RefreshSelectedTest10()">Refresh</button>
+
+    </div>
+    <div id="alert" class="col-md-12">
+    </div>
 </div>
 
     <script>
@@ -75,8 +85,14 @@
     </script>
 
     <script type="text/javascript">
-    var testId = "@Model.ElementAt(0).TestName.ToString()";
-    var cuted = testId.split("Test0")[1];
+        var testId = "@Model.ElementAt(0).TestName.ToString()";
+        
+        var cuted = testId.split("Test0")[1];
+        if (cuted == undefined)
+        {
+            cuted = testId.split("Test1")[1];
+        }
+
     cuted = cuted.split('.')[0];
     document.write(`<script src="../../js/Test01.js" asp-append-version="true">`);
     document.write('</');
