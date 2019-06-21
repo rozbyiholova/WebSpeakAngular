@@ -14,6 +14,7 @@ const SELECTED_PICTURE = "selected_picture";
 
 var info;
 var testResult;
+let TestResults10;
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
@@ -272,14 +273,21 @@ function LoadNativeText() {
 }
 
 function LoadPairs() {
+    TestResults10 = new TestResult();
 
     $("." + FOREIGN).empty();
     $("." + NATIVE).empty();
+    $("." + INTERMEDIATE).empty();
+    
 
     let pairsInfo = info;
 
     let foreign_div = document.getElementsByClassName(FOREIGN)[0];
     let native_div = document.getElementsByClassName(NATIVE)[0];
+
+    //to prevent multicast event 
+    document.querySelector('.check').removeEventListener('click', callMakePairs);
+    document.querySelector('.confirm').removeEventListener('click', checkLength);
 
     let wordsNumber = 4;
     let current = pairsInfo.currentIndex;
@@ -298,121 +306,148 @@ function LoadPairs() {
     shuffle(native_words_array);
     shuffle(foreign_words_array);
 
-        for (let j = 0; j < native_words_array.length; j++) {
-            //translation words
-            let t_radio = document.createElement('input');
-            t_radio.type = "radio";
-            let t_IdText = "f_rd" + j;
-            t_radio.id = t_IdText
-            var t_label = document.createElement('label');
-            t_label.for = t_IdText;
+    for (let j = 0; j < native_words_array.length; j++) {
+        //translation words
+        let t_radio = document.createElement('input');
+        t_radio.type = "radio";
+        let t_IdText = "f_rd" + j;
+        t_radio.id = t_IdText
+        var t_label = document.createElement('label');
+        t_label.for = t_IdText;
 
-            let t_text = foreign_words_array[j];
-            let t_h3 = document.createElement("h3");
-            let t_textNode = document.createTextNode(t_text);
-            t_h3.appendChild(t_textNode);
-            t_label.appendChild(t_h3);
-            foreign_div.appendChild(t_radio);
-            foreign_div.appendChild(t_label);
+        let t_text = foreign_words_array[j];
+        let t_h3 = document.createElement("h3");
+        let t_textNode = document.createTextNode(t_text);
+        t_h3.appendChild(t_textNode);
+        t_label.appendChild(t_h3);
+        foreign_div.appendChild(t_radio);
+        foreign_div.appendChild(t_label);
 
-            $('.' + FOREIGN + ' input:radio').addClass('input_hidden');
-            $('.' + FOREIGN + ' label').click(function () {
-                $(this).addClass(SELECTED_F_TEXT).siblings().removeClass(SELECTED_F_TEXT);
-            });
+        $('.' + FOREIGN + ' input:radio').addClass('input_hidden');
+        $('.' + FOREIGN + ' label').click(function () {
+            $(this).addClass(SELECTED_F_TEXT).siblings().removeClass(SELECTED_F_TEXT);
+        });
 
-            //native words
-            let n_radio = document.createElement('input');
-            n_radio.type = "radio";
-            let n_IdText = "n_rd" + j;
-            n_radio.id = n_IdText
-            var n_label = document.createElement('label');
-            n_label.for = n_IdText;
+        //native words
+        let n_radio = document.createElement('input');
+        n_radio.type = "radio";
+        let n_IdText = "n_rd" + j;
+        n_radio.id = n_IdText
+        var n_label = document.createElement('label');
+        n_label.for = n_IdText;
 
-            let n_text = native_words_array[j].native;
-            let n_h3 = document.createElement("h3");
-            let n_textNode = document.createTextNode(n_text);
-            n_h3.appendChild(n_textNode);
-            n_label.appendChild(n_h3);
-            n_label.style.alt = native_words_array[j].translation;
-            native_div.appendChild(n_radio);
-            native_div.appendChild(n_label);
+        let n_text = native_words_array[j].native;
+        let n_h3 = document.createElement("h3");
+        let n_textNode = document.createTextNode(n_text);
+        n_h3.appendChild(n_textNode);
+        n_label.appendChild(n_h3);
+        n_label.style.alt = native_words_array[j].translation;
+        native_div.appendChild(n_radio);
+        native_div.appendChild(n_label);
 
-            $('.' + NATIVE + ' input:radio').addClass('input_hidden');
-            $('.' + NATIVE + ' label').click(function () {
-                $(this).addClass(SELECTED_N_TEXT).siblings().removeClass(SELECTED_N_TEXT);
-            });
+        $('.' + NATIVE + ' input:radio').addClass('input_hidden');
+        $('.' + NATIVE + ' label').click(function () {
+            $(this).addClass(SELECTED_N_TEXT).siblings().removeClass(SELECTED_N_TEXT);
+        });
     }
 
-    $('.check').click(function (e) {
-        $.ajax({
-            type: "POST",
-            url: "Test/Test?testID=10",
-            data: {},
-            success: function () {
-                makePair();
-                console.log("making pair");
-            },
-            error: function () {
-                console.log("something wrong");
-            }
-        });
-    });
+    document.querySelector('.check').addEventListener('click', callMakePairs);
+    document.querySelector('.confirm').addEventListener('click', checkLength);
+
+    //because NextTest() increases index
+    info.currentIndex--;
 }
 
 function makePair() {
     $("." + INTERMEDIATE).empty();
 
-    let currentTestResults = new TestResult();
-
     let intermediate = document.getElementsByClassName(INTERMEDIATE)[0];
     let native_label = document.querySelector('.' + SELECTED_N_TEXT);
-    let native_word = native_label.style.alt;
     let trans_label = document.querySelector('.' + SELECTED_F_TEXT);
-    let trans_word = trans_label.childNodes[0].innerText;
 
-    let text = `${trans_word} — ${native_label.childNodes[0].innerText}`;
-    console.log(text);
-    let comparison = native_word == trans_word;
-    if (comparison) {
-        info.increaseScore();
-        currentTestResults.QuestionNames.push(text);
-        currentTestResults.QuestionResults.push("correct");
+    if (native_label != null && trans_label != null) {
+        
+        let trans_word = trans_label.childNodes[0].innerText;
+        let native_word = native_label.style.alt;
+
+        let text = `${trans_word} — ${native_label.childNodes[0].innerText}`;
+        let comparison = native_word == trans_word;
+        if (comparison) {
+            info.increaseScore();
+            TestResults10.QuestionNames.push(text);
+            TestResults10.QuestionResults.push("correct");
+            testResult.QuestionNames.push(text);
+            testResult.QuestionResults.push("correct");
+            native_label.classList.remove(SELECTED_N_TEXT);
+            trans_label.classList.remove(SELECTED_F_TEXT);
+        } else {
+            TestResults10.QuestionNames.push(text);
+            TestResults10.QuestionResults.push("uncorrect");
+            testResult.QuestionNames.push(text);
+            testResult.QuestionResults.push("uncorrect");
+            native_label.classList.remove(SELECTED_N_TEXT);
+            trans_label.classList.remove(SELECTED_F_TEXT);
+        }
+
+        native_label.innerHTML = "";
+        trans_label.innerHTML = "";
+
+        let table = document.createElement('table');
+        for (let i = 0; i < TestResults10.GetLength(); i++) {
+            let tr = document.createElement('tr');
+            let NameTextNode = document.createTextNode(TestResults10.QuestionNames[i]);
+            let ResultTextNode = document.createTextNode(TestResults10.QuestionResults[i]);
+
+
+            let tdName = document.createElement('td');
+            let tdResult = document.createElement('td');
+            tdName.appendChild(NameTextNode);
+            tdResult.appendChild(ResultTextNode);
+
+            tr.appendChild(tdName);
+            tr.appendChild(tdResult);
+            table.appendChild(tr);
+        }
+        intermediate.appendChild(table);
     } else {
-        currentTestResults.QuestionNames.push(text);
-        currentTestResults.QuestionResults.push("uncorrect");
+        alert('Nothing selected');
+    }    
+}
+
+function checkLength() {
+
+    let native_div = document.querySelector("." + NATIVE);
+
+    if (info.currentIndex + 1 >= info.categories.length) {
+        GenerateResult(testResult);
+    } else {
+        if (TestResults10.QuestionNames.length == native_div.childNodes.length / 2) {
+            NextTest();
+        } else {
+            alert("Make all the pairs");
+        }
     }
+}
 
-    native_label.childNodes[0].innerText = "";
-    trans_label.childNodes[0].innerText = "";
-
-    let table = document.createElement('table');
-    for (let i = 0; i < currentTestResults.GetLength(); i++) {
-        let tr = document.createElement('tr');
-        let NameTextNode = document.createTextNode(currentTestResults.QuestionNames[i]);
-        let ResultTextNode = document.createTextNode(currentTestResults.QuestionResults[i]);
-
-        let tdName = document.createElement('td');
-        let tdResult = document.createElement('td');
-        tdName.appendChild(NameTextNode);
-        tdResult.appendChild(ResultTextNode);
-
-        tr.appendChild(tdName);
-        tr.appendChild(tdResult);
-        table.appendChild(tr);
-    }
-
-    intermediate.appendChild(table);
+function callMakePairs() {
+    makePair();
 }
 
 function GenerateResult(result) {
      
     if (result != null) {
+
+        
         const TEST = "test";
         const TEST_RESULT = "test_result";
         let testResult_div = document.getElementsByClassName(TEST_RESULT)[0];
         let test_div = document.getElementsByClassName(TEST)[0];
         let names = result.QuestionNames;
         let testResults = result.QuestionResults;
+        if (test_div == undefined) {
+            test_div = document.querySelector('.test10');
+            document.querySelector('.intermediate').innerHTML = "";
+        } 
 
         test_div.style.display = "none";
         testResult_div.setAttribute("style", "display: block;");
