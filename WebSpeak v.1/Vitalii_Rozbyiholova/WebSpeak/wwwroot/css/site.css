@@ -10,7 +10,7 @@ a.navbar-brand {
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 @media (min-width: 768px) {
   html {
@@ -42,8 +42,9 @@ html {
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+    background-image: url(https://images.unsplash.com/photo-1475965894430-b05c9d13568a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1575&q=80);
 }
 .footer {
   position: absolute;
@@ -53,4 +54,51 @@ body {
   /* Set the fixed height of the footer here */
   height: 60px;
   line-height: 60px; /* Vertically center the text there */
+}
+
+.my-container {
+display: grid;
+grid-gap: 20px;
+grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+justify-content: center;
+align-content: center;
+}
+
+.img {
+    object-fit: cover;
+    width: 20vw;
+    height: 30vh;
+}
+
+
+.title {
+    display: flex;
+    flex-direction: column;
+}
+
+.item {
+    box-sizing: border-box;
+    border: 5px solid transparent;
+    display: grid;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    grid-template-columns: 1fr 1fr;
+    cursor: pointer;
+    grid-gap: 10px;
+    justify-content: center;
+    align-items: center;
+    transition: .5s ease-in;
+}
+
+
+.item:hover {
+    border: 7px solid #19906c;
+    border-top-left-radius: 100% 20px;
+    border-bottom-right-radius: 100% 20px;
+    transition: .5s ease-in-out;
+}
+
+.item h2 {
+    font-size: 1em;
 }

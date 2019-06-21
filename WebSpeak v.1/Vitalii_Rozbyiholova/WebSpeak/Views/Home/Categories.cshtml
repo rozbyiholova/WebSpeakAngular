@@ -5,33 +5,20 @@
     ViewData["Title"] = "Categories";
 }
 
-<h1>Categories</h1>
+<div class="my-container">
+    @foreach (DTO item in Model)
+    {
+        <div class="item box-shadow">
+            <img class="img" src="../../@item.Picture" />
+            <div class="title">
+                <h2>@item.Translation (@item.Native)</h2>
+            </div>
+            <a href="/Categories/Subcategories?id=@item.Id"></a>
+        </div>
+    }
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Translation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Picture)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (DTO item in Model) {
-        <tr>
-            <td>
-                @Html.ActionLink(item.Translation + "(" + item.Native + ")", "SubCategories", "Home", new { id = item.Id})
-            </td>
-            <td>
-                <img src="../../@item.Picture" width="300" height="300"/>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+@*https://localhost:44363/Categories/Subcategories/Manual?categoryId=3
+https://localhost:44363/Categories/Subcategories/Slideshow?categoryId=3
+https://localhost:44363/Test?subcategoryId=2
+https://localhost:44363/Test/Test?testID=1*@

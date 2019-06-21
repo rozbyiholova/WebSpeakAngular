@@ -5,43 +5,17 @@
     ViewData["Title"] = "Categories";
 }
 
-<h1>Categories</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Translation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Picture)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (DTO item in Model)
-        {
-        <tr>
-            <td>
-                @item.Translation (@item.Native)
-            </td>
-            <td>
-                <img src="../../@item.Picture" width="300" height="300" />
-            </td>
-            <td>
-                @Html.ActionLink("Manual view", "Manual", "Home", new { categoryId = item.Id })
-            </td>
-            <td>
-                @Html.ActionLink("Slideshow", "SlideShow", "Home", new { categoryId = item.Id })
-            </td>
-            <td>
-                @Html.ActionLink("Tests", "Index", "Test", new { subcategoryId = item.Id })
-            </td>
-        </tr>
-        }
-    </tbody>
-</table>
+<div class="my-container">
+    @foreach (DTO item in Model)
+    {
+        <div class="item box-shadow">
+            <img class="img" src="../../@item.Picture" />
+            <div class="title">
+                <h2>@item.Translation (@item.Native)</h2>
+                <a href="/Categories/Subcategories/Manual?categoryId=@item.Id">Manual view</a>
+                <a href="/Categories/Subcategories/Slideshow?categoryId=@item.Id">Slideshow</a>
+                <a href="/Test?subcategoryId=@item.Id">Tests</a>
+            </div>
+        </div>
+    }
+</div>

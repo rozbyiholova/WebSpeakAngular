@@ -71,7 +71,7 @@ h3 {
 
 .img-fluid {
     object-fit: cover;
-    height: 40vh;
+    height: 50vh;
     width: 50vh;
 }
 
@@ -83,6 +83,12 @@ h3 {
     justify-items: center;
 }
 
+.test,
+.test10 {
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
 .foreign_words,
 .native_words {
     display: flex;
@@ -90,4 +96,5 @@ h3 {
     text-wrap: unset;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
 }
