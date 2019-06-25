@@ -70,6 +70,7 @@ namespace WebSpeak
             
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseAuthentication();
             app.UseCookiePolicy();
             app.UseSession();
             app.UseMvc(routes =>
