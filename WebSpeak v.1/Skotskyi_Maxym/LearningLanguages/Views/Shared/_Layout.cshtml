@@ -38,18 +38,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="CtegoriesView">CtegoriesView</a>
-                        </li>
-
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item"  asp-controller="Home" asp-action="CategoriesView">CategoriesView</a>
-                                <a class="dropdown-item" asp-controller="Home" asp-action="SubCategoriesView">SubCategoriesView</a>
-                                <a class="dropdown-item" href="#">Something else here</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Separated link</a>
-                            </div>
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="CategoriesView">CtegoriesView</a>
                         </li>
 
 
@@ -57,19 +46,18 @@
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Native Lang</a>
                             <div class="dropdown-menu" onclick="">
 
-                                <a class="dropdown-item " href="/Home/LangSwichNatevi?nt_lg=ENU" onclick="window.history.back()">ENG<img class="img-fluid pl-1 pb-1" src="~/img/icons/us.png" /></a>
-                                <a class="dropdown-item " href="/Home/LangSwichNatevi?nt_lg=UA" onclick="window.history.back()">UA<img class="img-fluid pl-1 pb-1" src="~/img/icons/ua.png" /></a>
-                                <a class="dropdown-item " href="/Home/LangSwichNatevi?nt_lg=RU" onclick="window.history.back()">RU<img class="img-fluid pl-1 pb-1" src="~/img/icons/ru.png" /></a>
-                                <a class="dropdown-item " href="/Home/LangSwichNatevi?nt_lg=GER" onclick="window.history.back()">GER<img class="img-fluid pl-1 pb-1" src="~/img/icons/de.png" /></a>
-                                <a class="dropdown-item " href="/Home/LangSwichNatevi?nt_lg=CHI" onclick="window.history.back()">CHI<img class="img-fluid pl-1 pb-1" src="~/img/icons/cn.png" /></a>
-                                <a class="dropdown-item " href="/Home/LangSwichNatevi?nt_lg=POR" onclick="window.history.back()">POR<img class="img-fluid pl-1 pb-1" src="~/img/icons/pr.png" /></a>
-                                <a class="dropdown-item " href="/Home/LangSwichNatevi?nt_lg=SPA" onclick="window.history.back()">SPA<img class="img-fluid pl-1 pb-1" src="~/img/icons/es.png" /></a>
+                                <a class="dropdown-item " href="/Home/LangSwichNatevi?nt_lg=ENU">ENG<img class="img-fluid pl-1 pb-1" src="~/img/icons/us.png" /></a>
+                                <a class="dropdown-item " href="/Home/LangSwichNatevi?nt_lg=UA">UA<img class="img-fluid pl-1 pb-1" src="~/img/icons/ua.png" /></a>
+                                <a class="dropdown-item " href="/Home/LangSwichNatevi?nt_lg=RU">RU<img class="img-fluid pl-1 pb-1" src="~/img/icons/ru.png" /></a>
+                                <a class="dropdown-item " href="/Home/LangSwichNatevi?nt_lg=GER">GER<img class="img-fluid pl-1 pb-1" src="~/img/icons/de.png" /></a>
+                                <a class="dropdown-item " href="/Home/LangSwichNatevi?nt_lg=CHI">CHI<img class="img-fluid pl-1 pb-1" src="~/img/icons/cn.png" /></a>
+                                <a class="dropdown-item " href="/Home/LangSwichNatevi?nt_lg=POR">POR<img class="img-fluid pl-1 pb-1" src="~/img/icons/pr.png" /></a>
+                                <a class="dropdown-item " href="/Home/LangSwichNatevi?nt_lg=SPA">SPA<img class="img-fluid pl-1 pb-1" src="~/img/icons/es.png" /></a>
                                 <a class="dropdown-item " href="/Home/LangSwichNatevi?nt_lg=POL">POL<img class="img-fluid pl-1 pb-1" src="~/img/icons/pl.png" /></a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="#">3k</a>
                             </div>
                         </li>
-
 
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" onclick="" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Your Learn Lang</a>
@@ -87,7 +75,8 @@
                             </div>
                         </li>
 
-
+                        <li class="nav-item">
+                            <partial name="_LoginPartial" />
                         </li>
 
                     </ul>

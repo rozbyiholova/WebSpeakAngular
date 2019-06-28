@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using DAL.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace DAL.ModelConfiguration
 {
@@ -11,10 +12,7 @@ namespace DAL.ModelConfiguration
     {
         public void Configure(EntityTypeBuilder<Users> builder)
         {
-            builder.Property(e => e.Id)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .ValueGeneratedNever();
+
         }
     }
 }

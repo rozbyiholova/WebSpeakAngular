@@ -45,6 +45,7 @@ namespace DAL.IRepository
                                         on tn.Id equals tt.Id
                                         select new CategoriesDTO()
                                         {
+                                            TestId = tn.Id,
                                             CategoryId = tn.Id,
                                             Native = tn.Translation,
                                             Translation = tt.Translation,

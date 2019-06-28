@@ -48,6 +48,7 @@ namespace DAL.IRepository
                                         on wn.Id equals wt.Id
                                         select new CategoriesDTO()
                                         {
+                                            LanguageId = LearningLang,
                                             CategoryId = wn.CategoryId,
                                             PronounceNative = wn.PronounceNative,
                                             PronounceLearn = wt.PronounceLearn,

@@ -8,11 +8,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using DAL;
 using DAL.Models;
 using DAL.IRepository;
 using Microsoft.EntityFrameworkCore;
 using SmartBreadcrumbs.Extensions;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace LearningLanguages
 {
@@ -30,8 +33,14 @@ namespace LearningLanguages
         public void ConfigureServices(IServiceCollection services)
         {
             string connection = Configuration.GetConnectionString("DefaultConnection");
-            services.AddDbContext<Languages_bdContext>(options =>
-            options.UseSqlServer(connection));
+
+            services.AddDbContext<Languages_bdContext>(options => options.UseSqlServer(connection));
+
+
+           
+
+
+
             services.AddMvc();
 
             services.AddDistributedMemoryCache();
@@ -72,7 +81,12 @@ namespace LearningLanguages
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseHttpsRedirection();
+
             app.UseStaticFiles();
+
+            app.UseAuthentication();
+            
             app.UseCookiePolicy();
             app.UseSession();
 
