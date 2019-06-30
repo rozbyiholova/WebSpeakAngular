@@ -71,14 +71,16 @@ namespace LearningLanguages.Controllers
 
                 if (model.Avatar != null)
                 {
-                    byte[] imageData = null;
+                    var fileName = Path.GetFileName(model.Avatar.FileName);
 
-                    using (var binaryReader = new BinaryReader(model.Avatar.OpenReadStream()))
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\UserImages", fileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
-                        imageData = binaryReader.ReadBytes((int)model.Avatar.Length);
+                        await model.Avatar.CopyToAsync(fileStream);
                     }
 
-                    user.Avatar = imageData;
+                    user.Avatar = "../" + filePath.Substring(filePath.IndexOf("UserImages"));
                 }
 
                 var addedUser = await _userManager.CreateAsync(user, model.Password);
@@ -126,7 +128,6 @@ namespace LearningLanguages.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             model.ReturnUrl = model.ReturnUrl ?? Url.Content("~/");
@@ -500,14 +501,22 @@ namespace LearningLanguages.Controllers
 
             if (model.Avatar != null)
             {
-                byte[] imageData = null;
+                var currentUser = await _userManager.GetUserAsync(User);
 
-                using (var binaryReader = new BinaryReader(model.Avatar.OpenReadStream()))
+                var fileOldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\UserImages", currentUser.Avatar);
+
+                System.IO.File.Delete(fileOldPath);
+
+                var fileName = Path.GetFileName(model.Avatar.FileName);
+
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\UserImages", fileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    imageData = binaryReader.ReadBytes((int)model.Avatar.Length);
+                    await model.Avatar.CopyToAsync(fileStream);
                 }
 
-                user.Avatar = imageData;
+                user.Avatar = "../" + filePath.Substring(filePath.IndexOf("UserImages"));
             }
 
             await _userManager.UpdateAsync(user);
