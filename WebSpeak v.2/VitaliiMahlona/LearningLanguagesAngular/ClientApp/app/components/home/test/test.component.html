@@ -1,0 +1,121 @@
+﻿<div id="result" *ngIf="idTest != 10 && !finishedTest">
+    <b [ngClass]="{'text-success' : isCorrect && questionNumber != 1, 'text-danger' : !isCorrect && questionNumber != 1}">Score: {{totalResult}} Question {{questionNumber}}/{{totalQuestions}}</b>
+</div>
+
+<div id="result" *ngIf="idTest != 10 && finishedTest">
+    <b>Score: {{totalResult}} Total Question: {{totalQuestions}}</b>
+</div>
+
+<div id="result" *ngIf="idTest == 10 && !finishedTest">
+    <b>Score: {{totalResult}} Question {{questionNumberFor10}}/{{totalQuestions / countOptions}}</b>
+</div>
+
+<div id="result" *ngIf="idTest == 10 && finishedTest">
+    <b>Score: {{totalResult}} Total Question: {{totalQuestions / countOptions}}</b>
+</div>
+
+<div id="test" *ngIf="randomWords && !finishedTest">
+    <div class="words" *ngIf="idTest == 1 || idTest == 2 || idTest == 4">
+        <label class="word" *ngFor="let word of randomWords; let i = index">
+            <input type="radio" name="test" value="{{i}}" (change)="changeAnswer($event.target)">
+            <img src="{{randomWords[randomTestWordsId[i] - 1]?.picture}}" width="256" height="256" alt="{{randomWords[randomTestWordsId[i] - 1]?.wordLearnLang}}">
+        </label>
+    </div>
+
+    <div class="words" *ngIf="idTest == 3">
+        <div *ngFor="let word of randomWords; let i = index">
+            <input type="radio" name="test" value="{{i}}" id="{{i + 1}}" (change)="changeAnswer($event.target)" />
+            <label class="word btn btn-light" for="{{i + 1}}">{{randomWords[randomTestWordsId[i] - 1]?.wordLearnLang}}</label>
+        </div>
+    </div>
+
+    <div class="words" *ngIf="idTest == 8 || idTest == 9">
+        <div *ngFor="let word of randomWords; let i = index">
+            <input type="radio" name="test" value="{{i}}" id="{{i + 1}}" (change)="changeAnswer($event.target)" />
+            <label class="word btn btn-light" for="{{i + 1}}">{{randomWords[randomTestWordsId[i] - 1]?.wordNativeLang}}</label>
+        </div>
+    </div>
+
+    <div class="QA" *ngIf="idTest != 5 && idTest != 6 && idTest != 7 && idTest != 10">
+        <h1 *ngIf="idTest == 1 || idTest == 2">{{randomWords[0]?.wordLearnLang}}</h1>
+        <img *ngIf="idTest == 3" src="{{randomWords[0]?.picture}}" alt="{{randomWords[0]?.wordLearnLang}}">
+        <h1 *ngIf="idTest == 8">{{randomWords[0]?.wordLearnLang}}</h1>
+        <audio *ngIf="idTest == 4 || idTest  == 9" controls>
+            <source src="{{randomWords[0]?.pronounceLearn}}" type="audio/mpeg" />
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+
+    <div class="name" *ngIf="idTest == 5">
+        <p>{{randomWords[0]?.wordLearnLang}}</p>
+        <img src="{{randomWords[correctAnswer - 1]?.picture}}" alt="{{randomWords[correctAnswer - 1]?.wordNativeLang}}">
+    </div>
+
+    <div class="image" *ngIf="idTest == 6">
+        <img src="{{randomWord?.picture}}" alt="{{randomWord?.wordNativeLang}}">
+    </div>
+
+    <div class="audio" *ngIf="idTest == 7">
+        <audio controls>
+            <source src="{{randomWord?.pronounceLearn}}" type="audio/mpeg" />
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+
+    <div class="form-group w-50" *ngIf="idTest == 6 || idTest ==  7">
+        <label for="resultInput">Your answer</label>
+        <input type="text" class="form-control" id="resultInput" placeholder="Enter answer" [(ngModel)]="textAnswer">
+    </div>
+
+    <div class="container" *ngIf="idTest == 10">
+        <div class="row">
+            <div class="col-sm" id="leftColumn">
+                <div *ngFor="let word of randomWordsCopyLeft; let i = index">
+                    <input type="radio" name="leftColumn" value="{{i + 1}}" id="leftColumn{{i}}" (change)="changeAnswerLeft($event.target)" />
+                    <label class="word btn btn-light" for="leftColumn{{i}}">{{randomWordsCopyLeft[i]?.wordLearnLang}}</label>
+                </div>
+            </div>
+            <div class="col-sm" id="rightColumn">
+                <div *ngFor="let word of randomWordsCopyRight; let i = index">
+                    <input type="radio" name="rightColumn" value="{{randomTestWordsId[i]}}" id="rightColumn{{randomTestWordsId[i] - 1}}" (change)="changeAnswerRight($event.target)" />
+                    <label class="word btn btn-light" for="rightColumn{{randomTestWordsId[i] - 1}}">{{randomWordsCopyRight[randomTestWordsId[i] - 1]?.wordNativeLang}}</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="buttonSubmit" *ngIf="idTest == 5  && !finishedTest">
+    <button type="submit" class="btn btn-success" value="1" (click)="check($event)">True</button>
+    <button type="submit" class="btn btn-danger" value="2" (click)="check($event)">False</button>
+</div>
+
+<div *ngIf="notSelect && idTest != 5 && idTest != 6 && idTest != 7" id="error" class="alert alert-danger" role="alert">
+    Please select an item!
+</div>
+
+<div *ngIf="notSelect && (idTest == 6 || idTest == 7)" id="error" class="alert alert-danger" role="alert">
+    Please fill out the field!
+</div>
+
+<div id="answer" *ngIf="idTest == 10 && !finishedTest">
+    <h3>Your answer: </h3>
+    <p *ngFor="let word of randomWordsAnswerLeft; let i = index">
+        {{word?.wordNativeLang}} - {{randomWordsAnswerRight[i]?.wordNativeLang}}
+    </p>
+</div>
+
+<div class="buttonSubmit" *ngIf="idTest == 10 && !finishedTest">
+    <button *ngIf="numberQA != 4" type="button" class="btn btn-primary" (click)="next()">Next</button>
+    <button *ngIf="numberQA == 4" id="submit" type="submit" class="btn btn-success" (click)="check(false)">Submit</button>
+    <button type="button" class="btn btn-danger" (click)="cancel()">Cancel</button>
+</div>
+
+<div class="buttonSubmit" *ngIf="idTest != 5 && idTest != 10 && !finishedTest">
+    <button type="submit" class="btn btn-success" (click)="check()">Submit</button>
+</div>
+
+<div class="buttonSubmit" *ngIf="finishedTest">
+    <button type="submit" class="btn btn-primary" (click)="again()">Again</button>
+    <a *ngIf="isUser" class="btn btn-secondary" routerLink="/Account/Statistics" role="button" routerLinkActive="active">To general statistics</a>
+</div>

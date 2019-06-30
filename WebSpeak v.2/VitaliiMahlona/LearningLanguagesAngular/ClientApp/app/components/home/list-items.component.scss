@@ -1,0 +1,52 @@
+﻿.parent {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.child {
+    width: 350px;
+    height: 350px;
+    margin: auto;
+    position: relative;
+    background: #e6edf7;
+    color: #30507c;
+    opacity: 1;
+    -webkit-transform: scale(1,1);
+    -webkit-transition-timing-function: ease-out;
+    -webkit-transition-duration: 550ms;
+    -moz-transform: scale(1,1);
+    -moz-transition-timing-function: ease-out;
+    -moz-transition-duration: 550ms;
+
+    img {
+        width: 70%;
+        height: 70%;
+        object-fit: cover;
+        object-position: center center;
+    }
+
+    &:hover {
+        -webkit-transform: scale(1.1,1.1);
+        -webkit-transition-timing-function: ease-out;
+        -webkit-transition-duration: 550ms;
+        -moz-transform: scale(1.1,1.1);
+        -moz-transition-timing-function: ease-out;
+        -moz-transition-duration: 550ms;
+        cursor: pointer;
+        opacity: .7;
+    }
+}
+
+.link {
+    width: 350px;
+    align-self: center;
+
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+.text {
+    height: 75px;
+}

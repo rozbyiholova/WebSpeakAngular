@@ -1,0 +1,33 @@
+﻿.carousel-caption {
+    position: relative;
+    left: auto;
+    right: auto;
+    color: black;
+}
+
+.image {
+    width: 512px;
+    height: 512px;
+    margin: auto;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center center;
+    }
+}
+
+#slideshow {
+    width: 512px;
+    height: auto;
+}
+
+.carousel-item {
+    height: auto;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+}

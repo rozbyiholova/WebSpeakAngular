@@ -1,0 +1,7 @@
+﻿<ul class="nav nav-pills flex-column">
+    <li class="nav-item"><a class="nav-link" routerLink="Index" routerLinkActive="active">Select lang</a></li>
+    <li class="nav-item" *ngIf="usersInfo && usersInfo.isSignedIn"><a class="nav-link" routerLink="PersonalInfo" routerLinkActive="active">Personal Info</a></li>
+    <li class="nav-item" *ngIf="usersInfo && usersInfo.isSignedIn"><a class="nav-link" routerLink="ChangePassword" routerLinkActive="active">Change Password</a></li>
+    <li class="nav-item"><a class="nav-link" routerLink="Statistics" routerLinkActive="active">Statistics</a></li>
+    <li class="nav-item"><a class="nav-link" routerLink="Rating" routerLinkActive="active">Rating</a></li>
+</ul>

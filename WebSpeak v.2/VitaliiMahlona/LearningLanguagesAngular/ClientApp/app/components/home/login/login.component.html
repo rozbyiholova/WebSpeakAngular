@@ -1,0 +1,47 @@
+﻿<h2>Login</h2>
+<ngb-alert [dismissible]="false" type="danger" *ngIf="errorMessage != ''">
+    {{errorMessage}}
+</ngb-alert>
+<div class="row">
+    <div class="col-md-6">
+        <section>
+            <form [formGroup]="loginForm" (ngSubmit)="loginPost()" class="w-50 p-3">
+                <div class="form-group">
+                    <label>Username</label><br />
+                    <input type="text" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+                    <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                        <div *ngIf="f.email.errors.required">Username is required</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+                    <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                        <div *ngIf="f.password.errors.required">Password is required</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Remember me</label>
+                    <input type="checkbox" formControlName="rememberMe" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary">Login</button>
+                </div>
+                <div>
+                    <a class="nav-link" routerLink="../../Account/Register">Register as a new user</a>
+                </div>
+            </form>
+        </section>
+    </div>
+    <div class="col-md-4 col-md-offset-2">
+        <section>
+            <h4>Use another service to log in.</h4>
+            <hr />
+                <div *ngIf="externalLogins">
+                    <button *ngFor="let provider of externalLogins" type="submit" class="btn btn-primary" routerLink="ExternalLogin" 
+                            routerLinkActive="active" name="provider" value="provider.name" 
+                            title="Log in using your {{provider.displayName}} account" (click)="externalLogin(provider.name)">{{provider.displayName}}</button>
+                </div>
+        </section>
+    </div>
+</div>

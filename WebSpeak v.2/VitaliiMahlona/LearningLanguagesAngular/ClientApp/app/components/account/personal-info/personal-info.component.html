@@ -1,0 +1,47 @@
+﻿<h2>Change Personal Info</h2>
+
+<ngb-alert type="success" *ngIf="correctSubmitted && errorMessage == null" (close)="correctSubmitted = false">Changes saved!</ngb-alert>
+<ngb-alert [dismissible]="false" type="danger" *ngIf="errorMessage != null">
+    {{errorMessage}}
+</ngb-alert>
+<form [formGroup]="personalInfoForm" (ngSubmit)="setPersonalInfo()" class="w-50 p-3" enctype="multipart/form-data">
+    <div class="form-group">
+        <label>Email</label><br />
+        <input type="text" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+        <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+            <div *ngIf="f.email.errors.required">Email is required</div>
+            <div *ngIf="f.email.errors.email">Email must be a valid email address</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>First name</label><br />
+        <input type="text" formControlName="firstName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
+        <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+            <div *ngIf="f.firstName.errors.required">First name is required</div>
+            <div *ngIf="f.firstName.errors.minlength">First name must be at least 3 characters</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Last name</label><br />
+        <input type="text" formControlName="lastName" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
+        <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+            <div *ngIf="f.lastName.errors.required">Last name is required</div>
+            <div *ngIf="f.lastName.errors.minlength">Last name must be at least 3 characters</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Username</label><br />
+        <input type="text" formControlName="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+        <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+            <div *ngIf="f.username.errors.required">Username is required</div>
+            <div *ngIf="f.username.errors.minlength">Username must be at least 3 characters</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Avatar</label>
+        <input type="file" accept=".png,.jpg,.jpeg,.gif,.tif" formControlName="avatar" class="form-control" />
+    </div>
+    <div class="form-group">
+        <button class="btn btn-primary">Change</button>
+    </div>
+</form>

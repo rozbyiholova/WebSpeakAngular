@@ -1,0 +1,33 @@
+﻿<div class="container">
+    <ngb-carousel *ngIf="words" id="slideshow" class="border border-success" (slide)="onSlide($event)" [interval]="duration">
+        <ng-template ngbSlide *ngFor="let word of words" class="carousel-item">
+            <div class="image">
+                <img class="d-block img-thumbnail" [src]="word.picture" alt="words[0].wordNativeLang">
+            </div>
+            <div class="carousel-caption d-none d-md-block">
+                <h1>
+                    {{word.wordLearnLang}}
+                    <em *ngIf="words[0].enableNativeLang.includes('true')">( {{word.wordNativeLang}} )</em>
+                </h1>
+                <div *ngIf="words[0].enableSound.includes('true') && word.sound != null">
+                    <audio>
+                        <source src="{{word.sound}}" type="audio/mpeg" />
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+                <div *ngIf="words[0].enablePronounceLearnLang.includes('true')">
+                    <audio>
+                        <source src="{{word.pronounceLearn}}" type="audio/mpeg" />
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+                <div *ngIf="words[0].enablePronounceNativeLang.includes('true')">
+                    <audio>
+                        <source src="{{word.pronounceNative}}" type="audio/mpeg" />
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+            </div>
+        </ng-template>
+    </ngb-carousel>
+</div>

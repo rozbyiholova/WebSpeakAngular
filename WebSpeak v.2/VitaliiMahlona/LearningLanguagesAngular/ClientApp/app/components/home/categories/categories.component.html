@@ -1,0 +1,10 @@
+﻿<div class="parent">
+    <a class="link" [routerLink]="['SubCategories']" [queryParams]="{'id' : cat.id}" *ngFor="let cat of categories">
+        <div class="child">
+            <div class="text">
+                <p>{{cat?.wordNativeLang}} ({{cat?.wordLearnLang}})</p>
+            </div>
+            <img src="{{cat?.picture}}" alt="{{cat?.wordNativeLang}}">
+        </div>
+    </a>
+</div>

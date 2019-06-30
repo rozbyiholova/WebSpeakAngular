@@ -1,0 +1,46 @@
+﻿<ngb-alert type="success" *ngIf="submitted" (close)="submitted = false">Changes saved!</ngb-alert>
+<div class="form-group w-50 p-3" *ngIf="settings">
+    <form>
+        <div class="form-group">
+            <label>Native language:</label>
+            <select class="form-control" name="nativeLang" [(ngModel)]="settings.idLangNative">
+                <option *ngFor="let lang of settings?.languagesList"
+                        [value]="lang.id">
+                    {{lang.name}}
+                </option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Learning language:</label>
+            <select class="form-control" name="learnLang" [(ngModel)]="settings.idLangLearn">
+                <option *ngFor="let lang of settings?.languagesList"
+                        [value]="lang.id">
+                    {{lang.name}}
+                </option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Enable translation of words in their native language:</label>
+            <input type="checkbox" class="form-control" name="enableNativeLang" [(ngModel)]="enableNativeLang" />
+        </div>
+
+        <div class="form-group">
+            <label>Enable sound of words:</label>
+            <input type="checkbox" class="form-control" name="enableSound" [(ngModel)]="enableSound" />
+        </div>
+
+        <div class="form-group">
+            <label>Enable pronounce of words in their native language:</label>
+            <input type="checkbox" class="form-control" name="enablePronounceNativeLang" [(ngModel)]="enablePronounceNativeLang" />
+        </div>
+
+        <div class="form-group">
+            <label>Enable pronounce of words in learning language:</label>
+            <input type="checkbox" class="form-control" name="enablePronounceLearnLang" [(ngModel)]="enablePronounceLearnLang" />
+        </div>
+
+        <button type="submit" class="btn btn-success" (click)="setSettings()">Submit</button>
+    </form>
+</div>
