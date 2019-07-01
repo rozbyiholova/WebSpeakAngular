@@ -8,6 +8,8 @@ using WebSpeak.Models;
 using DAL.Repositories;
 using DAL.Models;
 using DAL.Interfaces;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Http;
 using SmartBreadcrumbs.Attributes;

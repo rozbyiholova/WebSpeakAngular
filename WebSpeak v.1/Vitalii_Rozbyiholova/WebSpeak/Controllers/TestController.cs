@@ -4,16 +4,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using DAL.Models;
 using DAL.Repositories;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using SmartBreadcrumbs.Attributes;
 using WebSpeak.Models;
+using DAL;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebSpeak.Controllers
 {
     public class TestController : Controller
     {
-        private readonly SessionHelper helper;
+        private readonly SessionHelper _helper;
+        private readonly ProductHouseContext _db;
 
         private int NativeLanguageId { get; }
         private int LearningLanguageId { get; }
@@ -21,7 +24,7 @@ namespace WebSpeak.Controllers
         private int SubcategoryId {
             get
             {
-                return helper.GetLastSubcategoryId();
+                return _helper.GetLastSubcategoryId();
             }
         }
 
@@ -35,20 +38,21 @@ namespace WebSpeak.Controllers
 
         public TestController(SessionHelper helper)
         {
-            this.helper = helper;
+            this._helper = helper;
+            this._db = new ProductHouseContext();
 
             Tuple<int, int> ids = helper.GetLanguagesId();
             NativeLanguageId = ids.Item1;
-            LearningLanguageId = ids.Item2;;
+            LearningLanguageId = ids.Item2;
         }
 
-        [Breadcrumb("Tests", FromAction = "SubCategories", FromController =typeof(HomeController))]
+        [Breadcrumb("Tests", FromAction = "SubCategories", FromController = typeof(HomeController))]
         public async Task<IActionResult> Index(int subcategoryId)
         {
             int idToUse = subcategoryId;
             if(idToUse > 0)
             {
-                helper.SetSubcategory(subcategoryId);
+                _helper.SetSubcategory(subcategoryId);
             }
 
             TestsRepository testsRepository = new TestsRepository();
@@ -59,10 +63,85 @@ namespace WebSpeak.Controllers
 
         [Breadcrumb("Testing", FromAction = nameof(Index), FromController = typeof(TestController))]
        public IActionResult Test(int testID)
-        {
-            string viewName = String.Format("Test{0}", testID);
-            return View(viewName, Words);
+       {
+           int idToUse = testID;
+           if (idToUse > 0)
+           {
+               _helper.SetTest(idToUse);
+           }
+           string viewName = String.Format("Test{0}", testID);
+           return View(viewName, Words);
         }
-        
+
+      
+       public IActionResult SaveChanges(int score)
+       {
+           string userId = User.Claims.First().Value;
+           if (userId != null)
+           {
+               int testId = _helper.GetLastTestId();
+               int categoryId = _helper.GetLastSubcategoryId();
+               int langId = _helper.GetLanguagesId().Item2;
+
+               using (_db)
+               {
+                   TestResults oldResults;
+                   bool isDone = IsTestDoneOnce(userId, testId, langId, categoryId, out oldResults);
+                   if (isDone)
+                   {
+                       int oldScore = oldResults.Result;
+                       if (score > oldScore)
+                       {
+                           oldResults.Result = score;
+                           oldResults.TestDate = DateTime.Now;
+                           _db.Entry(oldResults).State = EntityState.Modified;
+                       }
+                   }
+                   else
+                   {
+                       TestResults results = new TestResults
+                       {
+                           TestId = testId,
+                           Result = score,
+                           UserId = userId,
+                           CategoryId = categoryId,
+                           LangId = langId,
+                           TestDate = DateTime.Now
+                       };
+                        _db.TestResults.Add(results);
+                   }
+                   _db.SaveChanges();
+               }
+           }
+           return RedirectToAction("Index");
+       }
+
+       private bool IsTestDoneOnce(string userId, int testId, int langId, int categoryId, out TestResults oldResults)
+       {
+           oldResults = null;
+           TestResults results = null;
+           try
+           {
+               results = _db.TestResults.First(r => r.UserId == userId &&
+                                                    r.TestId == testId &&
+                                                    r.CategoryId == categoryId &&
+                                                    r.LangId == langId);
+           }
+           catch (InvalidOperationException)
+           {
+               Console.WriteLine("New test result");
+           }
+           catch
+           {
+               throw;
+           }
+
+           if (results != null)
+           {
+               oldResults = results;
+               return true;
+           }
+           else { return false; }
+       }
     }
 }

@@ -8,7 +8,7 @@ const FOREIGN = "foreign_words";
 const NATIVE = "native_words";
 const INTERMEDIATE = "intermediate";
 const SELECTED_F_TEXT = "selected_f_text";
-const SELECTED_N_TEXT = "selected_n_text"
+const SELECTED_N_TEXT = "selected_n_text";
 const SELECTED_TEXT = "selected_text";
 const SELECTED_PICTURE = "selected_picture";
 
@@ -33,6 +33,10 @@ function InitNewTest(categoriesArray, picturesCount, textCount, soundsCount) {
     shuffle(categoriesArray);
     info = new TestInfo(categoriesArray, picturesCount, textCount, soundsCount);
     testResult = new TestResult();
+
+    $('.save-result').click(function () {
+        window.open(window.location.origin + "/Test/SaveChanges?score=" + testResult.getTotal(), "_self");
+    });
 }
 
 function NextTest() {
@@ -436,7 +440,6 @@ function callMakePairs() {
 function GenerateResult(result) {
      
     if (result != null) {
-
         
         const TEST = "test";
         const TEST_RESULT = "test_result";
