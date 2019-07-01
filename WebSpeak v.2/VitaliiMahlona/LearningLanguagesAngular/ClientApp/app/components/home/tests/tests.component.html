@@ -1,0 +1,14 @@
+﻿<div id="actionLink" >
+    <a class="btn btn-outline-success" role="button" aria-pressed="true" [routerLink]="['Manual']" [queryParams]="{'id' : idSubCat}">Manual</a>
+    <a class="btn btn-outline-success" role="button" aria-pressed="true" [routerLink]="['Slideshow']" [queryParams]="{'id' : idSubCat}">Slideshow</a>
+</div>
+<div class="parent">
+    <a class="link" [routerLink]="['Test']" [queryParams]="{'id' : idSubCat, 'idTest' : i+1}" *ngFor="let test of tests; let i = index">
+        <div class="child">
+            <div class="text">
+                <p>{{test?.wordNativeLang}} ({{test?.wordLearnLang}})</p>
+            </div>
+            <img src="{{test?.picture}}" alt="{{test?.wordNativeLang}}">
+        </div>
+    </a>
+</div> 

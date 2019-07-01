@@ -1,0 +1,26 @@
+﻿<div *ngIf="rating" id="totalRating">
+    <div *ngFor="let user of rating.totalRatings; let userId = index">
+        <div *ngIf="user == usersInfo.currentUser" class="languages bg-secondary">
+            {{userId + 1}}. {{user.username}} - {{user.total}}
+        </div>
+        <div *ngIf="user != usersInfo.currentUser" class="languages">
+            {{userId + 1}}. {{user.username}} - {{user.total}}
+        </div>
+    </div>
+</div>
+
+<div *ngIf="rating" id="totalRatingLang">
+    <div *ngFor="let lang of rating.langList; let langId = index" class="languages text-dark" id="lang.id" (click)="doToggleLang($event, langId)">
+        {{lang.wordNativeLang}}
+        <div *ngIf="toggleLang[langId]" @enterAnimation>
+            <div *ngFor="let user of rating.langRatings" class="users" id="lang.Id">
+                <div *ngIf="user == usersInfo.currentUser && user.lang == lang.wordNativeLang" class="languages bg-secondary">
+                    {{user.id}}. {{user.username}} - {{user.total}}
+                </div>
+                <div *ngIf="user != usersInfo.currentUser && user.lang == lang.wordNativeLang" class="languages">
+                    {{user.id}}. {{user.username}} - {{user.total}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

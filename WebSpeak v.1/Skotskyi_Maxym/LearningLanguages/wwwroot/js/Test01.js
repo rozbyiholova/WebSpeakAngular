@@ -2,15 +2,12 @@
 var b;
 var array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 12, 13, 14, 15]
 var Colors = ["danger", "danger", "success", "success", "warning", "warning", "primary", "primary"];
-
 var IdColumn = "SetLeft"; var b;
 var IdColumsChange = "SetRight";
 var light = false;
 var ClickedWord = [];
 var colorTry = 8;
-
-var submited = false;
-
+var submited = true;
 var score = 0;
 
 if (cuted == "0")
@@ -25,7 +22,7 @@ if (cuted == "0")
             ranEl = 0;
         } while (Model.length % 4 != 0);
     }
-}
+} // add objects for Test 10
 
 Model.sort(function () {
     return Math.random() - 0.5;
@@ -127,7 +124,7 @@ function ExceptionTest()
 
 
 function displayWord(i) {
-    submited = false;
+
 
     var position = Math.round(Math.random() * (Test[cuted].Words_count - 1));
     var idWord = new Array();
@@ -217,7 +214,7 @@ function displayWord(i) {
 
 function displayWordforTest9 (i)
 {
-    submited = false;
+  
 
     var WordDiv = document.createElement('div');
     WordDiv.className = 'col-md-3';
@@ -229,7 +226,7 @@ function displayWordforTest9 (i)
 }
 
 function displayPicture(i) {
-    submited = false;
+
 
     var position = Math.round(Math.random() * (Test[cuted].Picture_count - 1));
     var idWord = new Array();
@@ -276,7 +273,7 @@ function displayPicture(i) {
             o.name = `${Model[random].translation}`;
             o.id = `imgId${random}`;
 
-            console.log(random);
+     
 
             if (Test[cuted].CheckValue == "picture")
             {
@@ -296,7 +293,7 @@ function displayPicture(i) {
 }
 
 function displayPronounce(i) {
-    submited = false;
+   
 
     var position = Math.round(Math.random() * (Test[cuted].Pronounce_count - 1));
     var idPronounce = new Array();
@@ -350,7 +347,7 @@ function displayPronounce(i) {
             PronounceDiv.name = `${Model[random].translation}`;
             
 
-            console.log(random);
+   
 
             if (Test[cuted].CheckValue == "pronounce") {
                 o.onclick = function () { Submited(this.id) };
@@ -365,20 +362,17 @@ function displayPronounce(i) {
             PronounceDiv.appendChild(o);
 
         }
-        console.log(PronounceDiv);
+
         document.getElementById('pronounce').appendChild(PronounceDiv);
     }
 
 }
 
-
 function displayTest10(i)
 {
     var RefreshButton = document.createElement('refresh');
     RefreshButton.onclick = function () { RefreshSelectedTest10() };
-   
-
-
+ 
     var SetLeft = document.createElement('div');
     SetLeft.className = "col-md-6 ";
     SetLeft.id = "SetLeft";
@@ -445,6 +439,7 @@ function RefreshSelectedTest10()
 {
     var SetLeft = document.getElementById(`SetLeft`).getElementsByClassName('btn');
     var SetRight = document.getElementById(`SetRight`).getElementsByClassName('btn');
+
     for (var r = 0; r < SetLeft.length; r++)
     {
         SetLeft[r].classList.remove("disabled");
@@ -463,21 +458,20 @@ function RefreshSelectedTest10()
 
     for (var r = 0; r < SetRight.length; r++)
     {
-
         SetRight[r].classList.remove("active");
         SetRight[r].classList.add("disabled");
         SetRight[r].onclick = "";
         SetRight[r].style.name = "light";
-
         SetRight[r].classList.remove("btn-danger");
         SetRight[r].classList.remove("btn-success");
         SetRight[r].classList.remove("btn-warning");
         SetRight[r].classList.remove("btn-primary");
-
         SetRight[r].classList.add("btn-light");
     }
     colorTry = 0;
     ClickedWord = [];
+    IdColumn = "SetLeft";
+    IdColumsChange = "SetRight";
 }
 
 function SubmitedTest10Left(click_id)
@@ -506,7 +500,7 @@ function SubmitedTest10Left(click_id)
 
         ClickedWord.push(element);
        
-        console.log(ClickedWord);
+      
 
         light = false;
 
@@ -519,12 +513,11 @@ function SubmitedTest10Left(click_id)
             OtherColumn[r].onclick = function () { SubmitedTest10Left(this.id) };
 
 
-            console.log(ClickedWord.includes(OtherColumn[r]))
+           
             if (ClickedWord.includes(OtherColumn[r]))
             {
                 OtherColumn[r].onclick = "";
             }
-
         }  
     }
 
@@ -560,8 +553,6 @@ function CheckTrueTest10()
 
 }
 
-
-
 function onmove(click_id)
 {
     if (document.getElementById(`${click_id}`).style.border == "")
@@ -589,7 +580,7 @@ function displayScore()
     {
         document.getElementById('score').textContent = `Test number ${(i + 1) / 4}/${(Model.length) / 4} Your Score: ${score} / ${Model.length}`;
     }
-    else
+    if (cuted != "0")
     {
         document.getElementById('score').textContent = `Test number ${i + 1}/${Model.length} Your Score: ${score} / ${Model.length}`;
     }
@@ -648,8 +639,7 @@ function CheckTrue(qwe)
         Score(); 
     }
 
-    console.log(selectedWord);
-    console.log(selectedImg);
+
 
 
     if ((Test[cuted].word == "word-word") && (document.getElementById(`word-wordId${qwe}`).name == selectedWord))
@@ -658,7 +648,8 @@ function CheckTrue(qwe)
     }
 }
 
-function Submited(click_id) {
+function Submited(click_id)
+{
     var tagid;
     var clas;
     if (Test[cuted].CheckValue == "word")
@@ -675,49 +666,78 @@ function Submited(click_id) {
             elements[i].style.alt = "";
         }
     }
+    submited = true;
     document.getElementById(`${click_id}`).style.border = `thick solid green`;
     document.getElementById(`${click_id}`).style.alt = "selected";
-    submited = true;
+
 }
 
 function clearAll() {
     document.getElementById('word').innerHTML = "";
     document.getElementById('picture').innerHTML = "";
     document.getElementById('pronounce').innerHTML = "";
+    document.getElementById('alert').innerHTML = "";
+}
+
+function TestFinish()
+{
+    clearAll();
+    document.getElementById('score').innerText = `Congratulate!! Your Score is ${score}`;
+    document.getElementById('next').style.visibility = "hidden";
+
+    document.getElementById('finishTest').classList.remove("invisible");
+    document.getElementById('finishTest').classList.add("visible");
+}
+
+function FinishTest()
+{
+    window.open(`${window.location.origin}/Home/GetTestResult?score=${score}&icon=${cuted}&lang_id=${Model[0].languageId}&cat_id=${Model[0].categoryId}`);
+    document.getElementById('finishTest').classList.remove("visible");
+    document.getElementById('finishTest').classList.add("invisible");
 }
 
 function next() {
 
-    if (cuted != "0")
+
+    if ((submited == true) && (cuted != "0")) {
+
+        if (i == -1) {
+            displayScore();
+        }
+
+        if (cuted != "0") {
+            i++;
+        }
+
+        if ((i > 0) && (cuted != "0") && (submited == true)) {
+            CheckTrue(i - 1);
+        }
+
+        if ((cuted != "0") && (i < Model.length)) {
+            displayScore();
+        }
+
+        if ((cuted != "0")&& (i < Model.length)) {
+            clearAll();
+            displayWord(i);
+        }
+
+        if ((Test[cuted].word == "word-word")&& (i < Model.length)) {
+            displayWordforTest9(i);
+        }
+        if (i < Model.length)
+        {
+            displayPicture(i);
+            displayPronounce(i);
+        }
+        
+    }
+
+    if ((submited == false)&&(cuted != "0")&&(i != 0))
     {
-        i++;
+        
+        ExceptionTest();
     }
-
-    if ((i > 0)&&(cuted != "0")) {
-        CheckTrue(i-1);
-    }
-
-    if ((cuted != "0")&&(submited == true))
-    { 
-       displayScore();
-    }
-
-    if (i > Model.length - 2) { document.getElementById('next').style.visibility = "hidden" }
-
-    if (cuted != "0")
-    { 
-        clearAll();
-        displayWord(i);
-    }
-
-    if (Test[cuted].word == "word-word")
-    {
-        displayWordforTest9(i);
-    }
-
-    displayPicture(i);
-    displayPronounce(i);
-
 
 
     if (cuted == "0")
@@ -725,10 +745,14 @@ function next() {
         document.getElementById('refresh').classList.remove("invisible");
         document.getElementById('refresh').classList.add("visible");
 
+        if (colorTry == 8) { submited = true}
+
+        
+
         if ((i > -1)&&(colorTry==8))
         {
             CheckTrueTest10();   
-            displayScore();
+            
         }   
 
         if (colorTry == 8) {
@@ -736,14 +760,27 @@ function next() {
             i = displayTest10(i);
             colorTry = 0;
             ClickedWord = [];
-        }
-        else
+        }   
+        if (submited == false)
         {
+           
             ExceptionTest();
-        }    
-    }   
-    
+        }
+        displayScore();
+    }
+
+
+    if (i == Model.length)
+    {
+        TestFinish();
+    }
+
+    submited = false;
+
+
 }
+
+
 
 
 

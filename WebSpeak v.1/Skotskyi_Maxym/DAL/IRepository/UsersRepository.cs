@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using DAL.Models;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace DAL.IRepository
 {

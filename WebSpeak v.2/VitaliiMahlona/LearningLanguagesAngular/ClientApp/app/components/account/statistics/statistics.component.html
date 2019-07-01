@@ -1,0 +1,53 @@
+﻿
+<div *ngIf="usersInfo && !usersInfo.isSignedIn" class="alert alert-warning" role="alert">
+    You must be logged in to view statistics.
+    <div>
+        <a class="nav-link" routerLink="../../Account/Register">Register</a> or <a class="nav-link" routerLink="../../Account/Login">Login</a>
+    </div>
+</div>
+<div *ngIf="statistics">
+    <div *ngFor="let lang of statistics.langList; let langId = index" class="languages text-dark" id="lang.id" (click)="doToggleLang($event, langId)">
+        {{lang.wordNativeLang}} - {{lang.total}}
+        <div *ngIf="toggleLang[langId]" @enterAnimation>
+            <div *ngFor="let cat of getCategories(langId); let catId = index" class="categories" id="lang.id" cat="cat" (click)="doToggleCat($event, catId, langId)">
+                {{cat}}
+                <div *ngIf="toggleCat[catId]" @enterAnimation>
+                    <div *ngFor="let subCat of getSubCategories(langId, cat); let subCatId = index" class="subCategories" id="lang.id" cat="cat" subCat="subCat" (click)="doToggleSubCat($event, subCatId, catId, langId)">
+                        {{subCat}}
+                        <div *ngIf="toggleSubCat[subCatId]" @enterAnimation>
+                            <div *ngFor="let test of getTests(langId, subCat); let testId = index" class="tests" id="lang.id" cat="cat" subCat="subCat" test="test" (click)="doToggleTest($event, testId, subCatId, catId, langId)">
+                                {{test}}
+                                <div *ngIf="toggleTest[testId]" @enterAnimation>
+                                    <div class="testResults" id="lang.Id" cat="cat" subCat="subCat" test="test">
+                                        <table class="table text-dark">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        Test Date
+                                                    </th>
+                                                    <th>
+                                                        Result
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let testScore of getTest(langId, cat, subCat, test)">
+                                                    <td>
+                                                        {{testScore.testDate}}
+                                                    </td>
+                                                    <td>
+                                                        {{testScore.result}}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

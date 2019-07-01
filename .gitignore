@@ -3,3 +3,6 @@ bin/
 obj/
 packages/
 DictionaryForFullStack/
+UserImages/
+node_modules/
+dist/

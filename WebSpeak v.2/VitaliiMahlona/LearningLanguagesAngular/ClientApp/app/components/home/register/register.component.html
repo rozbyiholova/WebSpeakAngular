@@ -1,0 +1,38 @@
+﻿<h2>Register new user</h2>
+
+<form [formGroup]="registerForm" (ngSubmit)="register()" class="w-50 p-3" enctype="multipart/form-data">
+    <div class="form-group">
+        <label>Email</label><br />
+        <input type="text" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+        <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+            <div *ngIf="f.email.errors.required">Email is required</div>
+            <div *ngIf="f.email.errors.email">Email must be a valid email address</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Password</label>
+        <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+            <div *ngIf="f.password.errors.required">Password is required</div>
+            <div *ngIf="f.password.errors.pattern">Password must be eight characters including one uppercase letter, one special character and alphanumeric characters</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Confirm Password</label>
+        <input type="password" formControlName="passwordConfirm" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.passwordConfirm.errors }" />
+        <div *ngIf="submitted && f.passwordConfirm.errors" class="invalid-feedback">
+            <div *ngIf="f.passwordConfirm.errors.required">Confirm Password is required</div>
+            <div *ngIf="f.passwordConfirm.errors.mustMatch">Passwords must match</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Avatar</label>
+        <input type="file" accept=".png,.jpg,.jpeg,.gif,.tif" formControlName="avatar" class="form-control" />
+    </div>
+    <div class="form-group">
+        <button class="btn btn-primary">Register</button>
+    </div>
+    <div>
+        <a class="nav-link" routerLink="../../Account/Login">I have an account</a>
+    </div>
+</form>
