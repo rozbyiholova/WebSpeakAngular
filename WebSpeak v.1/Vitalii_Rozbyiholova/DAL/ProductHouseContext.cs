@@ -1,10 +1,12 @@
 ﻿using System;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
+
 namespace DAL.Models
 {
-    public partial class ProductHouseContext : DbContext
+    public partial class ProductHouseContext : IdentityDbContext<Users>
     {
         public ProductHouseContext()
         {
@@ -23,21 +25,22 @@ namespace DAL.Models
         public virtual DbSet<TestTranslations> TestTranslations { get; set; }
         public virtual DbSet<Tests> Tests { get; set; }
         public virtual DbSet<TotalScores> TotalScores { get; set; }
-        public virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<WordTranslations> WordTranslations { get; set; }
         public virtual DbSet<Words> Words { get; set; }
 
-//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//        {
-//            if (!optionsBuilder.IsConfigured)
-//            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-//                optionsBuilder.UseSqlServer("Server=(LocalDb)\\MSSQLLocalDB;Database=ProductHouse;Trusted_Connection=True;");
-//            }
-//        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer("Server=(LocalDb)\\MSSQLLocalDB;Database=ProductHouse;Trusted_Connection=True;");
+                base.OnConfiguring(optionsBuilder);
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
 
             modelBuilder.Entity<Categories>(entity =>
@@ -229,10 +232,6 @@ namespace DAL.Models
 
             modelBuilder.Entity<Users>(entity =>
             {
-                entity.Property(e => e.Id)
-                    .HasMaxLength(100)
-                    .IsUnicode(false)
-                    .ValueGeneratedNever();
             });
 
             modelBuilder.Entity<WordTranslations>(entity =>

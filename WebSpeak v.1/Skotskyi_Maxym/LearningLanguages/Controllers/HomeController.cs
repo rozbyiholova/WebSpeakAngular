@@ -30,22 +30,80 @@ namespace LearningLanguages.Controllers
         {
             db = context;
         }
-
-        public void GetTestResult (int score, int icon, int lang_id, int cat_id)
+   
+        public ActionResult GetTestResult (int score, int icon, int lang_id, int cat_id)
         {
             int catId = cat_id;
             int langId = lang_id;
             int TestIcon = icon;
+            if (TestIcon == 0) { TestIcon = 10; };
+
             int Testscore = score;
             string strCurrentUserId = User.Identity.GetUserId();
+            int PrevScore;
+            int IdPrevScore;
+
             DateTime currentData = DateTime.Now;
 
             TestResults testResult = new TestResults();
 
-            db.TestResults.Add(new TestResults { TestId = TestIcon, TestDate = currentData, Result = Testscore, UserId = strCurrentUserId, CategoryId = catId, LangId = langId });
-            db.SaveChanges();
+            TestResultsRepository testResultRepos = new TestResultsRepository();
+
+            var ListTestresults = db.TestResults.Where(x => x.UserId == strCurrentUserId && x.TestId == TestIcon && x.LangId == langId && x.CategoryId == catId).ToList();
+
+
+            
+
+            if (ListTestresults.Count != 0)
+            { 
+                PrevScore = ListTestresults[0].Result;
+                IdPrevScore = ListTestresults[0].Id;
+                if (PrevScore < Testscore)
+                {
+                    ListTestresults[0].Result = Testscore;
+                    ListTestresults[0].TestDate = currentData;
+                    db.SaveChanges();
+
+                    var ListTotalScore = db.TotalScores.Where(x => x.UserId == strCurrentUserId).ToList();
+                    ListTotalScore[0].Total = Testscore;
+                    db.SaveChanges();
+                }                      
+            }
 
           
+
+            if (ListTestresults.Count == 0)
+            {
+                db.TestResults.Add(new TestResults { TestId = TestIcon, TestDate = currentData, Result = Testscore, UserId = strCurrentUserId, CategoryId = catId, LangId = langId });
+                db.SaveChanges();
+
+
+            }
+
+            
+
+            var ListTotalTestresults = db.TestResults.Where(x => x.UserId == strCurrentUserId && x.LangId == langId).ToList();
+            
+            if ((ListTotalTestresults.Count == 1) && (ListTestresults.Count == 0))
+            {
+                db.TotalScores.Add(new TotalScores { UserId = strCurrentUserId, LangId = langId, Total = Testscore });
+                db.SaveChanges();
+            }
+
+            if (ListTotalTestresults.Count > 1)
+            {
+                int TotalScore = 0;
+                var ListTotalScore = db.TotalScores.Where(x => x.UserId == strCurrentUserId && x.LangId == langId).ToList();
+                foreach (var item in ListTotalTestresults)
+                {
+                    TotalScore = TotalScore + item.Result;
+                }
+
+                ListTotalScore[0].Total = TotalScore;
+                db.SaveChanges();
+            }
+
+            return View("_Close"); 
         }
 
 

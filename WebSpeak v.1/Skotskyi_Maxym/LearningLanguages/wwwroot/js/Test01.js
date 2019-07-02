@@ -692,6 +692,8 @@ function TestFinish()
 function FinishTest()
 {
     window.open(`${window.location.origin}/Home/GetTestResult?score=${score}&icon=${cuted}&lang_id=${Model[0].languageId}&cat_id=${Model[0].categoryId}`);
+    document.getElementById('finishTest').classList.remove("visible");
+    document.getElementById('finishTest').classList.add("invisible");
 }
 
 function next() {

@@ -12,6 +12,7 @@ namespace WebSpeak
         private const string LearningLanguage = "LearningLanguage";
         private const string LastCategoryId = "LastCategoryId";
         private const string LastSubcategoryId = "LastSubcategoryId";
+        private const string LastTestId = "LastTestId";
 
         private const int DefaultNativeLanguageId = 1;
         private const int DefaultLearningLanguageId = 3;
@@ -38,16 +39,18 @@ namespace WebSpeak
                 nativeLangId = DefaultNativeLanguageId;
                 learningLangId = DefaultLearningLanguageId;
             }
+
             _httpContextAccessor.HttpContext.Session.SetInt32(NativeLanguage, nativeLangId);
             _httpContextAccessor.HttpContext.Session.SetInt32(LearningLanguage, learningLangId);
         }
+
         public Tuple<int, int> GetLanguagesId()
         {
             int nativeLang, learningLang;
             try
             {
-                nativeLang = (int)_httpContextAccessor.HttpContext.Session.GetInt32(NativeLanguage);
-                learningLang = (int)_httpContextAccessor.HttpContext.Session.GetInt32(LearningLanguage);
+                nativeLang = (int) _httpContextAccessor.HttpContext.Session.GetInt32(NativeLanguage);
+                learningLang = (int) _httpContextAccessor.HttpContext.Session.GetInt32(LearningLanguage);
             }
             catch (Exception e)
             {
@@ -56,6 +59,7 @@ namespace WebSpeak
                 nativeLang = DefaultNativeLanguageId;
                 learningLang = DefaultLearningLanguageId;
             }
+
             return new Tuple<int, int>(nativeLang, learningLang);
         }
 
@@ -65,14 +69,15 @@ namespace WebSpeak
             {
                 _httpContextAccessor.HttpContext.Session.SetInt32(LastCategoryId, id);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
         }
+
         public int GetLastСategoryId()
         {
-            int id = (int)_httpContextAccessor.HttpContext.Session.GetInt32(LastCategoryId);
+            int id = (int) _httpContextAccessor.HttpContext.Session.GetInt32(LastCategoryId);
             return id;
         }
 
@@ -87,9 +92,28 @@ namespace WebSpeak
                 Console.WriteLine(e.Message);
             }
         }
+
         public int GetLastSubcategoryId()
         {
-            int id = (int)_httpContextAccessor.HttpContext.Session.GetInt32(LastSubcategoryId);
+            int id = (int) _httpContextAccessor.HttpContext.Session.GetInt32(LastSubcategoryId);
+            return id;
+        }
+
+        public void SetTest(int id)
+        {
+            try
+            {
+                _httpContextAccessor.HttpContext.Session.SetInt32(LastTestId, id);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        public int GetLastTestId()
+        {
+            int id = (int) _httpContextAccessor.HttpContext.Session.GetInt32(LastTestId);
             return id;
         }
     }

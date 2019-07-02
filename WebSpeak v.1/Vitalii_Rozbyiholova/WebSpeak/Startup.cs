@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using DAL.Models;
+using Microsoft.AspNetCore.Identity;
 using SmartBreadcrumbs.Extensions;
 
 namespace WebSpeak
@@ -46,11 +47,10 @@ namespace WebSpeak
                 options.Cookie.IsEssential = true;
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             var connection = @"Server=(LocalDb)\MSSQLLocalDB;Database=ProductHouse;Trusted_Connection=True;ConnectRetryCount=0";
             services.AddDbContext<ProductHouseContext>(options => options.UseSqlServer(connection));
-
-            
+           
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -78,9 +78,6 @@ namespace WebSpeak
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
-                routes.MapRoute(
-                    name: "Tests",
-                    template: "{controller=Test}/{action=Index}/{id?}");
             });
         }
     }

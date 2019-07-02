@@ -1,6 +1,8 @@
 ﻿@model List<DTO> 
 @using DAL.Models;
+@using Microsoft.AspNetCore.Http
 @{
+    
     ViewData["Title"] = "Test1";
     var Data = Html.Raw(Json.Serialize(Model.ToArray()));
 }
@@ -16,7 +18,9 @@
     <button class="confirm btn-success">Check</button>
 </div>
 
-<div class="test_result" style="display: none;"></div>
+<div class="test_result" style="display: none;">
+    <button class="save-result btn-success">Finish</button>
+</div>
 
 
 <script type="text/javascript">
