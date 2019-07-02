@@ -40,8 +40,24 @@ var RegisterComponent = /** @class */ (function () {
         if (this.registerForm.invalid) {
             return;
         }
-        this.dataService.register(this.registerForm.value)
+        this.dataService.register(this.prepareSaveUserInfo())
             .subscribe(function (data) { return _this.router.navigate(['/']); }, function (err) { return _this.router.navigate(['/Account/Register']); });
+    };
+    RegisterComponent.prototype.fileChange = function (files) {
+        if (files && files[0].size > 0) {
+            this.registerForm.patchValue({
+                avatar: files[0]
+            });
+        }
+    };
+    RegisterComponent.prototype.prepareSaveUserInfo = function () {
+        var formModel = this.registerForm.value;
+        var formData = new FormData();
+        formData.append("email", formModel.email);
+        formData.append("password", formModel.password);
+        formData.append("passwordConfirm", formModel.passwordConfirm);
+        formData.append("avatar", formModel.avatar);
+        return formData;
     };
     RegisterComponent = __decorate([
         Component({

@@ -41,6 +41,7 @@ var AccountPersonalInfoComponent = /** @class */ (function () {
             .subscribe(function (data) {
             _this.errorMessage = data.errorMessage;
             if (_this.errorMessage == null) {
+                console.log(data);
                 _this.personalInfoForm.setValue({
                     email: data.email,
                     firstName: data.firstName,
@@ -58,15 +59,32 @@ var AccountPersonalInfoComponent = /** @class */ (function () {
             return;
         }
         this.correctSubmitted = true;
-        this.dataService.setPersonalInfo(this.personalInfoForm.value)
+        this.dataService.setPersonalInfo(this.prepareSaveUserInfo())
             .subscribe(function (data) {
             _this.errorMessage = data.errorMessage;
         }, function (e) { return console.log(e); });
     };
+    AccountPersonalInfoComponent.prototype.fileChange = function (files) {
+        if (files && files[0].size > 0) {
+            this.personalInfoForm.patchValue({
+                avatar: files[0]
+            });
+        }
+    };
+    AccountPersonalInfoComponent.prototype.prepareSaveUserInfo = function () {
+        var formModel = this.personalInfoForm.value;
+        var formData = new FormData();
+        formData.append("email", formModel.email);
+        formData.append("firstName", formModel.firstName);
+        formData.append("lastName", formModel.lastName);
+        formData.append("username", formModel.username);
+        formData.append("avatar", formModel.avatar);
+        return formData;
+    };
     AccountPersonalInfoComponent = __decorate([
         Component({
             selector: 'account-personal-info',
-            templateUrl: './accountPersonalInfo.component.html'
+            templateUrl: './personal-info.component.html'
         }),
         __metadata("design:paramtypes", [DataService, FormBuilder, Router])
     ], AccountPersonalInfoComponent);

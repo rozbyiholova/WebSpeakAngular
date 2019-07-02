@@ -36,6 +36,7 @@ export class AccountPersonalInfoComponent implements OnInit {
                 this.errorMessage = data.errorMessage;
 
                 if (this.errorMessage == null) {
+                    console.log(data);
                     this.personalInfoForm.setValue({
                         email: data.email,
                         firstName: data.firstName,
@@ -56,11 +57,32 @@ export class AccountPersonalInfoComponent implements OnInit {
 
         this.correctSubmitted = true;
 
-        this.dataService.setPersonalInfo(this.personalInfoForm.value)
+        this.dataService.setPersonalInfo(this.prepareSaveUserInfo())
             .subscribe(
             (data: any) => {
                 this.errorMessage = data.errorMessage;
             },
             (e: any) => console.log(e));
+    }
+
+    fileChange(files: FileList) {
+        if (files && files[0].size > 0) {
+            this.personalInfoForm.patchValue({
+                avatar: files[0]
+            });
+        }
+    }
+
+    prepareSaveUserInfo(): FormData {
+        const formModel = this.personalInfoForm.value;
+
+        let formData = new FormData();
+        formData.append("email", formModel.email);
+        formData.append("firstName", formModel.firstName);
+        formData.append("lastName", formModel.lastName);
+        formData.append("username", formModel.username);
+        formData.append("avatar", formModel.avatar);
+
+        return formData;
     }
 }

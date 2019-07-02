@@ -6,5 +6,6 @@ namespace DAL.Models
     {
         public Users CurrentUser { get; set; }
         public bool IsSignedIn { get; set; }
+        public string Avatar { get; set; }
     }
 }

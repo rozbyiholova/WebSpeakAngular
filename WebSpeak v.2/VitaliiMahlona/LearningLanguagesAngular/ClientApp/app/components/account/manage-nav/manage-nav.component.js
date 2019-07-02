@@ -24,7 +24,7 @@ var ManageNavComponent = /** @class */ (function () {
         Component({
             selector: 'manage-nav',
             styles: [" \n        .active {color:black;}\n    "],
-            templateUrl: './manageNav.component.html'
+            templateUrl: './manage-nav.component.html'
         }),
         __metadata("design:paramtypes", [DataService])
     ], ManageNavComponent);

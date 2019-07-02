@@ -50,8 +50,8 @@ var AccountRatingComponent = /** @class */ (function () {
                 //])
                 ])
             ],
-            templateUrl: './accountRating.component.html',
-            styleUrls: ['./accountRating.component.scss']
+            templateUrl: './rating.component.html',
+            styleUrls: ['./rating.component.scss']
         }),
         __metadata("design:paramtypes", [DataService])
     ], AccountRatingComponent);

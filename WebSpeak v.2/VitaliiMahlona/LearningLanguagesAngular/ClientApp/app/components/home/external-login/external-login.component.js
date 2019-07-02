@@ -65,7 +65,7 @@ var ExternalLoginComponent = /** @class */ (function () {
     ExternalLoginComponent = __decorate([
         Component({
             selector: 'external-login',
-            templateUrl: './externalLogin.component.html'
+            templateUrl: './external-login.component.html'
         }),
         __metadata("design:paramtypes", [DataService, ActivatedRoute, FormBuilder, Router])
     ], ExternalLoginComponent);

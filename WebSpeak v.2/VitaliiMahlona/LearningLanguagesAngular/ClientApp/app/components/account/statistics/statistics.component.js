@@ -117,8 +117,8 @@ var AccountStatisticsComponent = /** @class */ (function () {
                 //])
                 ])
             ],
-            templateUrl: './accountStatistics.component.html',
-            styleUrls: ['./accountStatistics.component.scss']
+            templateUrl: './statistics.component.html',
+            styleUrls: ['./statistics.component.scss']
         }),
         __metadata("design:paramtypes", [DataService])
     ], AccountStatisticsComponent);

@@ -29,7 +29,7 @@ var SubCategoriesComponent = /** @class */ (function () {
     SubCategoriesComponent = __decorate([
         Component({
             selector: 'sub-categories',
-            templateUrl: './subCategories.component.html',
+            templateUrl: './sub-categories.component.html',
             styleUrls: ['../list-items.component.scss']
         }),
         __metadata("design:paramtypes", [DataService, ActivatedRoute])
