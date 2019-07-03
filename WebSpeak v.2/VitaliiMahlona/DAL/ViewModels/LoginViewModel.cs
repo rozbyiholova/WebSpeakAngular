@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using DAL.Models;
+using Microsoft.AspNetCore.Authentication;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 

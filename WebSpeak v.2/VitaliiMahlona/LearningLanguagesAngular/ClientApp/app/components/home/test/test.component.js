@@ -20,15 +20,14 @@ var TestComponent = /** @class */ (function () {
         this.first = true;
         this.questionNumber = 0;
         this.randomWords = [];
-        this.checkboxes = [];
         this.textAnswer = '';
         this.notSelect = true;
         this.result = 0;
         this.numberQA = 0;
         this.randomWordsFor10 = [];
         this.questionNumberFor10 = 0;
-        this.checkboxesLeft = [];
-        this.checkboxesRight = [];
+        this.selectCheckboxLeft = -1;
+        this.selectCheckboxRight = -1;
         this.randomWordsCopyLeft = [];
         this.randomWordsCopyRight = [];
         this.selectWordIdLeftFor10 = -1;
@@ -36,6 +35,7 @@ var TestComponent = /** @class */ (function () {
         this.randomWordsAnswerLeft = [];
         this.randomWordsAnswerRight = [];
         this.finishedTest = false;
+        this.selectCheckbox = -1;
         this.subscription = activeRoute.queryParams.subscribe(function (queryParam) {
             _this.idTest = queryParam['idTest'];
             if (_this.idTest == 1 || _this.idTest == 5) {
@@ -67,9 +67,11 @@ var TestComponent = /** @class */ (function () {
             }
         });
     };
+    //randomly sort an array
     TestComponent.prototype.compareRandom = function (a, b) {
         return Math.random() - 0.5;
     };
+    //for tests except 6,7,10
     TestComponent.prototype.GetTestRandom = function () {
         var randomWordsId = [];
         if (this.words) {
@@ -94,6 +96,7 @@ var TestComponent = /** @class */ (function () {
             }
         }
     };
+    //after click submit
     TestComponent.prototype.check = function (event) {
         var _this = this;
         if (event === void 0) { event = null; }
@@ -152,24 +155,24 @@ var TestComponent = /** @class */ (function () {
             this.first = false;
         }
         if (this.idTest != 5 && this.idTest != 6 && this.idTest != 7 && this.idTest != 10) {
-            this.notSelect = this.checkboxes.length == 0;
+            this.notSelect = this.selectCheckbox == -1;
             if (this.questionNumber == 0) {
                 this.notSelect = false;
             }
-            if (this.checkboxes.indexOf(true) + 1 == this.correctAnswer) {
+            if (this.selectCheckbox == this.correctAnswer) {
                 this.isCorrect = true;
                 this.totalResult++;
             }
             else if (this.notSelect) {
                 if (!this.first) {
-                    this.checkboxes = [];
+                    this.selectCheckbox = -1;
                     return;
                 }
             }
             else {
                 this.isCorrect = false;
             }
-            this.checkboxes = [];
+            this.selectCheckbox = -1;
         }
         if (this.questionNumber == this.totalQuestions) {
             this.finishedTest = true;
@@ -198,23 +201,18 @@ var TestComponent = /** @class */ (function () {
             }
         }
     };
-    TestComponent.prototype.changeAnswer = function (eventTarget) {
-        this.checkboxes = [];
-        this.checkboxes[eventTarget.getAttribute('value')] = eventTarget.checked;
-    };
+    //for 10 test, left column
     TestComponent.prototype.changeAnswerLeft = function (eventTarget) {
-        this.checkboxesLeft = [];
-        this.checkboxesLeft[eventTarget.getAttribute('value')] = eventTarget.checked;
         this.selectWordIdLeftFor10 = +eventTarget.getAttribute('id').substring(10, 11);
     };
+    //for 10 test, right column
     TestComponent.prototype.changeAnswerRight = function (eventTarget) {
-        this.checkboxesRight = [];
-        this.checkboxesRight[eventTarget.getAttribute('value')] = eventTarget.checked;
         this.selectWordIdRightFor10 = +eventTarget.getAttribute('id').substring(11, 12);
     };
     TestComponent.prototype.GetTestFor6_7 = function () {
         this.randomWord = this.words[this.questionNumber - 1];
     };
+    //if not divided by 4, then add (for 10 test)
     TestComponent.prototype.GetExtra = function () {
         var remainderOfDivision = this.randomWordsFor10.length % this.countOptions;
         if (remainderOfDivision == 0) {
@@ -232,6 +230,7 @@ var TestComponent = /** @class */ (function () {
             this.randomWordsFor10.push(this.words[i]);
         }
     };
+    //for 10 test
     TestComponent.prototype.cancel = function () {
         this.notSelect = false;
         this.questionNumber -= this.result;
@@ -242,7 +241,10 @@ var TestComponent = /** @class */ (function () {
         this.randomWordsCopyRight = Object.assign([], this.randomWords);
         this.randomWordsAnswerLeft = [];
         this.randomWordsAnswerRight = [];
+        this.selectCheckboxLeft = -1;
+        this.selectCheckboxRight = -1;
     };
+    //for 10 test
     TestComponent.prototype.GetTest = function () {
         for (var i = 0; i < this.countOptions; i++) {
             this.randomWords[i] = this.randomWordsFor10[0];
@@ -251,16 +253,17 @@ var TestComponent = /** @class */ (function () {
             this.randomWordsFor10.splice(0, 1);
         }
     };
+    //for 10 test
     TestComponent.prototype.next = function () {
         this.notSelect = false;
         var isCorrectAnswer = false;
-        if ((this.checkboxesLeft.indexOf(true) == this.checkboxesRight.indexOf(true)) && (this.checkboxesLeft.indexOf(true) != -1)) {
+        if (this.selectCheckboxLeft == this.selectCheckboxRight && (this.selectCheckboxLeft != -1)) {
             isCorrectAnswer = true;
         }
-        if (this.checkboxesLeft.indexOf(true) != -1 && this.checkboxesRight.indexOf(true) != -1) {
+        if (this.selectCheckboxLeft != -1 && this.selectCheckboxRight != -1) {
             this.questionNumber++;
-            this.checkboxesLeft = [];
-            this.checkboxesRight = [];
+            this.selectCheckboxLeft = -1;
+            this.selectCheckboxRight = -1;
             this.numberQA++;
             this.randomWordsAnswerLeft.push(this.randomWordsCopyLeft[this.selectWordIdLeftFor10]);
             this.randomWordsAnswerRight.push(this.randomWordsCopyRight[this.selectWordIdRightFor10]);

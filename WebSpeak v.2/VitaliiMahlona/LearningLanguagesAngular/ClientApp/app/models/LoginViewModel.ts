@@ -1,4 +1,5 @@
 ﻿import { AuthenticationScheme } from "./AuthenticationScheme"
+import { Users } from "./Users"
 
 export class LoginViewModel {
     public email: string;

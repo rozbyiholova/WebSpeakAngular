@@ -42,7 +42,6 @@ export class SlideshowComponent implements OnInit {
     }
 
     onSlide(slideData: any) {
-        this.duration = 500;
         var listAudio: Array<HTMLAudioElement> = [];
 
         if (this.words[0].enableSound) {
@@ -90,9 +89,11 @@ export class SlideshowComponent implements OnInit {
 
         for (let i = 0; i < listAudio.length; i++) {
             if (i === 0) {
-                listAudio[i].play()
+                listAudio[i].load();
+                listAudio[i].play();
             } else {
                 listAudio[i - 1].addEventListener('ended', function () {
+                    listAudio[i].load();
                     listAudio[i].play()
                 })
             }

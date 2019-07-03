@@ -12,14 +12,12 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { DataService } from '../../../services/data.service';
 import { Router } from '@angular/router';
-import { NavComponent } from '../nav/nav.component';
 var LoginComponent = /** @class */ (function () {
-    function LoginComponent(dataService, formBuilder, router, activeRoute, nav) {
+    function LoginComponent(dataService, formBuilder, router, activeRoute) {
         var _this = this;
         this.dataService = dataService;
         this.formBuilder = formBuilder;
         this.router = router;
-        this.nav = nav;
         this.submitted = false;
         this.returnUrl = '#';
         this.errorMessage = '';
@@ -60,7 +58,6 @@ var LoginComponent = /** @class */ (function () {
             .subscribe(function (data) {
             _this.returnUrl = data.returnUrl;
             _this.errorMessage = data.errorMessage;
-            _this.nav.getUsersInfo();
             if (_this.errorMessage == "") {
                 _this.router.navigate([_this.returnUrl]);
             }
@@ -72,10 +69,9 @@ var LoginComponent = /** @class */ (function () {
     LoginComponent = __decorate([
         Component({
             selector: 'login',
-            templateUrl: './login.component.html',
-            providers: [NavComponent]
+            templateUrl: './login.component.html'
         }),
-        __metadata("design:paramtypes", [DataService, FormBuilder, Router, ActivatedRoute, NavComponent])
+        __metadata("design:paramtypes", [DataService, FormBuilder, Router, ActivatedRoute])
     ], LoginComponent);
     return LoginComponent;
 }());
