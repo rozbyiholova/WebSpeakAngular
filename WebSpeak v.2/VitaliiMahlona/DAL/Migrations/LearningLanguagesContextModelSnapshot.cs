@@ -240,7 +240,7 @@ namespace DAL.Migrations
 
                     b.Property<int>("AccessFailedCount");
 
-                    b.Property<byte[]>("Avatar");
+                    b.Property<string>("Avatar");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();

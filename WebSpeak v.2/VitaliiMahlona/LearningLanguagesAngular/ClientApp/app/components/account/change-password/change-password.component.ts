@@ -3,7 +3,9 @@ import { DataService } from '../../../services/data.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { MustMatch } from '../../../_helpers/must-match.validator';
+import { MustMatch } from '../../../_helpers/must-match.validator'; 
+
+import { ChangePasswordViewModel } from '../../../models/ChangePasswordViewModel';
 
 @Component({
     selector: 'account-change-password',
@@ -41,7 +43,7 @@ export class AccountChangePasswordComponent implements OnInit {
 
         this.dataService.setPassword(this.changePasswordForm.value)
             .subscribe(
-                (data: any) => this.errorMessage = data.errorMessage,
+                (data: ChangePasswordViewModel) => this.errorMessage = data.errorMessage,
                 (e: any) => console.log(e));
     }
 }

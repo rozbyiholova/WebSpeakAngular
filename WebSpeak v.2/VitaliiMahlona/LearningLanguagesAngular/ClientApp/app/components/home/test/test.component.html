@@ -40,8 +40,8 @@
         <h1 *ngIf="idTest == 1 || idTest == 2">{{randomWords[0]?.wordLearnLang}}</h1>
         <img *ngIf="idTest == 3" src="{{randomWords[0]?.picture}}" alt="{{randomWords[0]?.wordLearnLang}}">
         <h1 *ngIf="idTest == 8">{{randomWords[0]?.wordLearnLang}}</h1>
-        <audio *ngIf="idTest == 4 || idTest  == 9" controls>
-            <source src="{{randomWords[0]?.pronounceLearn}}" type="audio/mpeg" />
+        <audio *ngIf="(idTest == 4 || idTest  == 9) && randomWords[0]" controls>
+            <source src="{{randomWords[0].pronounceLearn}}" type="audio/mpeg" />
             Your browser does not support the audio element.
         </audio>
     </div>
@@ -56,8 +56,8 @@
     </div>
 
     <div class="audio" *ngIf="idTest == 7">
-        <audio controls>
-            <source src="{{randomWord?.pronounceLearn}}" type="audio/mpeg" />
+        <audio *ngIf="randomWord" controls>
+            <source src="{{randomWord.pronounceLearn}}" type="audio/mpeg" />
             Your browser does not support the audio element.
         </audio>
     </div>

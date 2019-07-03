@@ -3,6 +3,9 @@ import { DataService } from '../../../services/data.service';
 
 import { trigger, style, animate, transition } from '@angular/animations';
 
+import { DTOStatistics } from '../../../models/DTOStatistics';
+import { DTOUsersInfo } from '../../../models/DTOUsersInfo';
+
 @Component({
     selector: 'account-statistics',
     animations: [
@@ -23,8 +26,8 @@ import { trigger, style, animate, transition } from '@angular/animations';
     styleUrls: ['./statistics.component.scss']
 })
 export class AccountStatisticsComponent implements OnInit {
-    statistics: any;
-    usersInfo: any;
+    statistics: DTOStatistics;
+    usersInfo: DTOUsersInfo;
     toggleLang: boolean[] = [];
     toggleCat: boolean[] = [];
     toggleSubCat: boolean[] = [];
@@ -39,7 +42,7 @@ export class AccountStatisticsComponent implements OnInit {
 
     loadStatistics() {
         this.dataService.getStatistics()
-            .subscribe((data: any) => this.statistics = data);
+            .subscribe((data: DTOStatistics) => this.statistics = data);
     }
 
     getCategories(langId: number) {
@@ -98,7 +101,7 @@ export class AccountStatisticsComponent implements OnInit {
     }
 
     getUsersInfo() {
-        this.dataService.getUsersInfo().subscribe((data: any) => this.usersInfo = data);
+        this.dataService.getUsersInfo().subscribe((data: DTOUsersInfo) => this.usersInfo = data);
     }
 
     doToggleLang(event: any, id: number) {

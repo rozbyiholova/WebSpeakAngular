@@ -1,6 +1,8 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { DataService } from '../../../services/data.service';
 
+import { DTOUsersInfo } from '../../../models/DTOUsersInfo'
+
 @Component({
     selector: 'manage-nav',
     styles: [` 
@@ -9,7 +11,7 @@ import { DataService } from '../../../services/data.service';
     templateUrl: './manage-nav.component.html'
 })
 export class ManageNavComponent implements OnInit {
-    usersInfo: any;
+    usersInfo: DTOUsersInfo;
 
     constructor(private dataService: DataService) { }
 
@@ -18,6 +20,6 @@ export class ManageNavComponent implements OnInit {
     }
 
     getUsersInfo() {
-        this.dataService.getUsersInfo().subscribe((data: any) => this.usersInfo = data);
+        this.dataService.getUsersInfo().subscribe((data: DTOUsersInfo) => this.usersInfo = data);
     }
 }

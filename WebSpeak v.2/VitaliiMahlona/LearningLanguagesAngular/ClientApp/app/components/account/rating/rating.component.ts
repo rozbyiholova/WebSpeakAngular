@@ -3,6 +3,9 @@ import { DataService } from '../../../services/data.service';
 
 import { trigger, style, animate, transition } from '@angular/animations';
 
+import { DTOStatistics } from '../../../models/DTOStatistics';
+import { DTOUsersInfo } from '../../../models/DTOUsersInfo';
+
 @Component({
     selector: 'account-rating',
     animations: [
@@ -23,8 +26,8 @@ import { trigger, style, animate, transition } from '@angular/animations';
     styleUrls: ['./rating.component.scss']
 })
 export class AccountRatingComponent implements OnInit {
-    rating: any;
-    usersInfo: any;
+    rating: DTOStatistics;
+    usersInfo: DTOUsersInfo;
     toggleLang: boolean[] = [];
 
     constructor(private dataService: DataService) { }
@@ -36,11 +39,11 @@ export class AccountRatingComponent implements OnInit {
 
     loadRating() {
         this.dataService.getRating()
-            .subscribe((data: any) => this.rating = data);
+            .subscribe((data: DTOStatistics) => this.rating = data);
     }
 
     getUsersInfo() {
-        this.dataService.getUsersInfo().subscribe((data: any) => this.usersInfo = data);
+        this.dataService.getUsersInfo().subscribe((data: DTOUsersInfo) => this.usersInfo = data);
     }
 
     doToggleLang(event: any, id: number) {

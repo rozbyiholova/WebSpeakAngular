@@ -4,12 +4,14 @@ import { Subscription } from 'rxjs';
 import { DataService } from '../../../services/data.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
+import { ExternalLoginViewModel } from '../../../models/ExternalLoginViewModel'
+
 @Component({
     selector: 'external-login',
     templateUrl: './external-login.component.html'
 })
 export class ExternalLoginComponent implements OnInit {
-    data: any;
+    data: ExternalLoginViewModel;
     errorMessage: string = null;
     submitted = false;
     returnUrl: string;
@@ -42,7 +44,7 @@ export class ExternalLoginComponent implements OnInit {
     get f() { return this.externalLoginForm.controls; }
 
     loadModel() {
-        this.dataService.callbackGet(this.returnUrl, this.remoteError).subscribe((data: any) => {
+        this.dataService.callbackGet(this.returnUrl, this.remoteError).subscribe((data: ExternalLoginViewModel) => {
             this.errorMessage = data.errorMessage;
 
             if (this.errorMessage == null) {
@@ -63,7 +65,7 @@ export class ExternalLoginComponent implements OnInit {
         }
 
         this.dataService.callbackPost(this.data).subscribe(
-            (data: any) => {
+            (data: ExternalLoginViewModel) => {
                 this.errorMessage = data.errorMessage;
 
                 if (this.errorMessage == null) {

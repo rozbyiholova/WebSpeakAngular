@@ -3,6 +3,8 @@ import { DataService } from '../../../services/data.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { PersonalInfoViewModel } from '../../../models/PersonalInfoViewModel';
+
 @Component({
     selector: 'account-personal-info',
     templateUrl: './personal-info.component.html'
@@ -32,7 +34,7 @@ export class AccountPersonalInfoComponent implements OnInit {
 
     loadPersonalInfo() {
         this.dataService.getPersonalInfo()
-            .subscribe((data: any) => {
+            .subscribe((data: PersonalInfoViewModel) => {
                 this.errorMessage = data.errorMessage;
 
                 if (this.errorMessage == null) {
@@ -59,7 +61,7 @@ export class AccountPersonalInfoComponent implements OnInit {
 
         this.dataService.setPersonalInfo(this.prepareSaveUserInfo())
             .subscribe(
-            (data: any) => {
+            (data: PersonalInfoViewModel) => {
                 this.errorMessage = data.errorMessage;
             },
             (e: any) => console.log(e));

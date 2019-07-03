@@ -4,22 +4,27 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { DataService } from '../../../services/data.service';
 import { Router } from '@angular/router';
+import { NavComponent } from '../nav/nav.component';
+
+import { LoginViewModel } from '../../../models/LoginViewModel'
+import { AuthenticationScheme } from '../../../models/AuthenticationScheme'
 
 @Component({
     selector: 'login',
-    templateUrl: './login.component.html'
+    templateUrl: './login.component.html',
+    providers: [NavComponent]
 })
 export class LoginComponent implements OnInit {
     submitted = false;
     returnUrl: string = '#';
-    externalLogins: any;
+    externalLogins: AuthenticationScheme[];
     errorMessage: string = '';
 
     loginForm: FormGroup;
 
     private subscription: Subscription;
 
-    constructor(private dataService: DataService, private formBuilder: FormBuilder, private router: Router, activeRoute: ActivatedRoute) {
+    constructor(private dataService: DataService, private formBuilder: FormBuilder, private router: Router, activeRoute: ActivatedRoute, private nav: NavComponent) {
         this.subscription = activeRoute.queryParams.subscribe(
             (queryParam: any) => {
                 if (queryParam['returnUrl'] != undefined) {
@@ -43,7 +48,7 @@ export class LoginComponent implements OnInit {
 
     loginGet() {
         this.dataService.loginGet(this.returnUrl)
-            .subscribe((data: any) => {
+            .subscribe((data: LoginViewModel) => {
                 this.returnUrl = data.returnUrl;
                 this.externalLogins = data.externalLogins;
             });
@@ -57,10 +62,10 @@ export class LoginComponent implements OnInit {
         }
 
         this.dataService.loginPost(this.loginForm.value)
-            .subscribe((data: any) => {
+            .subscribe((data: LoginViewModel) => {
                 this.returnUrl = data.returnUrl
                 this.errorMessage = data.errorMessage;
-
+                this.nav.getUsersInfo();
                 if (this.errorMessage == "") {
                     this.router.navigate([this.returnUrl]);
                 }

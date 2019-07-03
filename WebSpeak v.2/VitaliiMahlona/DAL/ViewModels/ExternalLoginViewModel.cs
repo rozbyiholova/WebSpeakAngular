@@ -8,7 +8,7 @@ namespace DAL.ViewModels
     public class ExternalLoginViewModel
     {
         [Required]
-        [EmailAddress]
+        [EmailAddress] 
         public string Email { get; set; }
 
         public string LoginProvider { get; set; }
