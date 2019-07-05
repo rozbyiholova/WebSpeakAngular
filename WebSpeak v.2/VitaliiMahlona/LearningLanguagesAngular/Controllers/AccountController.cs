@@ -10,7 +10,6 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using Microsoft.AspNetCore.Authentication;
 using System.IO;
@@ -298,6 +297,7 @@ namespace LearningLanguagesAngular.Controllers
                 Users currrentUser = await _userManager.GetUserAsync(User);
                 usersInfo.CurrentUser = currrentUser;
                 usersInfo.IsSignedIn = true;
+                usersInfo.Avatar = currrentUser.Avatar;
             }
             else
             {
@@ -338,7 +338,7 @@ namespace LearningLanguagesAngular.Controllers
         }
 
         [HttpPost("Account/Manage/PersonalInfo")]
-        public async Task<PersonalInfoViewModel> PersonalInfo([FromBody]PersonalInfoViewModel model)
+        public async Task<PersonalInfoViewModel> PersonalInfo([FromForm]PersonalInfoViewModel model)
         {
             PersonalInfoViewModel error = new PersonalInfoViewModel
             {
@@ -390,9 +390,12 @@ namespace LearningLanguagesAngular.Controllers
                 {
                     var currentUser = await _userManager.GetUserAsync(User);
 
-                    var fileOldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\UserImages", currentUser.Avatar);
+                    if (currentUser.Avatar != null)
+                    {
+                        var fileOldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\UserImages", currentUser.Avatar);
 
-                    System.IO.File.Delete(fileOldPath);
+                        System.IO.File.Delete(fileOldPath);
+                    }
 
                     var fileName = Path.GetFileName(model.Avatar.FileName);
 

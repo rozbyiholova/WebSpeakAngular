@@ -36,8 +36,28 @@ export class RegisterComponent implements OnInit {
             return;
         }
 
-        this.dataService.register(this.registerForm.value)
+        this.dataService.register(this.prepareSaveUserInfo())
             .subscribe((data: any) => this.router.navigate(['/']),
                         err => this.router.navigate(['/Account/Register']));
+    }
+
+    fileChange(files: FileList) {
+        if (files && files[0].size > 0) {
+            this.registerForm.patchValue({
+                avatar: files[0]
+            });
+        }
+    }
+
+    prepareSaveUserInfo(): FormData {
+        const formModel = this.registerForm.value;
+
+        let formData = new FormData();
+        formData.append("email", formModel.email);
+        formData.append("password", formModel.password);
+        formData.append("passwordConfirm", formModel.passwordConfirm);
+        formData.append("avatar", formModel.avatar);
+
+        return formData;
     }
 }

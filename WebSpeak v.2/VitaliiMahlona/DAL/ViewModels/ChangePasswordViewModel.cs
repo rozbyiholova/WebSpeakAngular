@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace DAL.ViewModels
+namespace DAL.ViewModels 
 {
-    public class ChangePasswordViewModel
+    public class ChangePasswordViewModel 
     { 
         [Required]
         [DataType(DataType.Password)]

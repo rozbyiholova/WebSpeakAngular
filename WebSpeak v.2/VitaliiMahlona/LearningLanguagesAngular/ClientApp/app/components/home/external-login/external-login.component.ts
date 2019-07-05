@@ -4,12 +4,16 @@ import { Subscription } from 'rxjs';
 import { DataService } from '../../../services/data.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
+import { ExternalLoginViewModel } from '../../../models/ExternalLoginViewModel'
+
+import { EventEmitterService } from '../../../services/event-emitter.service'
+
 @Component({
     selector: 'external-login',
     templateUrl: './external-login.component.html'
 })
 export class ExternalLoginComponent implements OnInit {
-    data: any;
+    data: ExternalLoginViewModel;
     errorMessage: string = null;
     submitted = false;
     returnUrl: string;
@@ -19,7 +23,8 @@ export class ExternalLoginComponent implements OnInit {
 
     private subscription: Subscription;
 
-    constructor(private dataService: DataService, activeRoute: ActivatedRoute, private formBuilder: FormBuilder, private router: Router) {
+    constructor(private dataService: DataService, activeRoute: ActivatedRoute, private formBuilder: FormBuilder,
+                private router: Router, private eventEmitterService: EventEmitterService) {
         this.subscription = activeRoute.queryParams.subscribe(
             (queryParam: any) => {
                 this.returnUrl = queryParam['returnUrl'];
@@ -42,7 +47,7 @@ export class ExternalLoginComponent implements OnInit {
     get f() { return this.externalLoginForm.controls; }
 
     loadModel() {
-        this.dataService.callbackGet(this.returnUrl, this.remoteError).subscribe((data: any) => {
+        this.dataService.callbackGet(this.returnUrl, this.remoteError).subscribe((data: ExternalLoginViewModel) => {
             this.errorMessage = data.errorMessage;
 
             if (this.errorMessage == null) {
@@ -63,10 +68,11 @@ export class ExternalLoginComponent implements OnInit {
         }
 
         this.dataService.callbackPost(this.data).subscribe(
-            (data: any) => {
+            (data: ExternalLoginViewModel) => {
                 this.errorMessage = data.errorMessage;
 
                 if (this.errorMessage == null) {
+                    this.eventEmitterService.onAnotherComponentUpdateUsersInfo();
                     this.router.navigate([this.returnUrl]);
                 }
             },

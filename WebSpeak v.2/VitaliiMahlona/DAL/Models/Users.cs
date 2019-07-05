@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DAL.Models
 {
-    public partial class Users : IdentityUser
+    public partial class Users : IdentityUser 
     {
         public Users()
         {

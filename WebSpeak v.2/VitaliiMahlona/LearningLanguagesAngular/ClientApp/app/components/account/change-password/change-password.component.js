@@ -48,7 +48,7 @@ var AccountChangePasswordComponent = /** @class */ (function () {
     AccountChangePasswordComponent = __decorate([
         Component({
             selector: 'account-change-password',
-            templateUrl: './accountChangePassword.component.html'
+            templateUrl: './change-password.component.html'
         }),
         __metadata("design:paramtypes", [DataService, FormBuilder, Router])
     ], AccountChangePasswordComponent);

@@ -47,7 +47,7 @@ var AccountIndexComponent = /** @class */ (function () {
     AccountIndexComponent = __decorate([
         Component({
             selector: 'account-index',
-            templateUrl: './accountIndex.component.html'
+            templateUrl: './index.component.html'
         }),
         __metadata("design:paramtypes", [DataService])
     ], AccountIndexComponent);

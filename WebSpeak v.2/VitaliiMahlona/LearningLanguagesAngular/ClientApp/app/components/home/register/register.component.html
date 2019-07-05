@@ -1,6 +1,6 @@
 ﻿<h2>Register new user</h2>
 
-<form [formGroup]="registerForm" (ngSubmit)="register()" class="w-50 p-3" enctype="multipart/form-data">
+<form [formGroup]="registerForm" (ngSubmit)="register()" class="w-50 p-3">
     <div class="form-group">
         <label>Email</label><br />
         <input type="text" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
@@ -27,7 +27,7 @@
     </div>
     <div class="form-group">
         <label>Avatar</label>
-        <input type="file" accept=".png,.jpg,.jpeg,.gif,.tif" formControlName="avatar" class="form-control" />
+        <input type="file" #avatar accept=".png,.jpg,.jpeg,.gif,.tif" class="form-control" (change)="fileChange(avatar.files)" placeholder="Upload Avatar" />
     </div>
     <div class="form-group">
         <button class="btn btn-primary">Register</button>

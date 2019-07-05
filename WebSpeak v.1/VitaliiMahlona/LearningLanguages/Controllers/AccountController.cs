@@ -350,7 +350,7 @@ namespace LearningLanguages.Controllers
             NativeLearnLangSubCat = await _categories.GetTranslations(idLangLearn, idLangNative, -1);
             NativeLearnLangCat = await _categories.GetTranslations(idLangLearn, idLangNative, null);
 
-            List<DTOTestResults> LearnLangCat = await testResultQuery
+            IQueryable<DTOTestResults> LearnLangCat = testResultQuery
                .Join(
                    totalScoresQuery,
                    testResult => testResult.LangId,
@@ -365,15 +365,80 @@ namespace LearningLanguages.Controllers
                        TestDate = testResult.TestDate,
                        Result = testResult.Result
                    }
-            ).ToListAsync();
+            );
+
+            List<HashSet<string>> Categories = new List<HashSet<string>>();
+            List<HashSet<string>> SubCategories = new List<HashSet<string>>();
+            List<HashSet<string>> Tests = new List<HashSet<string>>();
+            List<List<DTOTestResults>> TestScores = new List<List<DTOTestResults>>();
+   
+            foreach(var lang in NativeLearnLang)
+            {
+                HashSet<string> categories = new HashSet<string>();
+
+                foreach(var item in LearnLangCat.Where(item => item.LangName == lang.WordNativeLang))
+                {
+                    categories.Add(item.CategoryName);
+                }
+
+                Categories.Add(categories);
+
+                foreach (var item in categories)
+                {
+                    HashSet<string> subCategories = new HashSet<string>();
+
+                    foreach(var subCat in LearnLangCat.Where(subCat => subCat.LangName == lang.WordNativeLang && subCat.CategoryName == item))
+                    {
+                        subCategories.Add(subCat.SubCategoryName);
+                    }
+
+                    SubCategories.Add(subCategories);
+
+                    foreach (var subCat in subCategories)
+                    {
+                        HashSet<string> tests = new HashSet<string>();
+
+                        foreach(var test in LearnLangCat.Where(test => test.LangName == lang.WordNativeLang && test.CategoryName == item))
+                        {
+                            tests.Add(test.TestName.Replace("\\", "/"));
+                        }
+
+                        Tests.Add(tests);
+
+                        foreach (var test in tests)
+                        {
+                            List<DTOTestResults> testScores = new List<DTOTestResults>();
+
+                            foreach (var testScore in LearnLangCat.Where(testScore => testScore.LangName == lang.WordNativeLang &&
+                                                                                      testScore.CategoryName == item && testScore.SubCategoryName == subCat &&
+                                                                                      testScore.TestName.Replace("\\", "/") == test))
+                            {
+                                testScores.Add(testScore);
+                            }
+
+                            TestScores.Add(testScores);
+                        }
+                    }
+                }
+            }
 
             DTOStatistics statistics = new DTOStatistics()
             {
-                testResults = LearnLangCat,
                 LangList = NativeLearnLang,
-                CatList = NativeLearnLangCat,
-                SubCatList = NativeLearnLangSubCat
+                Categories = Categories,
+                SubCategories = SubCategories,
+                Tests = Tests,
+                TestScores = TestScores
             };
+
+            if (_signInManager.IsSignedIn(User))
+            {
+                statistics.IsSignedIn = true;
+            }
+            else
+            {
+                statistics.IsSignedIn = false;
+            }
 
             return View("./Manage/Statistics", statistics);
         }
@@ -503,9 +568,12 @@ namespace LearningLanguages.Controllers
             {
                 var currentUser = await _userManager.GetUserAsync(User);
 
-                var fileOldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\UserImages", currentUser.Avatar);
+                if (currentUser.Avatar != null)
+                {
+                    var fileOldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\UserImages", currentUser.Avatar);
 
-                System.IO.File.Delete(fileOldPath);
+                    System.IO.File.Delete(fileOldPath);
+                }
 
                 var fileName = Path.GetFileName(model.Avatar.FileName);
 
@@ -559,9 +627,81 @@ namespace LearningLanguages.Controllers
                 )
                .Distinct().ToListAsync();
 
+            List<DTOTotalRating> totalRatings = new List<DTOTotalRating>();
+
+            foreach (var item in NativeLearnLang.GroupBy(x => x.UserId).Select(g => new { UserId = g.Key, Total = g.Sum(x => x.Total) }).OrderByDescending(o => o.Total).ToList())
+            {
+                var user = await _userManager.FindByIdAsync(item.UserId);
+                string username = user.UserName;
+
+                DTOTotalRating totalRating = new DTOTotalRating()
+                {
+                    Username = username,
+                    Total = item.Total
+                };
+
+                totalRatings.Add(totalRating);
+            }
+
+            List<string> langs = new List<string>();
+
+            foreach (var item in NativeLearnLang)
+            {
+                langs.Add(item.WordNativeLang);
+            }
+
+            HashSet<string> uniqueLangs = new HashSet<string>(langs);
+
+            List<DTOTotalRating> langRatings = new List<DTOTotalRating>();
+
+            List<DTO> nativeLearnLangCopy = new List<DTO>();
+
+            foreach (var lang in NativeLearnLang)
+            {
+                if (!uniqueLangs.Contains(lang.WordNativeLang))
+                {
+                    nativeLearnLangCopy.Add(lang);
+                    continue;
+                }
+                else
+                {
+                    uniqueLangs.Remove(lang.WordNativeLang);
+                }
+
+                int numberUser = 1;
+
+                foreach (var item in NativeLearnLang.Where(item => item.WordNativeLang == lang.WordNativeLang).OrderByDescending(o => o.Total).ToList())
+                {
+                    var user = await _userManager.FindByIdAsync(item.UserId);
+                    string username = user.UserName;
+
+                    DTOTotalRating totalRating = new DTOTotalRating()
+                    {
+                        Username = username,
+                        Total = item.Total,
+                        Lang = lang.WordNativeLang,
+                        Id = numberUser
+                    };
+
+                    langRatings.Add(totalRating);
+
+                    numberUser++;
+                }
+            }
+
+            foreach (var lang in nativeLearnLangCopy)
+            {
+                NativeLearnLang.Remove(lang);
+            }
+
+            Users currentUser = await _userManager.GetUserAsync(User);
+
             DTOStatistics statistics = new DTOStatistics()
             {
-                LangList = NativeLearnLang
+                LangList = NativeLearnLang,
+                TotalRatings = totalRatings,
+                LangRatings = langRatings,
+                CurrentUser = currentUser
             };
 
             return View("./Manage/Rating", statistics);

@@ -33,7 +33,7 @@ var NavComponent = /** @class */ (function () {
     NavComponent = __decorate([
         Component({
             selector: 'app-nav',
-            styles: [" \n        .active {color:black;}\n    "],
+            styleUrls: ['./nav.component.scss'],
             templateUrl: './nav.component.html'
         }),
         __metadata("design:paramtypes", [DataService, Router])

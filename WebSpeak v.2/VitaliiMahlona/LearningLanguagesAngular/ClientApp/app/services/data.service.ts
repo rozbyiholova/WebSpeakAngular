@@ -63,7 +63,7 @@ export class DataService {
         return this.http.get(this.accountPersonalInfoUrl);
     }
 
-    setPersonalInfo(data: any) {
+    setPersonalInfo(data: FormData) {
         return this.http.post(this.accountPersonalInfoUrl, data);
     }
 

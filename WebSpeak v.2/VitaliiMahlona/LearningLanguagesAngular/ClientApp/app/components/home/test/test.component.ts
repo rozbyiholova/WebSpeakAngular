@@ -24,7 +24,6 @@ export class TestComponent implements OnInit {
     lastId: number;
     randomWords: DTO[] = [];
     randomWord: DTO;
-    checkboxes: boolean[] = [];
     textAnswer: string = '';
     isCorrect: boolean;
     notSelect: boolean = true;
@@ -32,8 +31,8 @@ export class TestComponent implements OnInit {
     numberQA: number = 0;
     randomWordsFor10: DTO[] = [];
     questionNumberFor10: number = 0;
-    checkboxesLeft: boolean[] = [];
-    checkboxesRight: boolean[] = [];
+    selectCheckboxLeft: number = -1;
+    selectCheckboxRight: number = -1;
     randomWordsCopyLeft: DTO[] = [];
     randomWordsCopyRight: DTO[] = [];
     selectWordIdLeftFor10: number = -1;
@@ -42,6 +41,7 @@ export class TestComponent implements OnInit {
     randomWordsAnswerRight: DTO[] = [];
     finishedTest: boolean = false;
     isUser: boolean;
+    selectCheckbox: number = -1;
 
     private subscription: Subscription;
 
@@ -83,10 +83,12 @@ export class TestComponent implements OnInit {
             });
     }
 
+    //randomly sort an array
     compareRandom(a:any, b:any) {
         return Math.random() - 0.5;
     }
 
+    //for tests except 6,7,10
     GetTestRandom() {
         var randomWordsId = [];
 
@@ -120,6 +122,7 @@ export class TestComponent implements OnInit {
         }
     }
 
+    //after click submit
     check(event: any = null) {
         if (this.idTest == 10) {
             this.randomWordsAnswerLeft = [];
@@ -193,19 +196,19 @@ export class TestComponent implements OnInit {
         }
 
         if (this.idTest != 5 && this.idTest != 6 && this.idTest != 7 && this.idTest != 10) {
-            this.notSelect = this.checkboxes.length == 0;
+            this.notSelect = this.selectCheckbox == -1;
 
             if (this.questionNumber == 0) {
                 this.notSelect = false;
             }
 
-            if (this.checkboxes.indexOf(true) + 1 == this.correctAnswer) {
+            if (this.selectCheckbox == this.correctAnswer) {
                 this.isCorrect = true;
                 this.totalResult++;
             }
             else if (this.notSelect) {
                 if (!this.first) {
-                    this.checkboxes = [];
+                    this.selectCheckbox = -1;
                     return;
                 }
             }
@@ -213,7 +216,7 @@ export class TestComponent implements OnInit {
                 this.isCorrect = false;
             }
 
-            this.checkboxes = [];
+            this.selectCheckbox = -1;
         }
 
         if (this.questionNumber == this.totalQuestions) {
@@ -252,20 +255,13 @@ export class TestComponent implements OnInit {
         }
     }
 
-    changeAnswer(eventTarget: any) {
-        this.checkboxes = [];
-        this.checkboxes[eventTarget.getAttribute('value')] = eventTarget.checked;
-    }
-
+    //for 10 test, left column
     changeAnswerLeft(eventTarget: any) {
-        this.checkboxesLeft = [];
-        this.checkboxesLeft[eventTarget.getAttribute('value')] = eventTarget.checked;
         this.selectWordIdLeftFor10 = +eventTarget.getAttribute('id').substring(10, 11);
     }
 
+    //for 10 test, right column
     changeAnswerRight(eventTarget: any) {
-        this.checkboxesRight = [];
-        this.checkboxesRight[eventTarget.getAttribute('value')] = eventTarget.checked;
         this.selectWordIdRightFor10 = +eventTarget.getAttribute('id').substring(11, 12);
     }
 
@@ -273,6 +269,7 @@ export class TestComponent implements OnInit {
         this.randomWord = this.words[this.questionNumber - 1];
     }
 
+    //if not divided by 4, then add (for 10 test)
     GetExtra() {
         var remainderOfDivision = this.randomWordsFor10.length % this.countOptions;
 
@@ -297,6 +294,7 @@ export class TestComponent implements OnInit {
         }
     }
 
+    //for 10 test
     cancel() {
         this.notSelect = false;
         this.questionNumber -= this.result;
@@ -307,8 +305,11 @@ export class TestComponent implements OnInit {
         this.randomWordsCopyRight = Object.assign([], this.randomWords);
         this.randomWordsAnswerLeft = [];
         this.randomWordsAnswerRight = [];
+        this.selectCheckboxLeft = -1;
+        this.selectCheckboxRight = -1;
     }
 
+    //for 10 test
     GetTest() {
         for (let i = 0; i < this.countOptions; i++) {
             this.randomWords[i] = this.randomWordsFor10[0];
@@ -319,18 +320,21 @@ export class TestComponent implements OnInit {
         }
     }
 
+    //for 10 test
     next() {
         this.notSelect = false;
         var isCorrectAnswer: boolean = false;
 
-        if ((this.checkboxesLeft.indexOf(true) == this.checkboxesRight.indexOf(true)) && (this.checkboxesLeft.indexOf(true) != -1)) {
+        if (this.selectCheckboxLeft == this.selectCheckboxRight && (this.selectCheckboxLeft != -1)) {
             isCorrectAnswer = true;
         }
 
-        if (this.checkboxesLeft.indexOf(true) != -1 && this.checkboxesRight.indexOf(true) != -1) {
+        if (this.selectCheckboxLeft != -1 && this.selectCheckboxRight != -1) {
             this.questionNumber++;
-            this.checkboxesLeft = [];
-            this.checkboxesRight = [];
+
+            this.selectCheckboxLeft = -1;
+            this.selectCheckboxRight = -1;
+
             this.numberQA++;
 
             this.randomWordsAnswerLeft.push(this.randomWordsCopyLeft[this.selectWordIdLeftFor10]);

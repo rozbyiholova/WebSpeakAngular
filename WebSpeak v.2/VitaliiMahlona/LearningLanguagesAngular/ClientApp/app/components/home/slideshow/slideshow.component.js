@@ -35,7 +35,6 @@ var SlideshowComponent = /** @class */ (function () {
             .subscribe(function (data) { return _this_1.words = data; });
     };
     SlideshowComponent.prototype.onSlide = function (slideData) {
-        this.duration = 500;
         var listAudio = [];
         if (this.words[0].enableSound) {
             var sound = new Audio();
@@ -75,10 +74,12 @@ var SlideshowComponent = /** @class */ (function () {
         }
         var _loop_2 = function (i) {
             if (i === 0) {
+                listAudio[i].load();
                 listAudio[i].play();
             }
             else {
                 listAudio[i - 1].addEventListener('ended', function () {
+                    listAudio[i].load();
                     listAudio[i].play();
                 });
             }

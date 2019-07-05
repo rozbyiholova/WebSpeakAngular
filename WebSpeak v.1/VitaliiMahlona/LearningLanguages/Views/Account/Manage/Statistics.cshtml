@@ -1,6 +1,4 @@
 ﻿@model DTOStatistics
-@inject SignInManager<Users> SignInManager
-@inject UserManager<Users> UserManager
 
 @{
     ViewData["Title"] = "Statistics";
@@ -13,7 +11,7 @@
 
 <link rel="stylesheet" href="~/css/Statistics.css" />
 
-@if (!SignInManager.IsSignedIn(User))
+@if (!Model.IsSignedIn)
 {
     <div class="alert alert-warning" role="alert">
         You must be logged in to view statistics.
@@ -23,55 +21,26 @@
     </div>
 }
 
+@{int idLang = 0;}
 @foreach (var lang in Model.LangList)
 {
     <div class="languages text-dark" id="@lang.Id">
         @lang.WordNativeLang - @lang.Total
 
-        @{
-            List<string> categories = new List<string>();
-
-            @foreach (var item in Model.testResults.Where(item => item.LangName == lang.WordNativeLang))
-            {
-                categories.Add(item.CategoryName);
-            }
-
-            HashSet<string> uniqueCat = new HashSet<string>(categories);
-        }
-
-        @foreach (var item in uniqueCat)
+        @{int idCat = 0;}
+        @foreach (var item in Model.Categories[idLang])
         {
             <div class="categories" id="@lang.Id" cat="@item">
                 @item
 
-                @{
-                    List<string> subCategories = new List<string>();
-
-                    @foreach (var subCat in Model.testResults.Where(subCat => subCat.LangName == lang.WordNativeLang && subCat.CategoryName == item))
-                    {
-                        subCategories.Add(subCat.SubCategoryName);
-                    }
-
-                    HashSet<string> uniqueSubCat = new HashSet<string>(subCategories);
-                }
-
-                @foreach (var subCat in uniqueSubCat)
+                @{int idSubCat = 0;}
+                @foreach (var subCat in Model.SubCategories[idCat])
                 {
                     <div class="subCategories" id="@lang.Id" cat="@item" subCat="@subCat">
                         @subCat
 
-                        @{
-                            List<string> tests = new List<string>();
-
-                            @foreach (var test in Model.testResults.Where(test => test.LangName == lang.WordNativeLang && test.CategoryName == item))
-                            {
-                                tests.Add(test.TestName.Replace("\\", "/"));
-                            }
-
-                            HashSet<string> uniqueTests = new HashSet<string>(tests);
-                        }
-
-                        @foreach (var test in uniqueTests)
+                        @{int idTest = 0;}
+                        @foreach (var test in Model.Tests[idSubCat])
                         {
                             <div class="tests" id="@lang.Id" cat="@item" subCat="@subCat" test="@test">
                                 @test
@@ -89,9 +58,8 @@
                                         </thead>
                                         <tbody>
 
-                                            @foreach (var testScore in Model.testResults.Where(testScore => testScore.LangName == lang.WordNativeLang &&
-                                                                                             testScore.CategoryName == item && testScore.SubCategoryName == subCat &&
-                                                                                             testScore.TestName.Replace("\\", "/") == test))
+                                            @{int idTestScore = 0;}
+                                            @foreach (var testScore in Model.TestScores[idTestScore])
                                             {
                                                 <tr>
                                                     <td>
@@ -101,21 +69,31 @@
                                                         @Html.DisplayFor(modelItem => testScore.Result)
                                                     </td>
                                                 </tr>
+
+                                                idTestScore++;
                                             }
 
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
+
+                            idTest++;
                         }
 
                     </div>
+
+                    idSubCat++;
                 }
 
             </div>
+
+            idCat++;
         }
 
     </div>
+
+    idLang++;
 }
 
 <script src="~/js/Statistics.js"></script>

@@ -3,6 +3,10 @@ import { DataService } from '../../../services/data.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { PersonalInfoViewModel } from '../../../models/PersonalInfoViewModel';
+
+import { EventEmitterService } from '../../../services/event-emitter.service'
+
 @Component({
     selector: 'account-personal-info',
     templateUrl: './personal-info.component.html'
@@ -14,7 +18,8 @@ export class AccountPersonalInfoComponent implements OnInit {
 
     personalInfoForm: FormGroup;
 
-    constructor(private dataService: DataService, private formBuilder: FormBuilder, private router: Router) { }
+    constructor(private dataService: DataService, private formBuilder: FormBuilder, private router: Router,
+                private eventEmitterService: EventEmitterService) { }
 
     ngOnInit() {
         this.personalInfoForm = this.formBuilder.group({
@@ -32,10 +37,11 @@ export class AccountPersonalInfoComponent implements OnInit {
 
     loadPersonalInfo() {
         this.dataService.getPersonalInfo()
-            .subscribe((data: any) => {
+            .subscribe((data: PersonalInfoViewModel) => {
                 this.errorMessage = data.errorMessage;
 
                 if (this.errorMessage == null) {
+                    console.log(data);
                     this.personalInfoForm.setValue({
                         email: data.email,
                         firstName: data.firstName,
@@ -56,11 +62,36 @@ export class AccountPersonalInfoComponent implements OnInit {
 
         this.correctSubmitted = true;
 
-        this.dataService.setPersonalInfo(this.personalInfoForm.value)
+        this.dataService.setPersonalInfo(this.prepareSaveUserInfo())
             .subscribe(
-            (data: any) => {
+            (data: PersonalInfoViewModel) => {
                 this.errorMessage = data.errorMessage;
+
+                if (this.errorMessage == null) {
+                    this.eventEmitterService.onAnotherComponentUpdateUsersInfo();
+                }
             },
             (e: any) => console.log(e));
+    }
+
+    fileChange(files: FileList) {
+        if (files && files[0].size > 0) {
+            this.personalInfoForm.patchValue({
+                avatar: files[0]
+            });
+        }
+    }
+
+    prepareSaveUserInfo(): FormData {
+        const formModel = this.personalInfoForm.value;
+
+        let formData = new FormData();
+        formData.append("email", formModel.email);
+        formData.append("firstName", formModel.firstName);
+        formData.append("lastName", formModel.lastName);
+        formData.append("username", formModel.username);
+        formData.append("avatar", formModel.avatar);
+
+        return formData;
     }
 }

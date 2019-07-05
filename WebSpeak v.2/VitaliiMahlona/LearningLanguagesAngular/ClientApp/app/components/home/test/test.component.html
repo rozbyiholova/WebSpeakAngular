@@ -17,21 +17,21 @@
 <div id="test" *ngIf="randomWords && !finishedTest">
     <div class="words" *ngIf="idTest == 1 || idTest == 2 || idTest == 4">
         <label class="word" *ngFor="let word of randomWords; let i = index">
-            <input type="radio" name="test" value="{{i}}" (change)="changeAnswer($event.target)">
+            <input type="radio" name="test" value="{{i + 1}}" [(ngModel)]="selectCheckbox">
             <img src="{{randomWords[randomTestWordsId[i] - 1]?.picture}}" width="256" height="256" alt="{{randomWords[randomTestWordsId[i] - 1]?.wordLearnLang}}">
         </label>
     </div>
 
     <div class="words" *ngIf="idTest == 3">
         <div *ngFor="let word of randomWords; let i = index">
-            <input type="radio" name="test" value="{{i}}" id="{{i + 1}}" (change)="changeAnswer($event.target)" />
+            <input type="radio" name="test" value="{{i + 1}}" id="{{i + 1}}" [(ngModel)]="selectCheckbox">
             <label class="word btn btn-light" for="{{i + 1}}">{{randomWords[randomTestWordsId[i] - 1]?.wordLearnLang}}</label>
         </div>
     </div>
 
     <div class="words" *ngIf="idTest == 8 || idTest == 9">
         <div *ngFor="let word of randomWords; let i = index">
-            <input type="radio" name="test" value="{{i}}" id="{{i + 1}}" (change)="changeAnswer($event.target)" />
+            <input type="radio" name="test" value="{{i + 1}}" id="{{i + 1}}" [(ngModel)]="selectCheckbox" />
             <label class="word btn btn-light" for="{{i + 1}}">{{randomWords[randomTestWordsId[i] - 1]?.wordNativeLang}}</label>
         </div>
     </div>
@@ -40,8 +40,8 @@
         <h1 *ngIf="idTest == 1 || idTest == 2">{{randomWords[0]?.wordLearnLang}}</h1>
         <img *ngIf="idTest == 3" src="{{randomWords[0]?.picture}}" alt="{{randomWords[0]?.wordLearnLang}}">
         <h1 *ngIf="idTest == 8">{{randomWords[0]?.wordLearnLang}}</h1>
-        <audio *ngIf="idTest == 4 || idTest  == 9" controls>
-            <source src="{{randomWords[0]?.pronounceLearn}}" type="audio/mpeg" />
+        <audio *ngIf="(idTest == 4 || idTest  == 9) && randomWords[0]" controls>
+            <source src="{{randomWords[0].pronounceLearn}}" type="audio/mpeg" />
             Your browser does not support the audio element.
         </audio>
     </div>
@@ -56,8 +56,8 @@
     </div>
 
     <div class="audio" *ngIf="idTest == 7">
-        <audio controls>
-            <source src="{{randomWord?.pronounceLearn}}" type="audio/mpeg" />
+        <audio *ngIf="randomWord" controls>
+            <source src="{{randomWord.pronounceLearn}}" type="audio/mpeg" />
             Your browser does not support the audio element.
         </audio>
     </div>
@@ -71,13 +71,13 @@
         <div class="row">
             <div class="col-sm" id="leftColumn">
                 <div *ngFor="let word of randomWordsCopyLeft; let i = index">
-                    <input type="radio" name="leftColumn" value="{{i + 1}}" id="leftColumn{{i}}" (change)="changeAnswerLeft($event.target)" />
+                    <input type="radio" name="leftColumn" value="{{i + 1}}" id="leftColumn{{i}}" [(ngModel)]="selectCheckboxLeft" (change)="changeAnswerLeft($event.target)" />
                     <label class="word btn btn-light" for="leftColumn{{i}}">{{randomWordsCopyLeft[i]?.wordLearnLang}}</label>
                 </div>
             </div>
             <div class="col-sm" id="rightColumn">
                 <div *ngFor="let word of randomWordsCopyRight; let i = index">
-                    <input type="radio" name="rightColumn" value="{{randomTestWordsId[i]}}" id="rightColumn{{randomTestWordsId[i] - 1}}" (change)="changeAnswerRight($event.target)" />
+                    <input type="radio" name="rightColumn" value="{{randomTestWordsId[i]}}" id="rightColumn{{randomTestWordsId[i] - 1}}" [(ngModel)]="selectCheckboxRight" (change)="changeAnswerRight($event.target)" />
                     <label class="word btn btn-light" for="rightColumn{{randomTestWordsId[i] - 1}}">{{randomWordsCopyRight[randomTestWordsId[i] - 1]?.wordNativeLang}}</label>
                 </div>
             </div>
