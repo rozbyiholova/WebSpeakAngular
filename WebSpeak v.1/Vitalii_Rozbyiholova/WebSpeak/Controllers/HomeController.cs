@@ -18,9 +18,9 @@ namespace WebSpeak.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly SessionHelper helper;
+        private readonly Helper helper;
 
-        public HomeController(SessionHelper helper)
+        public HomeController(Helper helper)
         {
             this.helper = helper;
         }
@@ -52,7 +52,7 @@ namespace WebSpeak.Controllers
         public IActionResult Categories()
         {
             CategoriesRepository categoriesRepository = new CategoriesRepository();
-            Tuple<int, int> ids = helper.GetLanguagesId();
+            Tuple<int, int> ids = Helper.GetLanguagesId();
             int nativeLang = ids.Item1;
             int learningLang = ids.Item2;
             List<DTO> DTOs = categoriesRepository.GetDTO(nativeLang, learningLang, null);
@@ -74,7 +74,7 @@ namespace WebSpeak.Controllers
                 idToUse = helper.GetLastСategoryId();
             }
             CategoriesRepository categoriesRepository = new CategoriesRepository();
-            Tuple<int, int> ids = helper.GetLanguagesId();
+            Tuple<int, int> ids = Helper.GetLanguagesId();
             int nativeLang = ids.Item1;
             int learningLang = ids.Item2;
             List<DTO> DTOs = categoriesRepository.GetDTO(nativeLang, learningLang, idToUse);
@@ -86,7 +86,7 @@ namespace WebSpeak.Controllers
         [Route("Categories/Subcategories/Manual")]
         public async Task<IActionResult> Manual(int categoryId)
         {
-            Tuple<int, int> ids = helper.GetLanguagesId();
+            Tuple<int, int> ids = Helper.GetLanguagesId();
             int nativeLang = ids.Item1;
             int learningLang = ids.Item2;
             WordsRepository wordsRepository = new WordsRepository();
@@ -99,7 +99,7 @@ namespace WebSpeak.Controllers
         [Route("Categories/Subcategories/Slideshow")]
         public async Task<IActionResult> SlideShow(int categoryId)
         {
-            Tuple<int, int> ids = helper.GetLanguagesId();
+            Tuple<int, int> ids = Helper.GetLanguagesId();
             int nativeLang = ids.Item1;
             int learningLang = ids.Item2;
             WordsRepository wordsRepository = new WordsRepository();

@@ -37,7 +37,7 @@ namespace WebSpeak
 
             services.AddDistributedMemoryCache();
             services.AddBreadcrumbs(GetType().Assembly);
-            services.AddSingleton<SessionHelper>();
+            services.AddSingleton<Helper>();
             services.AddHttpContextAccessor();
             services.AddSession(options =>
             {

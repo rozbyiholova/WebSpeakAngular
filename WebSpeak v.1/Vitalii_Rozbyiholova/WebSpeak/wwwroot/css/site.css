@@ -44,7 +44,7 @@ html {
 body {
     /* Margin bottom by footer height */
     margin-bottom: 60px;
-    background-image: url(https://img.freepik.com/free-photo/background_53876-32169.jpg?size=626&ext=jpg);
+    background: linear-gradient(to bottom right, #43cea2, #185a9d)
 }
 .footer {
   position: absolute;

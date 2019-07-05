@@ -15,19 +15,17 @@ namespace WebSpeak.Controllers
 {
     public class TestController : Controller
     {
-        private readonly SessionHelper _helper;
+        private readonly Helper _helper;
         private readonly ProductHouseContext _db;
 
         private int NativeLanguageId { get; }
         private int LearningLanguageId { get; }
-
         private int SubcategoryId {
             get
             {
                 return _helper.GetLastSubcategoryId();
             }
         }
-
         private List<DTO> Words {
             get
             {
@@ -36,12 +34,12 @@ namespace WebSpeak.Controllers
             }
         }
 
-        public TestController(SessionHelper helper)
+        public TestController(Helper helper)
         {
             this._helper = helper;
             this._db = new ProductHouseContext();
 
-            Tuple<int, int> ids = helper.GetLanguagesId();
+            Tuple<int, int> ids = Helper.GetLanguagesId();
             NativeLanguageId = ids.Item1;
             LearningLanguageId = ids.Item2;
         }
@@ -72,21 +70,20 @@ namespace WebSpeak.Controllers
            string viewName = String.Format("Test{0}", testID);
            return View(viewName, Words);
         }
-
-      
+        
        public IActionResult SaveChanges(int score)
        {
-           string userId = User.Claims.First().Value;
+           string userId = GetUserId();
            if (userId != null)
            {
                int testId = _helper.GetLastTestId();
                int categoryId = _helper.GetLastSubcategoryId();
-               int langId = _helper.GetLanguagesId().Item2;
+               int langId = Helper.GetLanguagesId().Item2;
 
                using (_db)
                {
                    TestResults oldResults;
-                   bool isDone = IsTestDoneOnce(userId, testId, langId, categoryId, out oldResults);
+                   bool isDone = _helper.IsTestDoneOnce(userId, testId, langId, categoryId, out oldResults);
                    if (isDone)
                    {
                        int oldScore = oldResults.Result;
@@ -111,37 +108,28 @@ namespace WebSpeak.Controllers
                         _db.TestResults.Add(results);
                    }
                    _db.SaveChanges();
+
+                    _helper.UpdateTotalScore(userId, langId);
                }
            }
            return RedirectToAction("Index");
        }
 
-       private bool IsTestDoneOnce(string userId, int testId, int langId, int categoryId, out TestResults oldResults)
-       {
-           oldResults = null;
-           TestResults results = null;
-           try
-           {
-               results = _db.TestResults.First(r => r.UserId == userId &&
-                                                    r.TestId == testId &&
-                                                    r.CategoryId == categoryId &&
-                                                    r.LangId == langId);
-           }
-           catch (InvalidOperationException)
-           {
-               Console.WriteLine("New test result");
-           }
-           catch
-           {
-               throw;
-           }
+        private  string GetUserId()
+        {
+            string id = null;
+            try
+            {
+                id = User.Claims.First().Value;
+            }
+            catch (InvalidOperationException) { }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
 
-           if (results != null)
-           {
-               oldResults = results;
-               return true;
-           }
-           else { return false; }
-       }
+            return id;
+        }
     }
 }

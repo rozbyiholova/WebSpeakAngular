@@ -1,12 +1,18 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DAL.Models;
+using DAL.Repositories;
+using Microsoft.EntityFrameworkCore;
+using WebSpeak.Areas.Identity.Pages.Account.Manage;
+using WebSpeak.Models;
 
 namespace WebSpeak
 {
-    public class SessionHelper
+    public class Helper
     {
         private const string NativeLanguage = "NativeLanguage";
         private const string LearningLanguage = "LearningLanguage";
@@ -17,10 +23,13 @@ namespace WebSpeak
         private const int DefaultNativeLanguageId = 1;
         private const int DefaultLearningLanguageId = 3;
 
-        IHttpContextAccessor _httpContextAccessor;
+        private readonly ProductHouseContext _db;
 
-        public SessionHelper(IHttpContextAccessor httpContextAccessor)
+        static IHttpContextAccessor _httpContextAccessor;
+
+        public Helper(IHttpContextAccessor httpContextAccessor)
         {
+            _db = new ProductHouseContext();
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -44,7 +53,7 @@ namespace WebSpeak
             _httpContextAccessor.HttpContext.Session.SetInt32(LearningLanguage, learningLangId);
         }
 
-        public Tuple<int, int> GetLanguagesId()
+        public static Tuple<int, int> GetLanguagesId()
         {
             int nativeLang, learningLang;
             try
@@ -115,6 +124,76 @@ namespace WebSpeak
         {
             int id = (int) _httpContextAccessor.HttpContext.Session.GetInt32(LastTestId);
             return id;
+        }
+
+
+        public bool IsTestDoneOnce(string userId, int testId, int langId, int categoryId, out TestResults oldResults)
+        {
+            oldResults = null;
+            TestResults results = null;
+            try
+            {
+                results = _db.TestResults.First(r => r.UserId == userId &&
+                                                     r.TestId == testId &&
+                                                     r.CategoryId == categoryId &&
+                                                     r.LangId == langId);
+            }
+            catch (InvalidOperationException)
+            {
+                Console.WriteLine("New test result");
+            }
+            catch
+            {
+                throw;
+            }
+
+            if (results != null)
+            {
+                oldResults = results;
+                return true;
+            }
+            else { return false; }
+        }
+
+        public void UpdateTotalScore(string userId, int langId)
+        {
+            int total = 0;
+            List<TestResults> results = _db.TestResults.Where(r => r.UserId == userId && r.LangId == langId).ToList();
+            foreach (TestResults testResult in results)
+            {
+                total += testResult.Result;
+            }
+
+            TotalScores totalScores = null;
+            try
+            {
+                totalScores = _db.TotalScores.First(s => s.UserId == userId && s.LangId == langId);
+            }
+            catch (InvalidOperationException)
+            {
+                Console.WriteLine("New test result");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+            if (totalScores != null)
+            {
+                totalScores.Total = total;
+                _db.Entry(totalScores).State = EntityState.Modified;
+            }
+            else
+            {
+                totalScores = new TotalScores();
+                totalScores.LangId = langId;
+                totalScores.UserId = userId;
+                totalScores.Total = total;
+                _db.TotalScores.Add(totalScores);
+            }
+
+            _db.SaveChanges();
         }
     }
 }

@@ -1,0 +1,87 @@
+﻿@page
+@using WebSpeak.Models
+@model StatisticModel
+@{
+    ViewData["Title"] = "Statistic";
+    ViewData["ActivePage"] = ManageNavPages.Statistic;
+    List<StatisticViewModel> statistic = Model.Statistic;
+}
+
+<h4>@ViewData["Title"]</h4>
+<partial name="_StatusMessage" for="StatusMessage" />
+
+@* ---------------------Languages List Start--------------------- *@
+<div class="accordion" id="languageAccordion">
+    @foreach (StatisticViewModel view in statistic)
+    {
+        <div class="card">
+            <div class="card-header" id="heading-@view.LanguageName">
+                <h5 class="mb-0">
+                    <button class="btn-block btn-link" type="button" data-toggle="collapse" data-target="#collapse-@view.LanguageName" aria-expanded="true" aria-controls="collapseOne">
+                        @view.LanguageName
+                        <span class="badge badge-primary badge-pill">@view.TotalScore</span>
+                    </button>
+                </h5>
+            </div>
+
+            <div id="collapse-@view.LanguageName" class="collapse" aria-labelledby="heading-@view.LanguageName" data-parent="#languageAccordion">
+                <div class="card-body">
+                    @* ---------------------Categories List Start--------------------- *@
+                    <div class="accordion" id="categoryAccordion">
+                        @foreach (CategoryStatistic category in view.CategoryStatistics)
+                        {
+                            <div class="card">
+                                <div class="card-header" id="heading-@category.CategoryName">
+                                    <h5 class="mb-0">
+                                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse-@category.CategoryName" aria-expanded="true" aria-controls="collapseOne">
+                                            @category.CategoryName
+                                            <span class="badge badge-primary badge-pill">@category.CategoryScore</span>
+                                        </button>
+                                    </h5>
+                                </div>
+
+                                <div id="collapse-@category.CategoryName" class="collapse" aria-labelledby="heading-@category.CategoryName" data-parent="#categoryAccordion">
+                                    <div class="card-body">
+                                        @* ---------------------Subcategories List Start--------------------- *@
+                                        <div class="accordion" id="SubcategoryAccordion">
+                                            @foreach (SubcategoryStatistic subcategory in category.SubcategoryStatistics)
+                                            {
+                                                <div class="card">
+                                                    <div class="card-header" id="heading-@subcategory.SubcategoryName.GetHashCode()">
+                                                        <h5 class="mb-0">
+                                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse-@subcategory.SubcategoryName.GetHashCode()" aria-expanded="true" aria-controls="collapseOne">
+                                                                @subcategory.SubcategoryName
+                                                                <span class="badge badge-primary badge-pill">@subcategory.Score</span>
+                                                            </button>
+                                                        </h5>
+                                                    </div>
+
+                                                    <div id="collapse-@subcategory.SubcategoryName.GetHashCode()" class="collapse" aria-labelledby="heading-@subcategory.SubcategoryName.GetHashCode()" data-parent="#SubcategoryAccordion">
+                                                        <div class="card-body">
+                                                            @subcategory.SubcategoryName
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                        @* ---------------------Subcategories List End--------------------- *@
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    @* ---------------------Categories List End--------------------- *@
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@* ---------------------Languages List End--------------------- *@
+
+<script>
+    var Model  = @Json.Serialize(statistic);
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
