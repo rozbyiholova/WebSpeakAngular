@@ -29,6 +29,8 @@ import { ExternalLoginComponent } from './components/home/external-login/externa
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
+import { EventEmitterService } from './services/event-emitter.service'
+
 const manageRoutes: Routes = [
     { path: 'Index', component: AccountIndexComponent },
     { path: 'PersonalInfo', component: AccountPersonalInfoComponent },
@@ -60,6 +62,7 @@ const appRoutes: Routes = [
                    RegisterComponent, LoginComponent, ManageComponent, ManageNavComponent, AccountIndexComponent,
                    AccountPersonalInfoComponent, AccountChangePasswordComponent, AccountStatisticsComponent,
                    AccountRatingComponent, ExternalLoginComponent],
+    providers: [EventEmitterService],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

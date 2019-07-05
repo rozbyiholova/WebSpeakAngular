@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 
 import { DTOUsersInfo } from '../../../models/DTOUsersInfo'
 
+import { EventEmitterService } from '../../../services/event-emitter.service'
+
 @Component({
     selector: 'app-nav',
     styleUrls: ['./nav.component.scss'],
@@ -13,12 +15,19 @@ export class NavComponent implements OnInit {
     usersInfo: DTOUsersInfo;
     returnUrl: string;
 
-    constructor(private dataService: DataService, private router: Router) {
+    constructor(private dataService: DataService, private router: Router, private eventEmitterService: EventEmitterService) {
         this.returnUrl = this.router.url;
     }
 
     ngOnInit() {
         this.getUsersInfo();
+
+        if (this.eventEmitterService.subsVar == undefined) {
+            this.eventEmitterService.subsVar = this.eventEmitterService.
+                invokeUsersInfo.subscribe((name: string) => {
+                    this.getUsersInfo();
+                });
+        }  
     }
 
     getUsersInfo() {

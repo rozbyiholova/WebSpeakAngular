@@ -6,6 +6,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { ExternalLoginViewModel } from '../../../models/ExternalLoginViewModel'
 
+import { EventEmitterService } from '../../../services/event-emitter.service'
+
 @Component({
     selector: 'external-login',
     templateUrl: './external-login.component.html'
@@ -21,7 +23,8 @@ export class ExternalLoginComponent implements OnInit {
 
     private subscription: Subscription;
 
-    constructor(private dataService: DataService, activeRoute: ActivatedRoute, private formBuilder: FormBuilder, private router: Router) {
+    constructor(private dataService: DataService, activeRoute: ActivatedRoute, private formBuilder: FormBuilder,
+                private router: Router, private eventEmitterService: EventEmitterService) {
         this.subscription = activeRoute.queryParams.subscribe(
             (queryParam: any) => {
                 this.returnUrl = queryParam['returnUrl'];
@@ -69,6 +72,7 @@ export class ExternalLoginComponent implements OnInit {
                 this.errorMessage = data.errorMessage;
 
                 if (this.errorMessage == null) {
+                    this.eventEmitterService.onAnotherComponentUpdateUsersInfo();
                     this.router.navigate([this.returnUrl]);
                 }
             },

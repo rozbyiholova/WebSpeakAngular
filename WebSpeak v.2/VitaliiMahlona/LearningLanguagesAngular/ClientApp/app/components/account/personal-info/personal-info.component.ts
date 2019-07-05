@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 
 import { PersonalInfoViewModel } from '../../../models/PersonalInfoViewModel';
 
+import { EventEmitterService } from '../../../services/event-emitter.service'
+
 @Component({
     selector: 'account-personal-info',
     templateUrl: './personal-info.component.html'
@@ -16,7 +18,8 @@ export class AccountPersonalInfoComponent implements OnInit {
 
     personalInfoForm: FormGroup;
 
-    constructor(private dataService: DataService, private formBuilder: FormBuilder, private router: Router) { }
+    constructor(private dataService: DataService, private formBuilder: FormBuilder, private router: Router,
+                private eventEmitterService: EventEmitterService) { }
 
     ngOnInit() {
         this.personalInfoForm = this.formBuilder.group({
@@ -63,6 +66,10 @@ export class AccountPersonalInfoComponent implements OnInit {
             .subscribe(
             (data: PersonalInfoViewModel) => {
                 this.errorMessage = data.errorMessage;
+
+                if (this.errorMessage == null) {
+                    this.eventEmitterService.onAnotherComponentUpdateUsersInfo();
+                }
             },
             (e: any) => console.log(e));
     }

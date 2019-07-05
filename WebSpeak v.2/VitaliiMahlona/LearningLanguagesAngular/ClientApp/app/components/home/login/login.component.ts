@@ -8,6 +8,8 @@ import { Router } from '@angular/router';
 import { LoginViewModel } from '../../../models/LoginViewModel'
 import { AuthenticationScheme } from '../../../models/AuthenticationScheme'
 
+import { EventEmitterService } from '../../../services/event-emitter.service'
+
 @Component({
     selector: 'login',
     templateUrl: './login.component.html'
@@ -22,7 +24,8 @@ export class LoginComponent implements OnInit {
 
     private subscription: Subscription;
 
-    constructor(private dataService: DataService, private formBuilder: FormBuilder, private router: Router, activeRoute: ActivatedRoute) {
+    constructor(private dataService: DataService, private formBuilder: FormBuilder, private router: Router,
+               private activeRoute: ActivatedRoute, private eventEmitterService: EventEmitterService ) {
         this.subscription = activeRoute.queryParams.subscribe(
             (queryParam: any) => {
                 if (queryParam['returnUrl'] != undefined) {
@@ -65,6 +68,7 @@ export class LoginComponent implements OnInit {
                 this.errorMessage = data.errorMessage;
 
                 if (this.errorMessage == "") {
+                    this.eventEmitterService.onAnotherComponentUpdateUsersInfo();
                     this.router.navigate([this.returnUrl]);
                 }
             },
