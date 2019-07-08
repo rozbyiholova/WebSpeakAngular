@@ -44,7 +44,6 @@ namespace WebSpeak.Areas.Identity.Pages.Account.Manage
             }
         }
 
-
         public StatisticModel(
             UserManager<Users> userManager,
             SignInManager<Users> signInManager,
@@ -61,170 +60,6 @@ namespace WebSpeak.Areas.Identity.Pages.Account.Manage
 
         public List<StatisticViewModel> Statistic => GetStatisticViewModels();
 
-        //private List<StatisticViewModel> GetStatistic()
-        //{
-        //    List<StatisticViewModel> result = new List<StatisticViewModel>();
-
-        //    LanguagesRepository languagesRepository = new LanguagesRepository();
-        //    CategoriesRepository categoriesRepository = new CategoriesRepository();
-        //    LanguagesTranslationsRepository languagesTranslationsRepository = new LanguagesTranslationsRepository();
-
-        //    IEnumerable<Languages> languages = languagesRepository.GetAll();
-        //    IEnumerable<Categories> categories = categoriesRepository.GetAll().Where(c => c.ParentId == null);
-        //    List<int> languagesId = languages.Select(l => l.Id).ToList();
-        //    List<int> categoriesId = categories.Select(c => c.Id).ToList();
-
-        //    foreach (int langId in languagesId)
-        //    {
-        //        IEnumerable<LanguageTranslations> languageTranslationsList = languagesTranslationsRepository.GetAll();
-        //        string langName = languageTranslationsList.First(l => l.LangId == langId).Translation;
-        //        List<CategoryStatistic> categoryStatistics = new List<CategoryStatistic>();
-        //        foreach (int categoryId in categoriesId)
-        //        {
-        //            categoryStatistics.Add(GetCategoryStatistics(categoryId, langId));
-        //        }
-        //        result.Add(new StatisticViewModel
-        //        {
-        //            LanguageName = langName,
-        //            CategoryStatistics = categoryStatistics
-        //        });
-        //    }
-
-        //    return result;
-        //}
-
-        //private CategoryStatistic GetCategoryStatistics(int categoryId, int langId)
-        //{
-        //    CategoryStatistic result = new CategoryStatistic();
-
-        //    CategoriesRepository categoriesRepository = new CategoriesRepository();
-        //    CategoriesTranslationsRepository categoriesTranslationsRepository = new CategoriesTranslationsRepository();
-
-        //    IEnumerable<Categories> categories = categoriesRepository.GetAll().Where(c => c.ParentId == categoryId);
-        //    IEnumerable<int> subcategoriesId = categories.Select(s => s.Id);
-
-        //    List<SubcategoryStatistic> subcategoryStatistics = new List<SubcategoryStatistic>();
-        //    CategoriesTranslations categoriesTranslation = categoriesTranslationsRepository.GetAll()
-        //        .First(c => c.CategoryId == categoryId && c.LangId == langId);
-        //    string categoryName = categoriesTranslation.Translation;
-
-        //    foreach (int subcategoryId in subcategoriesId)
-        //    {
-        //        subcategoryStatistics.Add(GetSubcategoryStatistics(subcategoryId, langId));
-        //    }
-
-        //    result.CategoryName = categoryName;
-        //    result.SubcategoryStatistics = subcategoryStatistics;
-        //    return result;
-        //}
-
-        //private SubcategoryStatistic GetSubcategoryStatistics(int subcategoryId, int langId)
-        //{
-        //    SubcategoryStatistic result = new SubcategoryStatistic();
-
-        //    TestsRepository testsRepository = new TestsRepository();
-        //    CategoriesTranslationsRepository categoriesTranslationsRepository = new CategoriesTranslationsRepository();
-        //    TestsTranslationsRepository testsTranslationsRepository = new TestsTranslationsRepository();
-        //    TestsResultsRepository testsResultsRepository = new TestsResultsRepository();
-
-        //    IEnumerable<Tests> tests = testsRepository.GetAll();
-        //    IEnumerable<int> testsId = tests.Select(t => t.Id);
-
-
-        //    IEnumerable<TestResults> testResults = new List<TestResults>();
-        //    foreach (int testId in testsId)
-        //    {
-        //        if (this.UserId != null)
-        //        {
-        //            testResults = testsResultsRepository.GetAll().Where(tr =>
-        //                tr.CategoryId == subcategoryId && tr.LangId == langId &&
-        //                tr.UserId == this.UserId);
-        //        }
-        //        else
-        //        {
-        //            testResults = null;
-        //        }
-
-        //        IEnumerable<TestTranslations> testTranslations = testsTranslationsRepository.GetAll()
-        //            .Where(tt => tt.LangId == langId && tt.TestId == testId);
-        //        CategoriesTranslations categoriesTranslation = categoriesTranslationsRepository.GetAll()
-        //            .First(c => c.LangId == langId && c.CategoryId == subcategoryId);
-
-
-        //        string subcategoryName = categoriesTranslation.Translation;
-        //        List<string> testNames = testTranslations.Select(tt => tt.Translation).ToList();
-        //        List<int> testsScore = testResults?.Select(tr => tr.Result).ToList();
-        //        result.SubcategoryName = subcategoryName;
-        //        result.TestNames = testNames;
-        //        result.TestsScore = testsScore;
-        //    }
-
-        //    return result;
-        //}
-        private List<CategoryStatistic> CategoryStatistics(int langId)
-                {
-                    List<CategoryStatistic> categoryStatistic = new List<CategoryStatistic>();
-
-                    using (ProductHouseContext db = new ProductHouseContext())
-                    {
-                        var CategoryTranslations = (from categoryTrans in db.CategoriesTranslations
-                            join category in db.Categories on categoryTrans.CategoryId equals category.Id
-                            where categoryTrans.LangId == _userLanguageId
-                            select new
-                            {
-                                CategoryTrans = categoryTrans.Translation,
-                                CategoryId = category.Id,
-                                ParentId = category.ParentId
-                            }).ToList();
-
-                        var testsTrans = (from testTrans in db.TestTranslations
-                            where testTrans.LangId == _userLanguageId
-                            join test in db.Tests on testTrans.TestId equals test.Id
-                            join testResults in db.TestResults on test.Id equals testResults.TestId
-                            where testResults.UserId == this.UserId && testResults.LangId == langId
-                            select new
-                            {
-                                TestTrans = testTrans.Translation,
-                                TestId = test.Id,
-                                CategoryId = testResults.CategoryId,
-                                Result = testResults.Result
-                            }).ToList();
-
-
-                        foreach (var category in CategoryTranslations.Where(c => c.ParentId == null))
-                        {
-                            int i = 0;
-                            categoryStatistic.Add(new CategoryStatistic
-                            {
-                                CategoryName = category.CategoryTrans
-                            });
-
-                            List<SubcategoryStatistic> subcategoryStatistics = new List<SubcategoryStatistic>();
-
-                            var subcategories = CategoryTranslations.Where(c => c.ParentId == category.CategoryId); 
-                            foreach (var subcategory in subcategories)
-                            {
-                                var tests = testsTrans.Where(t => t.CategoryId == subcategory.CategoryId);
-                                List<string> testNames = tests.Select(t => t.TestTrans).ToList();
-                                List<int> testResults = tests.Select(t => t.Result).ToList();
-                                subcategoryStatistics.Add(new SubcategoryStatistic
-                                {
-                                    SubcategoryName = subcategory.CategoryTrans,
-                                    TestNames = testNames,
-                                    TestsScore = testResults
-                                });
-                            }
-
-                            categoryStatistic[i].SubcategoryStatistics = subcategoryStatistics;
-                            i++;
-                        }
-                    }
-
-                    return categoryStatistic;
-                }
-
-
-
         private List<StatisticViewModel> GetStatisticViewModels()
         {
             List<StatisticViewModel> result = new List<StatisticViewModel>();
@@ -235,19 +70,24 @@ namespace WebSpeak.Areas.Identity.Pages.Account.Manage
             List<int> languagesId = languages.Select(l => l.Id).ToList();
             List<CategoryStatistic> categoryStatistics = FillCategory();
 
-            foreach (int languageId in languagesId)
+            foreach (var languageId in languagesId)
             {
                 IEnumerable<LanguageTranslations> languageTranslationsList = languagesTranslationsRepository.GetAll();
+                var id = languageId;
                 string langName = languageTranslationsList
-                    .First(l => l.LangId == languageId && l.NativeLangId == _userLanguageId).Translation;
+                    .First(l => l.LangId == id && l.NativeLangId == _userLanguageId).Translation;
+                List<CategoryStatistic> listToCopy = Helper.DeepClone(categoryStatistics);
                 result.Add(new StatisticViewModel
                 {
                     LanguageName = langName,
-                    CategoryStatistics = categoryStatistics
+                    CategoryStatistics = listToCopy,
+                    LanguageId = languageId
                 });
-
-                StatisticViewModel statisticViewModel = result.ElementAt(languageId - 1);
-                FillResults(ref statisticViewModel, languageId);
+            }
+            StatisticViewModel[] statisticArray = new StatisticViewModel[result.Count];
+            for (int j = 0; j < statisticArray.Length; j++)
+            {
+                statisticArray[j] = FillResults(result[j]);
             }
 
             return result;
@@ -303,8 +143,15 @@ namespace WebSpeak.Areas.Identity.Pages.Account.Manage
             return categoryStatistic;
         }
 
-        private void FillResults(ref StatisticViewModel model, int langId)
+        private StatisticViewModel FillResults(StatisticViewModel model)
         {
+            StatisticViewModel result = new StatisticViewModel
+            {
+                LanguageName = model.LanguageName,
+                LanguageId = model.LanguageId,
+                CategoryStatistics = model.CategoryStatistics
+            };
+            int langId = result.LanguageId;
             TestsResultsRepository testsResultsRepository = new TestsResultsRepository();
             TestsRepository testsRepository = new TestsRepository();
 
@@ -325,37 +172,36 @@ namespace WebSpeak.Areas.Identity.Pages.Account.Manage
                 Console.WriteLine(e);
                 throw;
             }
-            int categoriesCount = model.CategoryStatistics.Count;
+            int categoriesCount = result.CategoryStatistics.Count;
             int testsCount = tests.Count();
 
             for (int i = 0; i < categoriesCount; i++)
             {
-                int subcategoriesCount = model.CategoryStatistics.ElementAt(i).SubcategoryStatistics.Count();
+                int subcategoriesCount = result.CategoryStatistics.ElementAt(i).SubcategoryStatistics.Count();
                 for (int j = 0; j < subcategoriesCount; j++)
                 {
                     SubcategoryStatistic subcategoryStatistic =
-                        model.CategoryStatistics.ElementAt(i).SubcategoryStatistics.ElementAt(j);
+                        result.CategoryStatistics[i].SubcategoryStatistics[j];
+                    List<int> subcategoryScore = new List<int>();
                     for (int k = 0; k < testsCount; k++)
                     {
-                        subcategoryStatistic.TestsScore = new List<int>();
                         int score;
                         if (userTests != null)
                         {
-                            try
+                            bool isScore = userTests.ToList().Exists(t =>
+                                t.CategoryId == subcategoryStatistic.CategoryId &&
+                                t.LangId == langId &&
+                                t.TestId == k + 1);
+                            if (isScore)
                             {
                                 score = userTests.First(t =>
                                     t.CategoryId == subcategoryStatistic.CategoryId &&
                                     t.LangId == langId &&
                                     t.TestId == k + 1).Result;
                             }
-                            catch (InvalidOperationException)
+                            else
                             {
                                 score = 0;
-                            }
-                            catch (Exception e)
-                            {
-                                score = 0;
-                                Console.WriteLine(e.Message);
                             }
                         }
                         else
@@ -363,14 +209,14 @@ namespace WebSpeak.Areas.Identity.Pages.Account.Manage
                             score = 0;
                         }
                                 
-                        subcategoryStatistic.TestsScore.Add(score);
+                        subcategoryScore.Add(score);
                     }
+
+                    subcategoryStatistic.TestsScore = subcategoryScore;
                 }
             }
-        }
-        
 
-        //Add LanguageId to SubcategoryStatistic
-        //Does not go out of the FillResult method
+            return result;
+        }
     }
 }

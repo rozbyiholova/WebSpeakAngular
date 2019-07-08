@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace WebSpeak.Models
 {
+    [Serializable]
     public class CategoryStatistic
     {
         public string CategoryName { get; set; }

@@ -1,14 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Runtime.Serialization.Formatters.Binary;
 using DAL.Models;
-using DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
-using WebSpeak.Areas.Identity.Pages.Account.Manage;
-using WebSpeak.Models;
 
 namespace WebSpeak
 {
@@ -124,6 +121,18 @@ namespace WebSpeak
         {
             int id = (int) _httpContextAccessor.HttpContext.Session.GetInt32(LastTestId);
             return id;
+        }
+
+        public static T DeepClone<T>(T obj)
+        {
+            using (var ms = new MemoryStream())
+            {
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(ms, obj);
+                ms.Position = 0;
+
+                return (T)formatter.Deserialize(ms);
+            }
         }
 
 
