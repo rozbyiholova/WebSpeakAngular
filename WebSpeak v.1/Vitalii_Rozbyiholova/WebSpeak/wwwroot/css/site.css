@@ -59,15 +59,15 @@ body {
 .my-container {
 display: grid;
 grid-gap: 20px;
-grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 justify-content: center;
 align-content: center;
 }
 
 .img {
     object-fit: cover;
-    width: 20vw;
-    height: 30vh;
+    width: 200px;
+    height: 200px;
 }
 
 
@@ -81,7 +81,6 @@ align-content: center;
     border: 5px solid transparent;
     display: grid;
     padding: 10px;
-    background: rgba(255, 255, 255, 0.7);
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     grid-template-columns: 1fr 1fr;
     cursor: pointer;
@@ -91,6 +90,9 @@ align-content: center;
     transition: .5s ease-in;
 }
 
+.litle-transparent {
+    background: rgba(255, 255, 255, 0.4);
+}
 
 .item:hover {
     border: 7px solid #19906c;
@@ -100,5 +102,5 @@ align-content: center;
 }
 
 .item h2 {
-    font-size: 1em;
+    font-size: 0.8rem;
 }

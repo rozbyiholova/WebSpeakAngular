@@ -14,78 +14,86 @@
 <div class="accordion" id="languageAccordion">
     @foreach (StatisticViewModel view in statistic)
     {
-        <div class="card">
-            <div class="card-header" id="heading-@view.GetHashCode()">
-                <h5 class="mb-0">
-                    <button class="btn-block btn-link" type="button" data-toggle="collapse" data-target="#collapse-@view.GetHashCode()" aria-expanded="true" aria-controls="collapseOne">
-                        @view.LanguageName
-                        <span class="badge badge-primary badge-pill">@view.TotalScore</span>
-                    </button>
-                </h5>
-            </div>
+        if (view.TotalScore > 0)
+        {
+            <div class="card">
+                <div class="card-header" id="heading-@view.GetHashCode()">
+                    <h5 class="mb-0">
+                        <button class="btn btn-block litle-transparent" type="button" data-toggle="collapse" data-target="#collapse-@view.GetHashCode()" aria-expanded="true" aria-controls="collapseOne">
+                            @view.LanguageName
+                            <span class="badge badge-primary badge-pill">@view.TotalScore</span>
+                        </button>
+                    </h5>
+                </div>
 
-            <div id="collapse-@view.GetHashCode()" class="collapse" aria-labelledby="heading-@view.GetHashCode()" data-parent="#languageAccordion">
-                <div class="card-body">
-                    @* ---------------------Categories List Start--------------------- *@
-                    <div class="accordion" id="categoryAccordion">
-                        @foreach (CategoryStatistic category in view.CategoryStatistics)
-                        {
-                            <div class="card">
-                                <div class="card-header" id="heading-@category.GetHashCode()">
-                                    <h5 class="mb-0">
-                                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse-@category.GetHashCode()" aria-expanded="true" aria-controls="collapseOne">
-                                            @category.CategoryName
-                                            <span class="badge badge-primary badge-pill">@category.CategoryScore</span>
-                                        </button>
-                                    </h5>
-                                </div>
-
-                                <div id="collapse-@category.GetHashCode()" class="collapse" aria-labelledby="heading-@category.GetHashCode()" data-parent="#categoryAccordion">
-                                    <div class="card-body">
-                                        @* ---------------------Subcategories List Start--------------------- *@
-                                        <div class="accordion" id="SubcategoryAccordion">
-                                            @foreach (SubcategoryStatistic subcategory in category.SubcategoryStatistics)
-                                            {
-                                                <div class="card">
-                                                    <div class="card-header" id="heading-@subcategory.GetHashCode()">
-                                                        <h5 class="mb-0">
-                                                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse-@subcategory.GetHashCode()" aria-expanded="true" aria-controls="collapse-@subcategory.GetHashCode()">
-                                                                @subcategory.SubcategoryName
-                                                                <span class="badge badge-primary badge-pill">@subcategory.Score</span>
-                                                            </button>
-                                                        </h5>
-                                                    </div>
-
-                                                    <div id="collapse-@subcategory.GetHashCode()" class="collapse" aria-labelledby="heading-@subcategory.GetHashCode()" data-parent="#SubcategoryAccordion">
-                                                        <div class="card-body">
-                                                            <table>
-                                                                <tr>
-                                                                    <th>Test Name</th>
-                                                                    <th>Score</th>
-                                                                </tr>
-                                                                @for (int i = 0; i < subcategory.TestNames.Count; i++)
-                                                                {
-                                                                    <tr>
-                                                                        <td>@subcategory.TestNames[i]</td>
-                                                                        <td>@subcategory.TestsScore[i]</td>
-                                                                    </tr>
-                                                                }
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            }
+                <div id="collapse-@view.GetHashCode()" class="collapse" aria-labelledby="heading-@view.GetHashCode()" data-parent="#languageAccordion">
+                    <div class="card-body">
+                        @* ---------------------Categories List Start--------------------- *@
+                        <div class="accordion" id="categoryAccordion">
+                            @foreach (CategoryStatistic category in view.CategoryStatistics)
+                            {
+                                if (category.CategoryScore > 0) { 
+                                    <div class="card">
+                                        <div class="card-header" id="heading-@category.GetHashCode()">
+                                            <h5 class="mb-0">
+                                                <button class="btn btn-block btn-info " type="button" data-toggle="collapse" data-target="#collapse-@category.GetHashCode()" aria-expanded="true" aria-controls="collapseOne">
+                                                    @category.CategoryName
+                                                    <span class="badge badge-primary badge-pill">@category.CategoryScore</span>
+                                                </button>
+                                            </h5>
                                         </div>
-                                        @* ---------------------Subcategories List End--------------------- *@
+
+                                        <div id="collapse-@category.GetHashCode()" class="collapse" aria-labelledby="heading-@category.GetHashCode()" data-parent="#categoryAccordion">
+                                            <div class="card-body">
+                                                @* ---------------------Subcategories List Start--------------------- *@
+                                                <div class="accordion" id="SubcategoryAccordion">
+                                                    @foreach (SubcategoryStatistic subcategory in category.SubcategoryStatistics)
+                                                    {
+                                                        if (subcategory.Score > 0)
+                                                        {
+                                                            <div class="card">
+                                                                <div class="card-header" id="heading-@subcategory.GetHashCode()">
+                                                                    <h5 class="mb-0">
+                                                                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapse-@subcategory.GetHashCode()" aria-expanded="true" aria-controls="collapse-@subcategory.GetHashCode()">
+                                                                            @subcategory.SubcategoryName
+                                                                            <span class="badge badge-primary badge-pill">@subcategory.Score</span>
+                                                                        </button>
+                                                                    </h5>
+                                                                </div>
+
+                                                                <div id="collapse-@subcategory.GetHashCode()" class="collapse" aria-labelledby="heading-@subcategory.GetHashCode()" data-parent="#SubcategoryAccordion">
+                                                                    <div class="card-body">
+                                                                        <table>
+                                                                            <tr>
+                                                                                <th>Test Name</th>
+                                                                                <th>Score</th>
+                                                                            </tr>
+                                                                            @for (int i = 0; i < subcategory.TestNames.Count; i++)
+                                                                            {
+                                                                                <tr>
+                                                                                    <td>@subcategory.TestNames[i]</td>
+                                                                                    <td>@subcategory.TestsScore[i]</td>
+                                                                                </tr>
+                                                                            }
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    }
+                                                </div>
+                                                @* ---------------------Subcategories List End--------------------- *@
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        }
+                                }
+                            }
+                        </div>
+                        @* ---------------------Categories List End--------------------- *@
                     </div>
-                    @* ---------------------Categories List End--------------------- *@
                 </div>
             </div>
-        </div>
+        }
     }
 </div>
 @* ---------------------Languages List End--------------------- *@
