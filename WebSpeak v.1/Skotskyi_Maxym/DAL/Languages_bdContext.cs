@@ -31,13 +31,13 @@ namespace DAL.Models
         public virtual DbSet<WordTranslations> WordTranslations { get; set; }
         public virtual DbSet<Words> Words { get; set; }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    if (!optionsBuilder.IsConfigured)
-        //    {
-        //        optionsBuilder.UseSqlServer("Server=VINW0231;Database=Languages_bd;Trusted_Connection=True;");
-        //    }
-        //}
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer("Server=VINW0231;Database=Languages_bd;Trusted_Connection=True;");
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

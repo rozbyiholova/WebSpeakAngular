@@ -10,6 +10,7 @@ var colorTry = 8;
 var submited = true;
 var score = 0;
 
+
 if (cuted == "0")
 {
     var ranEl

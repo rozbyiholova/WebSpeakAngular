@@ -4,7 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+
 using LearningLanguages.Models;
+
 using DAL;
 using DAL.IRepository;
 using DAL.Models;
@@ -16,6 +18,8 @@ using SmartBreadcrumbs.Attributes;
 using System.Web.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNet.Identity;
+using Newtonsoft.Json;
+
 
 
 
@@ -24,13 +28,62 @@ namespace LearningLanguages.Controllers
 
     public class HomeController : Controller
     {
+        public class StatisticObject
+        {
+
+            public object LanguageDTO { get; set; }
+            public object CategoriesDTO { get; set; }
+            public object TestsDTO { get; set; }
+            public object TotalScore { get; set; }
+            public object TestResults { get; set; }
+        }
 
         private Languages_bdContext db;
         public HomeController(Languages_bdContext context)
         {
             db = context;
         }
-   
+
+        [HttpGet]
+        public JsonResult TestStatictics()
+        {
+            string language = HttpContext.Session.GetString("lang");
+            var lang_id = from s in db.Languages where s.Name.ToString() == language select s.Id;
+            int[] lgid = lang_id.ToArray();
+
+            string native_lang = HttpContext.Session.GetString("native_lang");
+            var native_lang_id = from s in db.Languages where s.Name.ToString() == native_lang select s.Id;
+            int[] ntv_lgid = native_lang_id.ToArray();
+
+            CategoriesDTOsRepository categoryDTOs = new CategoriesDTOsRepository();
+            List<CategoriesDTO> CatDTO = categoryDTOs.GetCategoriesDTOs(ntv_lgid[0], lgid[0]).ToList();
+
+            TestsDTOsRepository TestDTOs = new TestsDTOsRepository();
+            List<CategoriesDTO> TestDTO = TestDTOs.GetTestDTOs(ntv_lgid[0], lgid[0]).ToList();
+
+            LanguagesDTOsRepository LangDTOs = new LanguagesDTOsRepository();
+            List<CategoriesDTO> LangDTO = LangDTOs.GetLanguagesDTOs(ntv_lgid[0], lgid[0]).ToList();
+
+            TestResultsRepository testResultRepository = new TestResultsRepository();
+            List<TestResults> testResult = testResultRepository.GetList().ToList();
+
+            TotalScoresRepository totalRepository = new TotalScoresRepository();
+            List<TotalScores> totalScore = totalRepository.GetList().ToList();
+
+
+            StatisticObject statisticObject = new StatisticObject();
+
+            statisticObject.CategoriesDTO = CatDTO;
+            statisticObject.LanguageDTO = LangDTO;
+            statisticObject.TestsDTO = TestDTO;
+            statisticObject.TestResults = testResult;
+            statisticObject.TotalScore = totalScore;
+
+          
+
+            return Json(statisticObject);
+        }
+
         public ActionResult GetTestResult (int score, int icon, int lang_id, int cat_id)
         {
             int catId = cat_id;
@@ -49,10 +102,7 @@ namespace LearningLanguages.Controllers
 
             TestResultsRepository testResultRepos = new TestResultsRepository();
 
-            var ListTestresults = db.TestResults.Where(x => x.UserId == strCurrentUserId && x.TestId == TestIcon && x.LangId == langId && x.CategoryId == catId).ToList();
-
-
-            
+            var ListTestresults = db.TestResults.Where(x => x.UserId == strCurrentUserId && x.TestId == TestIcon && x.LangId == langId && x.CategoryId == catId).ToList();     
 
             if (ListTestresults.Count != 0)
             { 
@@ -106,7 +156,6 @@ namespace LearningLanguages.Controllers
             return View("_Close"); 
         }
 
-
         public  ActionResult LangSwichLearn(string lg)
         {
            HttpContext.Session.SetString("lang", lg);
@@ -118,7 +167,6 @@ namespace LearningLanguages.Controllers
            HttpContext.Session.SetString("native_lang", nt_lg);
            return RedirectToAction("Index");
         }
-
 
         [DefaultBreadcrumb("Home")]
         public IActionResult Index()
@@ -144,9 +192,6 @@ namespace LearningLanguages.Controllers
 
             return View(DTO.Where(x => x.ParentId == null));
         }
-
-
-
 
         [Breadcrumb("SubCategories" , FromAction = "CategoriesView", FromController = typeof(HomeController))]
         public IActionResult SubCategoriesView(int id)
