@@ -1,5 +1,5 @@
 ﻿using System;
-using LearningLanguages.Areas.Identity.Data;
+
 using LearningLanguages.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;

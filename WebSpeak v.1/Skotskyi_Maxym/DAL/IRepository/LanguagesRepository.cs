@@ -11,9 +11,13 @@ namespace DAL.IRepository
 
         public LanguagesRepository()
         {
-            this.db = new Languages_bdContext();
+            this.db = new Languages_bdContext(ConfigurateOptions.GetOptions());
         }
 
+        public IEnumerable<Languages> GetAll()
+        {
+            return db.Languages;
+        }
         public void Create(Languages item)
         {
             throw new NotImplementedException();

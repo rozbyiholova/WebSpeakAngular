@@ -11,11 +11,16 @@ namespace DAL.IRepository
 
         public LanguageTranslationsRepository()
         {
-            this.db = new Languages_bdContext();
+            this.db = new Languages_bdContext(ConfigurateOptions.GetOptions());
         }
         public void Create(LanguageTranslations item)
         {
             throw new NotImplementedException();
+        }
+
+        public IEnumerable<LanguageTranslations> GetAll()
+        {
+            return db.LanguageTranslations;
         }
 
         public void Delete(int id)

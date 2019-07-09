@@ -6,10 +6,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using DAL.Models;
 
 namespace LearningLanguages.Migrations
 {
-    [DbContext(typeof(IdentityContext))]
+    [DbContext(typeof(Languages_bdContext))]
     [Migration("20190625112723_CreateIdentitySchema")]
     partial class CreateIdentitySchema
     {
