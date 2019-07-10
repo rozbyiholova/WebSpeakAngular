@@ -31,7 +31,7 @@ namespace LearningLanguages.Controllers
 
         IRepository<TotalScores> _totalScores = new TotalScoresRepository();
 
-        [Route("Home/Index")]
+        [HttpGet("Home/Index")]
         public IActionResult Index()
         {
             int defaultLang = 3;
@@ -50,7 +50,7 @@ namespace LearningLanguages.Controllers
             return Ok();
         }
 
-        [Route("Home/Categories")]
+        [HttpGet("Home/Categories")]
         public async Task<IEnumerable<DTO>> Categories()
         {
             int idLangLearn = (int)HttpContext.Session.GetInt32("idLangLearn");
@@ -61,7 +61,7 @@ namespace LearningLanguages.Controllers
             return NativeLearnLangCat;
         }
 
-        [Route("Home/Categories/SubCategories")]
+        [HttpGet("Home/Categories/SubCategories")]
         public async Task<IEnumerable<DTO>> SubCategories(int id)
         {
             if (id != 0)
@@ -81,7 +81,7 @@ namespace LearningLanguages.Controllers
             return NativeLearnLangSubCat;
         }
 
-        [Route("Home/Categories/SubCategories/Tests")]
+        [HttpGet("Home/Categories/SubCategories/Tests")]
         public async Task<IEnumerable<DTO>> Tests(int id)
         {
             if (id != 0)
@@ -101,7 +101,7 @@ namespace LearningLanguages.Controllers
             return NativeLearnLangTests;
         }
 
-        [Route("Home/Categories/SubCategories/Tests/Manual")]
+        [HttpGet("Home/Categories/SubCategories/Tests/Manual")]
         public async Task<IEnumerable<DTO>> Manual(int id)
         {
             if (id != 0)

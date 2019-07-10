@@ -16,6 +16,7 @@ using Microsoft.Extensions.FileProviders;
 using System.IO;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.AspNetCore.Mvc.Cors.Internal;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace LearningLanguagesAngular
 {
@@ -67,6 +68,16 @@ namespace LearningLanguagesAngular
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info
+                {
+                    Version = "v1",
+                    Title = "LearningLanguages",
+                    Description = "ASP.NET Core"
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -92,6 +103,12 @@ namespace LearningLanguagesAngular
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "LearningLanguages V2");
+            });
         }
     }
 }
