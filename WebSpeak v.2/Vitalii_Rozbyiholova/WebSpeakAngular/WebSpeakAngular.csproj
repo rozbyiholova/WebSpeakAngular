@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <TypeScriptToolsVersion>3.1</TypeScriptToolsVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="ClientApp\app\app-footer\app-footer.ts" />
+    <None Remove="ClientApp\app\app-header\app-header.ts" />
+    <None Remove="ClientApp\app\app.component.ts" />
+    <None Remove="ClientApp\app\app.module.ts" />
+    <None Remove="ClientApp\app\manual\manual.component.ts" />
+    <None Remove="ClientApp\app\site.css" />
+    <None Remove="ClientApp\app\subcategories\subcategories.component.ts" />
+    <None Remove="ClientApp\main.ts" />
+    <None Remove="ClientApp\polyfills.ts" />
+    <None Remove="ClientApp\site.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\index.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DAL\DAL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\app\app-footer\app-footer.ts" />
+    <TypeScriptCompile Include="ClientApp\app\app-header\app-header.ts" />
+    <TypeScriptCompile Include="ClientApp\app\app.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\app.module.ts" />
+    <TypeScriptCompile Include="ClientApp\app\manual\manual.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\subcategories\subcategories.component.ts" />
+    <TypeScriptCompile Include="ClientApp\main.ts" />
+    <TypeScriptCompile Include="ClientApp\polyfills.ts" />
+  </ItemGroup>
+
+</Project>

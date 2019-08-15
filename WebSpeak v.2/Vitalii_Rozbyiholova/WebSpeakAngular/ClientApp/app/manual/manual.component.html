@@ -1,0 +1,60 @@
+﻿<div class="container">
+    <div class="row">
+        <div id="slideshow" class="carousel slide container" data-ride="" data-interval="4000" data-pause="false">
+            <div class="carousel-inner border border-success">
+                <div class="carousel-item active">
+                    <img class="d-block img-thumbnail" src="{{words[0].picture}}" alt="{{words[0].native}}">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h1>{{words[0].translation}}</h1>
+                        <h3>{{words[0].native}}</h3>
+                        <audio *ngIf="words[0].sound" controls>
+                            <source src="{{words[0].sound}}" />
+                        </audio>
+
+                        <p>{{words[0].translation}}</p>
+                        <audio controls>
+                            <source src="{{words[0].translationPronounce}}" />
+                        </audio>
+
+                        <p>{{words[0].native}}</p>
+                        <audio controls>
+                            <source src="{{words[0].nativePronounce}}" />
+                        </audio>
+                    </div>
+                </div>
+                <ng-container *ngFor="let word of words | slice:1" >
+                <div class="carousel-item">
+                    <img class="d-block img-thumbnail" src="{{word.picture}}" alt="{{word.native}}">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h1>{{word.translation}}</h1>
+                        <h3>{{word.native}}</h3>
+
+                        <audio *ngIf="word.sound" controls>
+                            <source src="{{word.sound}}" />
+                        </audio>
+
+                        <p>{{word.translation}}</p>
+                        <audio controls>
+                            <source src="{{word.translationPronounce}}" />
+                        </audio>
+
+                        <p>{{word.native}}</p>
+                        <audio controls>
+                            <source src="{{word.nativePronounce}}" />
+                        </audio>
+                    </div>
+
+                </div>
+                </ng-container>
+            </div>
+            <a class="carousel-control-prev" href="#slideshow" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#slideshow" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </div>
+</div>
