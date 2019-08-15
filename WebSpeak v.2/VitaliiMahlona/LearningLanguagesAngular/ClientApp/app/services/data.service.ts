@@ -83,7 +83,7 @@ export class DataService {
         return this.http.post(this.registerUrl, user);
     }
 
-    loginGet(returnUrl: string) {
+    loginGet(returnUrl: string) { 
         return this.http.get(this.loginUrl + '?returnUrl=' + returnUrl);
     }
 

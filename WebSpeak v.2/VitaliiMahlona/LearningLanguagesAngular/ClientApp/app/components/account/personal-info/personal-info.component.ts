@@ -33,6 +33,7 @@ export class AccountPersonalInfoComponent implements OnInit {
         this.loadPersonalInfo();
     }
 
+    // convenience getter for easy access to form fields
     get f() { return this.personalInfoForm.controls; }
 
     loadPersonalInfo() {

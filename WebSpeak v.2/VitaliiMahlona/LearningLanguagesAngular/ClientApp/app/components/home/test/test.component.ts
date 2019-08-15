@@ -125,70 +125,19 @@ export class TestComponent implements OnInit {
     //after click submit
     check(event: any = null) {
         if (this.idTest == 10) {
-            this.randomWordsAnswerLeft = [];
-            this.randomWordsAnswerRight = [];
-
-            if (this.questionNumber == 0) {
-                this.notSelect = false;
+            if (this.checkFor10(event) == true) {
+                return;
             }
-
-            this.questionNumberFor10 = Math.floor((this.questionNumber + this.countOptions) / this.countOptions);
-
-            if (event == false) {
-                this.numberQA = 0;
-
-                if (this.questionNumber == this.totalQuestions) {
-                    this.finishedTest = true;
-
-                    var DTOTest = {
-                        totalResult: this.totalResult,
-                        subCategoryId: this.idSubCat,
-                        testNumber: this.idTest
-                    };
-
-                    this.dataService.setResultTest(DTOTest).subscribe((data: boolean) => this.isUser = data);
-
-                    return;
-                }
-
-                this.GetTest();
-
-                this.randomTestWordsId.sort(this.compareRandom);
-            }
-
-            this.totalResult += this.result;
-            this.result = 0;
         }
 
         if ((this.idTest == 6 || this.idTest == 7)) {
-            this.notSelect = this.textAnswer.trim() == '';
-
-            if (this.questionNumber == 0) {
-                this.notSelect = false;
-            }
-
-            if (this.correctAnswer == this.textAnswer) {
-                this.totalResult++;
-                this.isCorrect = true;
-            }
-            else if (this.notSelect) {
+            if (this.checkFor6_7()) {
                 return;
             }
-            else {
-                this.isCorrect = false;
-            }
-
-            this.textAnswer = '';
         }
 
         if (this.idTest == 5) {
-            if ((event != null) && (event.target.value == this.correctAnswer)) {
-                this.totalResult++;
-                this.isCorrect = true;
-            }
-            else {
-                this.isCorrect = false;
-            }
+            this.checkFor5(event);
         }
 
         if (this.questionNumber == 1) {
@@ -196,27 +145,9 @@ export class TestComponent implements OnInit {
         }
 
         if (this.idTest != 5 && this.idTest != 6 && this.idTest != 7 && this.idTest != 10) {
-            this.notSelect = this.selectCheckbox == -1;
-
-            if (this.questionNumber == 0) {
-                this.notSelect = false;
+            if (this.checkForAllExcept5_6_7_10()) {
+                return;
             }
-
-            if (this.selectCheckbox == this.correctAnswer) {
-                this.isCorrect = true;
-                this.totalResult++;
-            }
-            else if (this.notSelect) {
-                if (!this.first) {
-                    this.selectCheckbox = -1;
-                    return;
-                }
-            }
-            else {
-                this.isCorrect = false;
-            }
-
-            this.selectCheckbox = -1;
         }
 
         if (this.questionNumber == this.totalQuestions) {
@@ -253,6 +184,102 @@ export class TestComponent implements OnInit {
                 }
             }
         }
+    }
+
+    checkFor10(event: any): boolean {
+        this.randomWordsAnswerLeft = [];
+        this.randomWordsAnswerRight = [];
+
+        if (this.questionNumber == 0) {
+            this.notSelect = false;
+        }
+
+        this.questionNumberFor10 = Math.floor((this.questionNumber + this.countOptions) / this.countOptions);
+
+        if (event == false) {
+            this.numberQA = 0;
+
+            if (this.questionNumber == this.totalQuestions) {
+                this.finishedTest = true;
+
+                var DTOTest = {
+                    totalResult: this.totalResult,
+                    subCategoryId: this.idSubCat,
+                    testNumber: this.idTest
+                };
+
+                this.dataService.setResultTest(DTOTest).subscribe((data: boolean) => this.isUser = data);
+
+                return true;
+            }
+
+            this.GetTest();
+
+            this.randomTestWordsId.sort(this.compareRandom);
+        }
+
+        this.totalResult += this.result;
+        this.result = 0;
+
+        return false;
+    }
+
+    checkFor6_7(): boolean {
+        this.notSelect = this.textAnswer.trim() == '';
+
+        if (this.questionNumber == 0) {
+            this.notSelect = false;
+        }
+
+        if (this.correctAnswer == this.textAnswer) {
+            this.totalResult++;
+            this.isCorrect = true;
+        }
+        else if (this.notSelect) {
+            return true;
+        }
+        else {
+            this.isCorrect = false;
+        }
+
+        this.textAnswer = '';
+
+        return false;
+    }
+
+    checkFor5(event: any) {
+        if ((event != null) && (event.target.value == this.correctAnswer)) {
+            this.totalResult++;
+            this.isCorrect = true;
+        }
+        else {
+            this.isCorrect = false;
+        }
+    }
+
+    checkForAllExcept5_6_7_10(): boolean {
+        this.notSelect = this.selectCheckbox == -1;
+
+        if (this.questionNumber == 0) {
+            this.notSelect = false;
+        }
+
+        if (this.selectCheckbox == this.correctAnswer) {
+            this.isCorrect = true;
+            this.totalResult++;
+        }
+        else if (this.notSelect) {
+            if (!this.first) {
+                this.selectCheckbox = -1;
+                return true;
+            }
+        }
+        else {
+            this.isCorrect = false;
+        }
+
+        this.selectCheckbox = -1;
+        return false;
     }
 
     //for 10 test, left column

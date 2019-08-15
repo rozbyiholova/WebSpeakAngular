@@ -6,3 +6,8 @@ DictionaryForFullStack/
 UserImages/
 node_modules/
 dist/
+package-lock.json
+
+WebSpeak v.2/*/*/*/**/*.js
+WebSpeak v.2/*/*/*/**/*.js.map
+WebSpeak v.2/**/*.css

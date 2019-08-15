@@ -44,6 +44,7 @@ export class ExternalLoginComponent implements OnInit {
         this.loadModel();
     }
 
+    // convenience getter for easy access to form fields
     get f() { return this.externalLoginForm.controls; }
 
     loadModel() {
@@ -52,6 +53,7 @@ export class ExternalLoginComponent implements OnInit {
 
             if (this.errorMessage == null) {
                 if (!data.loginProvider) {
+                    this.eventEmitterService.onAnotherComponentUpdateUsersInfo();
                     this.router.navigate([this.returnUrl]);
                 }
 

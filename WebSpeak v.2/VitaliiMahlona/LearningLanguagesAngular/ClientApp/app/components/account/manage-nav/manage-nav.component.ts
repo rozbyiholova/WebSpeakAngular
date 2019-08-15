@@ -5,9 +5,7 @@ import { DTOUsersInfo } from '../../../models/DTOUsersInfo'
 
 @Component({
     selector: 'manage-nav',
-    styles: [` 
-        .active {color:black;}
-    `],
+    styleUrls: ['./manage-nav.component.scss'],
     templateUrl: './manage-nav.component.html'
 })
 export class ManageNavComponent implements OnInit {

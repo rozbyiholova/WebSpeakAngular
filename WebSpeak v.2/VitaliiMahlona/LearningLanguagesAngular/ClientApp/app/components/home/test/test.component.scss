@@ -110,11 +110,15 @@ input[type="radio"] {
     }
 }
 
-label.word, p {
+p {
     font-size: 25px;
 }
 
 label {
+    &.word {
+        font-size: 25px;
+    }
+
     &:hover {
         cursor: pointer;
         opacity: .7;
