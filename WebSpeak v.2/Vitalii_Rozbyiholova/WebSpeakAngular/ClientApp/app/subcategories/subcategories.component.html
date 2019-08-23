@@ -2,15 +2,14 @@
     <div class="my-container">
         <ng-container *ngFor="let category of categories">
 
-            <div class="item litle-transparent box-shadow">
+            <div class="item litle-transparent box-shadow"
+                 attr.data-sub-href="/Categories/Subcategories?id={{category.id}}">
 
                 <img class="img" src="{{category.picture}}" />
                 <div class="title">
                     <h2>{{category.translation}} ({{category.native}})</h2>
-
-                    <a [routerLink]="['./Manual', category.id]">Manual</a>
-                    <a [routerLink]="['./Slideshow', category.id]">Slide-show</a>
-                    <a [routerLink]="['./Tests']">Tests</a>
+                    
+                    <a [routerLink]="['/Categories/Subcategories/Manual', category.id]">Manual</a>
                 </div>
 
             </div>
