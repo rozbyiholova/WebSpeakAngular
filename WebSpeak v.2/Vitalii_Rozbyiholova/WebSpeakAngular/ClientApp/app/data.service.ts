@@ -1,14 +1,14 @@
 ﻿import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Category } from '../Models/Category';
 
 @Injectable()
 export class DataService {
-
-    private baseUrl: string = "/";
+    
     private categoriesUrl: string = "/Categories";
     private subcategoriesUrl: string = "/Categories/Subcategories/";
     private wordsUrl: string = "Categories/Subcategories/Words/";
+    private testIndexUrl: string = "Categories/Subcategories/Tests";
+    private testUrl: string = "Categories/Subcategories/Tests/Test/";
 
     constructor(private http: HttpClient) {}
 
@@ -22,5 +22,13 @@ export class DataService {
 
     getWords(subcategoryId: number) {
         return this.http.get(this.wordsUrl + subcategoryId);
+    }
+
+    getAllTests() {
+        return this.http.get(this.testIndexUrl);
+    }
+
+    getTest(subcategoryId: number) {
+        return this.http.get(this.testUrl + subcategoryId);
     }
 }

@@ -1,0 +1,17 @@
+﻿<div class="container">
+    <div class="my-container">
+        <ng-container *ngFor="let test of tests">
+
+            <a [routerLink]="['./Test', test.id]">
+                <div class="item litle-transparent box-shadow">
+
+                    <img class="img" src="{{test.picture}}" />
+                    <div class="title">
+                        <h2>{{test.translation}} ({{test.native}})</h2>
+                    </div>
+
+                </div>
+            </a>
+        </ng-container>
+    </div>
+</div>

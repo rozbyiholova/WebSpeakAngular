@@ -12,10 +12,10 @@ import { HttpClient } from '@angular/common/http';
 var DataService = /** @class */ (function () {
     function DataService(http) {
         this.http = http;
-        this.baseUrl = "/";
         this.categoriesUrl = "/Categories";
         this.subcategoriesUrl = "/Categories/Subcategories/";
         this.wordsUrl = "Categories/Subcategories/Words/";
+        this.testsUrl = "Categories/Subcategories/Tests";
     }
     DataService.prototype.getCategories = function () {
         return this.http.get(this.categoriesUrl);
@@ -25,6 +25,9 @@ var DataService = /** @class */ (function () {
     };
     DataService.prototype.getWords = function (subcategoryId) {
         return this.http.get(this.wordsUrl + subcategoryId);
+    };
+    DataService.prototype.getTests = function () {
+        return this.http.get(this.testsUrl);
     };
     DataService = __decorate([
         Injectable(),

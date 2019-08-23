@@ -10,11 +10,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { Component } from '@angular/core';
 import { DataService } from '../data.service';
 import { ActivatedRoute } from '@angular/router';
+import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
 var ManualComponent = /** @class */ (function () {
-    function ManualComponent(dataService, activeRoute) {
+    function ManualComponent(dataService, activeRoute, config) {
         var _this = this;
         this.dataService = dataService;
-        this.subscription = activeRoute.params.subscribe(function (params) { return _this.subcategoryId = params['subcategoryId']; });
+        this.subscription = activeRoute.params
+            .subscribe(function (params) { return _this.subcategoryId = params['subcategoryId']; });
+        config.interval = 0;
     }
     ManualComponent.prototype.ngOnInit = function () {
         this.loadWords(this.subcategoryId);
@@ -29,10 +32,10 @@ var ManualComponent = /** @class */ (function () {
     ManualComponent = __decorate([
         Component({
             selector: 'manual',
-            templateUrl: "./manual.component.html",
+            templateUrl: "../slideshow/slideshow.component.html",
             providers: [DataService]
         }),
-        __metadata("design:paramtypes", [DataService, ActivatedRoute])
+        __metadata("design:paramtypes", [DataService, ActivatedRoute, NgbCarouselConfig])
     ], ManualComponent);
     return ManualComponent;
 }());

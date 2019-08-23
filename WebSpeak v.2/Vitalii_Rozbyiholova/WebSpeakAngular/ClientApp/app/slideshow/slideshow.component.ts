@@ -6,11 +6,11 @@ import { Subscription } from 'rxjs';
 import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-    selector: 'manual',
-    templateUrl: `../slideshow/slideshow.component.html`,
+    selector: 'slideshow',
+    templateUrl: `./slideshow.component.html`,
     providers: [DataService]
 })
-export class ManualComponent implements OnInit {
+export class SlideShowComponent implements OnInit {
 
     subcategoryId: number;
     words: DTO[];
@@ -20,7 +20,11 @@ export class ManualComponent implements OnInit {
         this.subscription = activeRoute.params
             .subscribe(params => this.subcategoryId = params['subcategoryId']);
 
-        config.interval = 0;
+        config.interval = 3000;
+        config.wrap = false;
+        config.keyboard = false;
+        config.pauseOnHover = false;
+        config.wrap = true;
     }
 
     ngOnInit(): void {
