@@ -9,11 +9,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { Component } from '@angular/core';
 import { DataService } from '../data.service';
-import { Router } from '@angular/router';
 var CategoriesComponent = /** @class */ (function () {
-    function CategoriesComponent(dataService, router) {
+    function CategoriesComponent(dataService) {
         this.dataService = dataService;
-        this.router = router;
     }
     CategoriesComponent.prototype.ngOnInit = function () {
         this.loadCategories();
@@ -31,7 +29,7 @@ var CategoriesComponent = /** @class */ (function () {
             templateUrl: "./categories.component.html",
             providers: [DataService]
         }),
-        __metadata("design:paramtypes", [DataService, Router])
+        __metadata("design:paramtypes", [DataService])
     ], CategoriesComponent);
     return CategoriesComponent;
 }());
