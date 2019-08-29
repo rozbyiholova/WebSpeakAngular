@@ -24,8 +24,8 @@ const routes: Routes = [
     { path: 'Categories/Subcategories/:parentId', component: SubcategoryComponent },
     { path: 'Categories/Subcategories/:parentId/Manual/:subcategoryId', component: ManualComponent },
     { path: 'Categories/Subcategories/:parentId/Slideshow/:subcategoryId', component: SlideShowComponent },
-    { path: 'Categories/Subcategories/:parentId/Tests', component: TestIndexComponent },
-    { path: 'Categories/Subcategories/:parentId/Tests/Test/:testId', component: TestComponent}
+    { path: 'Categories/Subcategories/:parentId/Tests/:subcategoryId', component: TestIndexComponent },
+    { path: 'Categories/Subcategories/:parentId/Tests/:subcategoryId/Test/:testId', component: TestComponent}
 ];
 
 @NgModule({

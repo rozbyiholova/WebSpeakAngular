@@ -3,23 +3,27 @@ import { ActivatedRoute } from '@angular/router';
 import { DataService } from '../../data.service';
 import { Subscription } from 'rxjs';
 import { DTO } from '../../../Models/DTO';
+import { TestInfo } from '../helpers/TestInfo';
 
 @Component({
     selector: 'test',
     templateUrl: `./testLayout.html`,
-    styleUrls: ['./test.style.scss'],
+    styleUrls: ['./testStyle.scss'],
     providers: [DataService]
 })
 export class TestComponent implements OnInit {
 
-    private testSetting: Object;
     private testId: number;
+    private subcategoryId: number;
     private subscription: Subscription;
+    private test: DTO[];
+    public testInfo: TestInfo;
 
-    test: DTO[];
-    
     constructor(private dataService: DataService, activeRoute: ActivatedRoute) {
-        this.subscription = activeRoute.params.subscribe(params => this.testId = params['testId']);
+        this.subscription = activeRoute.params.subscribe(params => {
+            this.testId = params['testId'];
+            this.subcategoryId = params["subcategoryId"];
+        });
     }
 
     ngOnInit(): void {
@@ -27,14 +31,19 @@ export class TestComponent implements OnInit {
     }
 
     private loadSubcategories(testId: number): void {
-        this.dataService.getTest(testId)
+        this.dataService.getTest(this.subcategoryId)
             .subscribe((data: DTO[]) => {
                 this.test = data;
+                this.initTest();
             });
+    }
+
+    private initTest(): void {
+        this.testInfo = new TestInfo(this.test, this.testId);
+        this.testInfo.loadNextTest();
     }
     
     /*----------Work with test----------*/
-
-
+    
     
 }

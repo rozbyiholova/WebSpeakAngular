@@ -45,7 +45,7 @@ namespace WebSpeakAngular.Controllers
             return words;
         }
 
-        [HttpGet("Categories/Subcategories/Tests")]
+        [HttpGet("Categories/Subcategories/Tests/{subcategoryId}")]
         public List<DTO> TestsIndex()
         {
             List<DTO> tests = _testsRepository.GetDTO(1, 3);

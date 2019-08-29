@@ -7,7 +7,7 @@ export class DataService {
     private categoriesUrl: string = "/Categories";
     private subcategoriesUrl: string = "/Categories/Subcategories/";
     private wordsUrl: string = "Categories/Subcategories/Words/";
-    private testIndexUrl: string = "Categories/Subcategories/Tests";
+    private testIndexUrl: string = "Categories/Subcategories/Tests/";
     private testUrl: string = "Categories/Subcategories/Tests/Test/";
 
     constructor(private http: HttpClient) {}
@@ -24,8 +24,8 @@ export class DataService {
         return this.http.get(this.wordsUrl + subcategoryId);
     }
 
-    getAllTests() {
-        return this.http.get(this.testIndexUrl);
+    getAllTests(subcategoryId: number) {
+        return this.http.get(this.testIndexUrl + subcategoryId);
     }
 
     getTest(subcategoryId: number) {

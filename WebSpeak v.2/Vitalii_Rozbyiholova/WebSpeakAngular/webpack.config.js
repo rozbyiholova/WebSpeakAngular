@@ -7,9 +7,9 @@ module.exports = {
         'app': './ClientApp/main.ts'
     },
     output: {
-        path: path.resolve(__dirname, './wwwroot/dist'),     // путь к каталогу выходных файлов - папка public
+        path: path.resolve(__dirname, './wwwroot/dist'),
         publicPath: '/dist/',
-        filename: "[name].js"       // название создаваемого файла
+        filename: "[name].js"
     },
     devServer: {
         historyApiFallback: true
@@ -18,9 +18,9 @@ module.exports = {
         extensions: ['.ts', '.js']
     },
     module: {
-        rules: [   //загрузчик для ts
+        rules: [ 
             {
-                test: /\.ts$/, // определяем тип файлов
+                test: /\.ts$/,
                 use: [
                     {
                         loader: 'awesome-typescript-loader',
@@ -34,15 +34,20 @@ module.exports = {
             }, {
                 test: /\.css$/,
                 include: path.resolve(__dirname, 'ClientApp/app'),
-                loader: 'raw-loader'
+                loaders: ["to-string-loader", "css-loader"]
+            }, {
+                test: /\.scss$/,
+                exclude: /node_modules/,
+                include: path.resolve(__dirname, 'ClientApp/app'),
+                loaders: ['to-string-loader', 'css-loader', 'sass-loader']
             }
         ]
     },
     plugins: [
         new webpack.ContextReplacementPlugin(
             /angular(\\|\/)core/,
-            path.resolve(__dirname, 'ClientApp'), // каталог с исходными файлами
-            {} // карта маршрутов
+            path.resolve(__dirname, 'ClientApp'),
+            {}
         )
     ]
 };
