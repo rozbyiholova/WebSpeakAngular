@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DataService } from '../../data.service';
 import { Subscription } from 'rxjs';
@@ -9,6 +9,7 @@ import { TestInfo } from '../helpers/TestInfo';
     selector: 'test',
     templateUrl: `./testLayout.html`,
     styleUrls: ['./testStyle.scss'],
+    encapsulation: ViewEncapsulation.None,
     providers: [DataService]
 })
 export class TestComponent implements OnInit {

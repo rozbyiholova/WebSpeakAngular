@@ -13,7 +13,7 @@ export class TestResult {
     questionResults: string[];
     
     public getLength(): number {
-        return this.questionNames.length;
+        return Math.min(this.questionNames.length, this.questionNames.length);
     }
     public getTotal(): number {
         let sum = 0;
@@ -24,11 +24,9 @@ export class TestResult {
     }
     
     public emitCorrectAnswer(word: string): void {
-        console.log("emitted correct answer");
         this.correct.emit(word);
     }
     public emitIncorrectAnswer(word: string): void {
-        console.log("emitted incorrect answer");
         this.incorrect.emit(word);
     }
 }

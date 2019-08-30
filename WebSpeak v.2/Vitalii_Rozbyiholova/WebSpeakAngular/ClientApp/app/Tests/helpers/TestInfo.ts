@@ -16,6 +16,7 @@ export class TestInfo {
     private _categories: any[];
     private _testSetting: Object;
     public checkMethod: Function = new Function();
+    public fillMethods: Function[] = new Array();
     public testResult: TestResult;
     
     constructor(array: any[], testId: number) {
@@ -38,26 +39,50 @@ export class TestInfo {
         case 1:
         {
             this.checkMethod = CheckMethod.checkPictureWithText;
+            this.fillMethods = [
+                FillMethod.loadPictures,
+                FillMethod.loadText,
+                FillMethod.loadSounds
+            ];
             break;
         }
         case 2:
         {
             this.checkMethod = CheckMethod.checkPictureWithText;
+            this.fillMethods = [
+                FillMethod.loadPictures,
+                FillMethod.loadText,
+                FillMethod.loadSounds
+            ];
             break;
         }
         case 3:
         {
             this.checkMethod = CheckMethod.checkPictureWithText;
+            this.fillMethods = [
+                FillMethod.loadPictures,
+                FillMethod.loadText,
+                FillMethod.loadSounds
+            ];
             break;
         }
         case 4:
         {
             this.checkMethod = CheckMethod.checkPictureWithText;
+            this.fillMethods = [
+                FillMethod.loadPictures,
+                FillMethod.loadText,
+                FillMethod.loadSounds
+            ];
             break;
         }
         case 5:
         {
-            this.checkMethod = CheckMethod.checkPictureWithText;
+            this.checkMethod = CheckMethod.checkTrueOrFalse;
+            this.fillMethods = [
+                FillMethod.loadPictures,
+                FillMethod.loadRandomText
+            ];
             break;
         }
         case 6:
@@ -115,34 +140,79 @@ export class TestInfo {
         } else {
             buttonYes = document.querySelector('.button_yes') as HTMLElement;
             buttonNo = document.querySelector('.button_no') as HTMLElement;
-            buttonYes.addEventListener('click', (e: Event) => this.checkMethod());
-            buttonNo.addEventListener('click', (e: Event) => this.checkMethod());
+            buttonYes.addEventListener('click', (e: Event) => this.checkMethod(this.testResult));
+            buttonNo.addEventListener('click', (e: Event) => this.checkMethod(this.testResult));
         }
     }
 
     public loadNextTest(): void {
         if (this.currentIndex < this.categories.length) {
-            FillMethod.LoadPictures(this);
-            FillMethod.LoadText(this);
+            this.runFillMethods();
             this.increaseIndex();
+        } else {
+            this.generateResult(this.testResult);
         }
     }
 
     private onCorrectAnswer(word: string): void {
-        console.log("caught correct answer");
         this.testResult.questionNames.push(word);
         this.testResult.questionResults.push("correct");
         this.loadNextTest();
     }
 
     private onIncorrectAnswer(word: string): void {
-        console.log("caught incorrect answer");
         this.testResult.questionNames.push(word);
         this.testResult.questionResults.push("incorrect");
         this.loadNextTest();
     }
 
+    private generateResult(testResult: TestResult): void {
+        if (testResult) {
 
+            let testResultDiv = document.getElementsByClassName(Constants.TEST_RESULT)[0] as HTMLElement;
+            let testDiv = document.getElementsByClassName(Constants.TEST)[0] as HTMLElement;
+            let names = testResult.questionNames;
+            let testResults = testResult.questionResults;
+            if (!testDiv) {
+                testDiv = document.querySelector(".test10") as HTMLElement;
+                document.querySelector(".intermediate").innerHTML = "";
+            }
+
+            testDiv.setAttribute("style", "display: none");
+            testResultDiv.setAttribute("style", "display: block;");
+
+            let table: HTMLTableElement = document.createElement("table");
+
+            for (let i = 0; i < testResult.getLength(); i++) {
+                let tr: HTMLTableRowElement = document.createElement("tr");
+                const nameTextNode: Text = document.createTextNode(names[i]);
+                const resultTextNode: Text = document.createTextNode(testResults[i]);
+
+                let tdName: HTMLTableDataCellElement = document.createElement("td");
+                let tdResult: HTMLTableDataCellElement = document.createElement("td");
+                tdName.appendChild(nameTextNode);
+                tdResult.appendChild(resultTextNode);
+
+                tr.appendChild(tdName);
+                tr.appendChild(tdResult);
+                table.appendChild(tr);
+            }
+
+            let trTotal = document.createElement("tr");
+            let total = testResult.getTotal();
+            trTotal.innerHTML = "<td>Total</td>";
+            trTotal.innerHTML += `<td>${total}</td>`;
+            table.appendChild(trTotal);
+
+            testResultDiv.appendChild(table);
+        } else {
+            return;
+        }
+    }
+
+    private runFillMethods(): void {
+        this.fillMethods.forEach(method => method(this));
+    }
 
     /*
      TODO:
