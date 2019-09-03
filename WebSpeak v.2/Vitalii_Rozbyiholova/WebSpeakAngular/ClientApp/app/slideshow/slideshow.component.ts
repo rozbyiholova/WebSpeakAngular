@@ -12,19 +12,30 @@ import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
 })
 export class SlideShowComponent implements OnInit {
 
+    type: string;
     subcategoryId: number;
     words: DTO[];
     subscription: Subscription;
 
     constructor(private dataService: DataService, activeRoute: ActivatedRoute, config: NgbCarouselConfig) {
         this.subscription = activeRoute.params
-            .subscribe(params => this.subcategoryId = params['subcategoryId']);
+            .subscribe(params => this.subcategoryId = params["subcategoryId"]);
+        this.subscription = activeRoute.queryParams
+            .subscribe(params => this.type = params["type"]);
 
-        config.interval = 3000;
-        config.wrap = false;
-        config.keyboard = false;
-        config.pauseOnHover = false;
-        config.wrap = true;
+        if (this.type == "slideshow") {
+            config.interval = 3000;
+            config.wrap = false;
+            config.keyboard = false;
+            config.pauseOnHover = false;
+            config.wrap = true;
+        }
+        else if(this.type == "manual") {
+            config.interval = 0;
+        } else {
+            console.log("Unknown type");
+        }
+        
     }
 
     ngOnInit(): void {

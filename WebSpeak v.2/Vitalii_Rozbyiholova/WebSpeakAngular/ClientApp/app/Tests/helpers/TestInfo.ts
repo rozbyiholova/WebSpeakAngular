@@ -10,14 +10,20 @@ let data = require("./testssettings.json");
 
 export class TestInfo {
 
-    private http: HttpClient;
-    private testId: number;
+    private readonly http: HttpClient;
+    private readonly testId: number;
     private _currentIndex: number;
-    private _categories: any[];
-    private _testSetting: Object;
+    private readonly _categories: any[];
+    private readonly _testSetting: Object;
     public checkMethod: Function = new Function();
-    public fillMethods: Function[] = new Array();
+    public fillMethods: Function[] = new Array<Function>();
     public testResult: TestResult;
+
+    private readonly picturesWordsSounds: Function[] = [
+        FillMethod.loadPictures,
+        FillMethod.loadText,
+        FillMethod.loadSounds
+    ];
     
     constructor(array: any[], testId: number) {
         this._currentIndex = 0;
@@ -39,41 +45,25 @@ export class TestInfo {
         case 1:
         {
             this.checkMethod = CheckMethod.checkPictureWithText;
-            this.fillMethods = [
-                FillMethod.loadPictures,
-                FillMethod.loadText,
-                FillMethod.loadSounds
-            ];
+            this.fillMethods = this.picturesWordsSounds;
             break;
         }
         case 2:
         {
             this.checkMethod = CheckMethod.checkPictureWithText;
-            this.fillMethods = [
-                FillMethod.loadPictures,
-                FillMethod.loadText,
-                FillMethod.loadSounds
-            ];
+            this.fillMethods = this.picturesWordsSounds;
             break;
         }
         case 3:
         {
-            this.checkMethod = CheckMethod.checkPictureWithText;
-            this.fillMethods = [
-                FillMethod.loadPictures,
-                FillMethod.loadText,
-                FillMethod.loadSounds
-            ];
+            this.checkMethod = CheckMethod.checkTextWithPicture;
+            this.fillMethods = this.picturesWordsSounds;
             break;
         }
         case 4:
         {
-            this.checkMethod = CheckMethod.checkPictureWithText;
-            this.fillMethods = [
-                FillMethod.loadPictures,
-                FillMethod.loadText,
-                FillMethod.loadSounds
-            ];
+            this.checkMethod = CheckMethod.checkPictureWithSound;
+            this.fillMethods = this.picturesWordsSounds;
             break;
         }
         case 5:
@@ -87,22 +77,37 @@ export class TestInfo {
         }
         case 6:
         {
-            this.checkMethod = CheckMethod.checkPictureWithText;
+                    this.checkMethod = CheckMethod.checkPictureWithInput;
+                    this.fillMethods = [
+                        FillMethod.loadPictures,
+                        FillMethod.enableInput
+                    ];
             break;
         }
         case 7:
         {
-            this.checkMethod = CheckMethod.checkPictureWithText;
+                    this.checkMethod = CheckMethod.checkSoundWithInput;
+                    this.fillMethods = [
+                        FillMethod.loadSounds,
+                        FillMethod.enableInput
+                    ];
             break;
         }
         case 8:
         {
-            this.checkMethod = CheckMethod.checkPictureWithText;
+                    this.checkMethod = CheckMethod.checkTranslationWithNative;
+                    this.fillMethods = [
+                        FillMethod.loadNativeText
+                    ];
             break;
         }
         case 9:
         {
-            this.checkMethod = CheckMethod.checkPictureWithText;
+                    this.checkMethod = CheckMethod.checkSoundWithText;
+                    this.fillMethods = [
+                        FillMethod.loadSounds,
+                        FillMethod.loadText
+                    ];
             break;
         }
         case 10:
@@ -117,6 +122,9 @@ export class TestInfo {
 
     public increaseIndex(): void {
         this._currentIndex++;
+    }
+    public reduceIndex(): void {
+        this._currentIndex--;
     }
     public get currentIndex(): number {
         return this._currentIndex;
@@ -133,6 +141,7 @@ export class TestInfo {
     private setConfirmButton(testId: number): void {
         let button: HTMLElement = document.querySelector('.confirm') as HTMLElement;
         let buttonYes: HTMLElement, buttonNo: HTMLElement;
+
         if (button != null && testId != 5) {
             button.addEventListener('click', (e: Event) => {
                 this.checkMethod(this.testResult);
@@ -173,6 +182,7 @@ export class TestInfo {
             let testDiv = document.getElementsByClassName(Constants.TEST)[0] as HTMLElement;
             let names = testResult.questionNames;
             let testResults = testResult.questionResults;
+
             if (!testDiv) {
                 testDiv = document.querySelector(".test10") as HTMLElement;
                 document.querySelector(".intermediate").innerHTML = "";
@@ -180,7 +190,6 @@ export class TestInfo {
 
             testDiv.setAttribute("style", "display: none");
             testResultDiv.setAttribute("style", "display: block;");
-
             let table: HTMLTableElement = document.createElement("table");
 
             for (let i = 0; i < testResult.getLength(); i++) {
@@ -213,12 +222,4 @@ export class TestInfo {
     private runFillMethods(): void {
         this.fillMethods.forEach(method => method(this));
     }
-
-    /*
-     TODO:
-     - deal with styles
-     - write "GenerateResult" method
-     - create method for loading tests e.g. "LoadTest5", "LoadTest10" and use them in "loadNewTest" method
-        depending on current testId;
-     */
 }

@@ -23,7 +23,7 @@ const routes: Routes = [
     { path: 'Categories', component: CategoriesComponent },
     { path: 'Categories/Subcategories/:parentId', component: SubcategoryComponent },
     { path: 'Categories/Subcategories/:parentId/Manual/:subcategoryId', component: ManualComponent },
-    { path: 'Categories/Subcategories/:parentId/Slideshow/:subcategoryId', component: SlideShowComponent },
+    { path: 'Categories/Subcategories/:parentId/View/:subcategoryId', component: SlideShowComponent },
     { path: 'Categories/Subcategories/:parentId/Tests/:subcategoryId', component: TestIndexComponent },
     { path: 'Categories/Subcategories/:parentId/Tests/:subcategoryId/Test/:testId', component: TestComponent}
 ];

@@ -10,23 +10,8 @@ interface IBreadcrumb {
 
 @Component({
     selector: "breadcrumbs",
-    template: `
-<div class="container">
-    <ul class="breadcrumb litle-transparent">
-            <li><a routerLink="">Home</a></li>
-            <li *ngFor="let breadcrumb of breadcrumbs">
-                <a *ngIf="breadcrumb.params; else withoutParams" 
-                [routerLink]="[breadcrumb.url, breadcrumb.params]">
-                {{ breadcrumb.label }}</a>
-
-                <ng-template #withoutParams>
-                    <a [routerLink]="[breadcrumb.url]" class="breadcrumb-item">{{ breadcrumb.label }}</a>
-                </ng-template>
-            </li>
-    </ul>
-</div>
-  `,
-    styleUrls: ['./breadcrumbsStyle.scss']
+    templateUrl: "./breadcrumbs.component.html",
+    styleUrls: ["./breadcrumbsStyle.scss"]
 })
 export class BreadcrumbComponent implements OnInit {
 

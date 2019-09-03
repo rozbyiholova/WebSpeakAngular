@@ -9,6 +9,7 @@ export class CheckMethod {
         let selectedPicture = document.querySelector('.selected_picture') as HTMLElement;
 
         if (selectedPicture != undefined && word != undefined) {
+
             if (selectedPicture.dataset["answer"] == word) {
                 selectedPicture.classList.remove('selected_picture');
                 result.emitCorrectAnswer(word);
@@ -17,7 +18,7 @@ export class CheckMethod {
                 result.emitIncorrectAnswer(word);
             }
         } else {
-            alert("Nothing selected. Please select any item");
+            alert(Constants.ALERT_MESSAGE);
         }
     }
 
@@ -45,11 +46,137 @@ export class CheckMethod {
         }
     }
 
-    private static isReady(fn): void {
-        if (document.readyState != 'loading') {
-            fn();
+    public static checkPictureWithSound(result: TestResult): void {
+        const testSoundDiv = document.getElementsByClassName(Constants.TEST_SOUNDS)[0] as HTMLElement;
+        const sound = testSoundDiv.childNodes[0] as HTMLElement;
+        const answer: string = sound.dataset["answer"];
+        const selectedPicture = document.querySelector(`.${Constants.SELECTED_PICTURE}`) as HTMLPictureElement;
+
+        if (selectedPicture && answer) {
+            const pictureAnswer: string = selectedPicture.dataset["answer"];
+
+            if (pictureAnswer === answer ) {
+                selectedPicture.classList.remove(`.${Constants.SELECTED_PICTURE}`);
+                result.emitCorrectAnswer(answer);
+            } else {
+                selectedPicture.classList.remove(`.${Constants.SELECTED_PICTURE}`);
+                result.emitIncorrectAnswer(answer);
+            }
         } else {
-            document.addEventListener('DOMContentLoaded', fn);
+            alert(Constants.ALERT_MESSAGE);
         }
+    }
+
+    public static checkTextWithPicture(result: TestResult): void {
+
+        const testPictureDiv = document.getElementsByClassName(Constants.TEST_IMAGES)[0] as HTMLElement;
+        const label = testPictureDiv.getElementsByTagName('label')[0] as HTMLElement;
+        const picture = label.childNodes[0] as HTMLPictureElement;
+        const pictureText: string = picture.dataset["answer"];
+        const selectedTextElement = document.querySelector(`.${Constants.SELECTED_TEXT}`) as HTMLElement;
+
+        if (picture && selectedTextElement) {
+            const selectedText: string = selectedTextElement.textContent;
+
+            if (pictureText === selectedText) {
+                selectedTextElement.classList.remove(Constants.SELECTED_PICTURE);
+                result.emitCorrectAnswer(selectedText);
+            } else {
+                selectedTextElement.classList.remove(Constants.SELECTED_PICTURE);
+                result.emitIncorrectAnswer(selectedText);
+            }
+        } else {
+            alert(Constants.ALERT_MESSAGE);
+        }
+    }
+
+    public static checkPictureWithInput(result: TestResult): void {
+        const testInputDiv = document.querySelector(`.${Constants.TEST_INPUT}`) as HTMLElement;
+        let input = testInputDiv.getElementsByTagName("input")[0];
+        const value: string = input.value;
+        const testPictureDiv = document.querySelector(`.${Constants.TEST_IMAGES}`) as HTMLElement;
+        const label = testPictureDiv.getElementsByTagName("label")[0];
+        const picture = label.childNodes[0] as HTMLElement;
+        const answer: string = picture.dataset["answer"];
+
+        if (value && answer) {
+
+            if (value === answer) {
+                picture.classList.remove(Constants.SELECTED_PICTURE);
+                result.emitCorrectAnswer(answer);
+            } else {
+                picture.classList.remove(Constants.SELECTED_PICTURE);
+                result.emitIncorrectAnswer(answer);
+            }
+
+            input.value = "";
+        } else {
+            alert(Constants.ALERT_MESSAGE);
+        } 
+    }
+
+    public static checkSoundWithInput(result: TestResult): void {
+        const testInputDiv = document.querySelector(`.${Constants.TEST_INPUT}`) as HTMLElement;
+        const input = testInputDiv.getElementsByTagName("input")[0];
+        let value = input.value;
+        const testSoundDiv = document.querySelector(`.${Constants.TEST_SOUNDS}`) as HTMLElement;
+        const sound = testSoundDiv.childNodes[0] as HTMLElement;
+        const word: string = sound.dataset["answer"];
+
+        if (input && word) {
+
+            if (value === word) {
+                result.emitCorrectAnswer(word);
+            } else {
+                result.emitIncorrectAnswer(word);
+            }
+
+            input.value = "";
+        } else {
+            alert(Constants.ALERT_MESSAGE);
+        }
+    }
+
+    public static checkSoundWithText(result: TestResult): void {
+        const testSoundDiv = document.querySelector(`.${Constants.TEST_SOUNDS}`) as HTMLElement;
+        const sound = testSoundDiv.childNodes[0] as HTMLElement;
+        const answer = sound.dataset["answer"];
+
+        const selectedTextHeading = document.querySelector(`.${Constants.SELECTED_TEXT}`) as HTMLElement;
+        
+        if (selectedTextHeading && answer) {
+            const selectedText: string = selectedTextHeading.innerText;
+
+            if (selectedText === answer) {
+                result.emitCorrectAnswer(answer);
+            } else {
+                result.emitIncorrectAnswer(answer);
+            }
+
+            selectedTextHeading.classList.remove(Constants.SELECTED_TEXT);
+        } else {
+            alert(Constants.ALERT_MESSAGE);
+        } 
+    }
+
+    public static checkTranslationWithNative(result: TestResult): void {
+        const translationWordDiv = document.querySelector(`.${Constants.TEST_FOREIGN}`) as HTMLElement;
+        const translationHeading = translationWordDiv.childNodes[0] as HTMLElement;
+        const answer: string = translationHeading.textContent;
+        const selectedText = document.querySelector(`.${Constants.SELECTED_TEXT}`) as HTMLElement;
+
+        if (selectedText && answer) {
+            let nativeWord = selectedText.dataset["answer"];
+
+            if (nativeWord === answer) {
+                result.emitCorrectAnswer(answer);
+            } else {
+                result.emitIncorrectAnswer(answer);
+            }
+
+            selectedText.classList.remove(Constants.SELECTED_PICTURE);
+        } else {
+            alert(Constants.ALERT_MESSAGE);
+        } 
     }
 }
