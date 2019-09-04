@@ -55,7 +55,7 @@ export class CheckMethod {
         if (selectedPicture && answer) {
             const pictureAnswer: string = selectedPicture.dataset["answer"];
 
-            if (pictureAnswer === answer ) {
+            if (pictureAnswer === answer) {
                 selectedPicture.classList.remove(`.${Constants.SELECTED_PICTURE}`);
                 result.emitCorrectAnswer(answer);
             } else {
@@ -112,7 +112,7 @@ export class CheckMethod {
             input.value = "";
         } else {
             alert(Constants.ALERT_MESSAGE);
-        } 
+        }
     }
 
     public static checkSoundWithInput(result: TestResult): void {
@@ -143,7 +143,7 @@ export class CheckMethod {
         const answer = sound.dataset["answer"];
 
         const selectedTextHeading = document.querySelector(`.${Constants.SELECTED_TEXT}`) as HTMLElement;
-        
+
         if (selectedTextHeading && answer) {
             const selectedText: string = selectedTextHeading.innerText;
 
@@ -156,7 +156,7 @@ export class CheckMethod {
             selectedTextHeading.classList.remove(Constants.SELECTED_TEXT);
         } else {
             alert(Constants.ALERT_MESSAGE);
-        } 
+        }
     }
 
     public static checkTranslationWithNative(result: TestResult): void {
@@ -177,6 +177,34 @@ export class CheckMethod {
             selectedText.classList.remove(Constants.SELECTED_PICTURE);
         } else {
             alert(Constants.ALERT_MESSAGE);
-        } 
+        }
+    }
+
+    public static checkPair(result: TestResult): void {
+        const nativeButton = document.querySelector(`.${Constants.NATIVE} .btn-warning`) as HTMLElement;
+        const foreignButton = document.querySelector(`.${Constants.FOREIGN} .btn-warning`) as HTMLElement;
+
+        if (nativeButton && foreignButton) {
+            const text: string = foreignButton.textContent;
+            const answer: string = nativeButton.dataset["answer"];
+
+            //using direct pushing without emitting event
+            //to prevent loading new test
+            //(TestInfo class catches event and starts loading new test)
+            result.questionNames.push(answer);
+
+            if (text === answer) {
+                result.questionResults.push("correct");
+                nativeButton.classList.replace("btn-warning", "btn-success");
+                foreignButton.classList.replace("btn-warning", "btn-success");
+            } else {
+                result.questionResults.push("incorrect");
+                nativeButton.classList.replace("btn-warning", "btn-danger");
+                foreignButton.classList.replace("btn-warning", "btn-danger");
+            }
+
+            nativeButton.setAttribute("disabled", "true");
+            foreignButton.setAttribute("disabled", "true");
+        }
     }
 }

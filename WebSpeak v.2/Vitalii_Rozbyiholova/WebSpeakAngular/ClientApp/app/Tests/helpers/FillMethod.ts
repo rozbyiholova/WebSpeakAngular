@@ -1,6 +1,7 @@
 ﻿import { Constants } from './Constants';
 import { TestInfo } from './TestInfo';
 import { TestResult } from './TestResult';
+import { CheckMethod } from './CheckMethod';
 
 export class FillMethod {
     public static loadPictures(info: TestInfo): void {
@@ -52,7 +53,7 @@ export class FillMethod {
             testImages.appendChild(label);
         }
 
-        Help.setSelectionOfOneElement(Constants.TEST_IMAGES, Constants.SELECTED_PICTURE);
+        Help.selectOneLabel(Constants.TEST_IMAGES, Constants.SELECTED_PICTURE);
     }
 
     public static loadText(info: TestInfo): void {
@@ -95,7 +96,7 @@ export class FillMethod {
             label.appendChild(radio);
             testWord.appendChild(label);
 
-            Help.setSelectionOfOneElement(Constants.TEST_WORD, Constants.SELECTED_TEXT);
+            Help.selectOneLabel(Constants.TEST_WORD, Constants.SELECTED_TEXT);
         }
     }
 
@@ -244,144 +245,76 @@ export class FillMethod {
             testNativeWord.appendChild(radio);
             testNativeWord.appendChild(label);
 
-            Help.setSelectionOfOneElement(Constants.TEST_WORD, Constants.SELECTED_TEXT);
+            Help.selectOneLabel(Constants.TEST_WORD, Constants.SELECTED_TEXT);
         }
     }
 
-    //public static loadPairs(info: TestInfo): void {
-    //    let testResults10 = new TestResult();
+    public static loadPairs(info: TestInfo): void {
+        console.log("load pairs in FillMethod");
+        const testDiv = document.getElementsByClassName(Constants.TEST10)[0] as HTMLElement;
+        testDiv.setAttribute("style", "display: grid");
 
-    //    Help.empty(`.${Constants.FOREIGN}`);
-    //    Help.empty(`.${Constants.NATIVE}`);
-    //    Help.empty(`.${Constants.INTERMEDIATE}`);
+        Help.empty(Constants.FOREIGN);
+        Help.empty(Constants.NATIVE);
+        Help.empty(Constants.INTERMEDIATE);
 
-    //    let foreignDiv = document.getElementsByClassName(Constants.FOREIGN)[0] as HTMLElement;
-    //    let nativeDiv = document.getElementsByClassName(Constants.NATIVE)[0] as HTMLElement;
+        let foreignDiv = document.getElementsByClassName(Constants.FOREIGN)[0] as HTMLElement;
+        let nativeDiv = document.getElementsByClassName(Constants.NATIVE)[0] as HTMLElement;
 
-    //    //to prevent multicast  event
-    //    document.querySelector(`.${Constants.CHECK}`).removeEventListener('click', callMakePairs);
-    //    document.querySelector(`.${Constants.CONFIRM}`).removeEventListener('click', checkLength);
+        let wordsNumber = 4;
+        let currentIndex = info.currentIndex;
 
-    //    let wordsNumber = 4;
-    //    let currentIndex = info.currentIndex;
+        let categories = info.categories.slice(currentIndex, currentIndex + wordsNumber);
+        let nativeWordsArray = new Array<any>();
+        let foreignWordsArray = new Array<any>();
+        for (let k = 0; k < categories.length; k++) {
 
-    //    let categories = info.categories.slice(currentIndex, currentIndex + wordsNumber);
-    //    let nativeWordsArray = new Array<any>();
-    //    let foreignWordsArray = new Array<any>();
-    //    for (let k = 0; k < categories.length; k++) {
+            //push entire category to be able to get word translation when compares selected words
+            nativeWordsArray.push(categories[k]);
+            foreignWordsArray.push(categories[k].translation);
+            info.increaseIndex();
+        }
 
-    //        //push entire category to be able to get word translation when compares selected words
-    //        nativeWordsArray.push(categories[k]);
-    //        foreignWordsArray.push(categories[k].translation);
-    //        info.increaseIndex();
-    //    }
+        Help.shuffle(nativeWordsArray);
+        Help.shuffle(foreignWordsArray);
 
-    //    Help.shuffle(nativeWordsArray);
-    //    Help.shuffle(foreignWordsArray);
-
-    //    for (let j = 0; j < nativeWordsArray.length; j++) {
-
-    //        //translation words
-    //        let tRadio: HTMLInputElement = document.createElement("input");
-    //        tRadio.type = "radio";
-    //        let tIdText = `f_rd${j}`;
-    //        tRadio.id = tIdText;
-    //        let tLabel: HTMLLabelElement = document.createElement("label");
-    //        tLabel.htmlFor = tIdText;
-
-    //        let tText: string = foreignWordsArray[j];
-    //        let tH3: HTMLHeadingElement = document.createElement("h3");
-    //        let tTextNode: Text = document.createTextNode(tText);
-    //        tH3.appendChild(tTextNode);
-    //        tLabel.appendChild(tH3);
-    //        foreignDiv.appendChild(tRadio);
-    //        foreignDiv.appendChild(tLabel);
-
-    //        Help.setSelectionOfOneElement(Constants.FOREIGN, Constants.SELECTED_F_TEXT);
+        for (let j = 0; j < nativeWordsArray.length; j++) {
             
-    //        //native words
-    //        let nRadio: HTMLInputElement = document.createElement("input");
-    //        nRadio.type = "radio";
-    //        let nIdText = `n_rd${j}`;
-    //        nRadio.id = nIdText;
-    //        let nLabel: HTMLLabelElement = document.createElement("label");
-    //        nLabel.htmlFor = nIdText;
+            //translation words
+            let tText: string = foreignWordsArray[j];
+            let tButton: HTMLButtonElement = document.createElement("button");
+            tButton.classList.add("btn");
+            tButton.textContent = tText;
+            foreignDiv.appendChild(tButton);
+            tButton.addEventListener("click", (ev: Event) => {
+                Help.selectOneButton(ev);
+                CheckMethod.checkPair(info.result);
+            });
+            
+            //native words
+            let nRadio: HTMLInputElement = document.createElement("input");
+            nRadio.type = "radio";
+            let nIdText = `n_rd${j}`;
+            nRadio.id = nIdText;
+            let nLabel: HTMLLabelElement = document.createElement("label");
+            nLabel.htmlFor = nIdText;
 
-    //        let nText: string = nativeWordsArray[j].native;
-    //        let nH3: HTMLHeadingElement = document.createElement("h3");
-    //        let nTextNode: Text = document.createTextNode(nText);
-    //        nH3.appendChild(nTextNode);
-    //        nH3.dataset["answer"] = nativeWordsArray[j].translation;
-    //        nLabel.appendChild(nH3);
-    //        nativeDiv.appendChild(nRadio);
-    //        nativeDiv.appendChild(nLabel);
+            let nText: string = nativeWordsArray[j].native;
+            let nButton: HTMLButtonElement = document.createElement("button");
+            nButton.classList.add("btn");
+            nButton.textContent = nText;
+            nButton.dataset["answer"] = nativeWordsArray[j].translation;
+            nativeDiv.appendChild(nButton);
 
-    //        Help.setSelectionOfOneElement(Constants.NATIVE, Constants.SELECTED_N_TEXT);
+            nButton.addEventListener("click", (ev: Event) => {
+                Help.selectOneButton(ev);
+                CheckMethod.checkPair(info.result);
+            });
 
-    //    }
-
-    //    document.querySelector(Constants.CHECK).addEventListener('click', callMakePairs);
-    //    document.querySelector(Constants.CONFIRM).addEventListener('click', checkLength);
-
-    //    //because NextTest() increases index
-    //    info.reduceIndex();
-    //}
-
-    //private static makePair(info: TestInfo, result: TestResult): void {
-    //    Help.empty(Constants.INTERMEDIATE);
-
-    //    const intermediate = document.getElementsByClassName(Constants.INTERMEDIATE)[0] as HTMLElement;
-    //    const nativeLabel = document.querySelector(`.${Constants.SELECTED_N_TEXT}`) as HTMLElement;
-    //    const transLabel = document.querySelector(`.${Constants.SELECTED_F_TEXT}`) as HTMLElement;
-
-    //    if (nativeLabel && transLabel) {
-    //        const transHeading = transLabel.childNodes[0] as HTMLElement;
-    //        const nativeHeading = nativeLabel.childNodes[0] as HTMLElement;
-    //        let transWord: string = transHeading.textContent;
-    //        let nativeWord: string = nativeLabel.dataset["answer"];
-
-    //        let text = `${transWord} — ${nativeHeading.innerText}`;
-    //        let comparison = nativeWord === transWord;
-    //        if (comparison) {
-    //            result.emitCorrectAnswer(text);
-    //            TestResults10.QuestionResults.push("correct");
-    //            testResult.QuestionNames.push(text);
-    //            testResult.QuestionResults.push("correct");
-    //            nativeLabel.classList.remove(SELECTED_N_TEXT);
-    //            transLabel.classList.remove(SELECTED_F_TEXT);
-    //        } else {
-    //            TestResults10.QuestionNames.push(text);
-    //            TestResults10.QuestionResults.push("uncorrect");
-    //            testResult.QuestionNames.push(text);
-    //            testResult.QuestionResults.push("uncorrect");
-    //            nativeLabel.classList.remove(SELECTED_N_TEXT);
-    //            transLabel.classList.remove(SELECTED_F_TEXT);
-    //        }
-
-    //        nativeLabel.innerHTML = "";
-    //        transLabel.innerHTML = "";
-
-    //        let table = document.createElement('table');
-    //        for (let i = 0; i < TestResults10.GetLength(); i++) {
-    //            let tr = document.createElement('tr');
-    //            let NameTextNode = document.createTextNode(TestResults10.QuestionNames[i]);
-    //            let ResultTextNode = document.createTextNode(TestResults10.QuestionResults[i]);
-
-
-    //            let tdName = document.createElement('td');
-    //            let tdResult = document.createElement('td');
-    //            tdName.appendChild(NameTextNode);
-    //            tdResult.appendChild(ResultTextNode);
-
-    //            tr.appendChild(tdName);
-    //            tr.appendChild(tdResult);
-    //            table.appendChild(tr);
-    //        }
-    //        intermediate.appendChild(table);
-    //    } else {
-    //        alert(Constants.ALERT_MESSAGE);
-    //    }    
-    //}
+        }
+        //because NextTest() increases index
+        info.reduceIndex();
+    }
 }
 
 class Help {
@@ -432,7 +365,7 @@ class Help {
         return false;
     }
 
-    public static setSelectionOfOneElement(selector: string, operatingClass: string) {
+    public static selectOneLabel(selector: string, operatingClass: string) {
         //hide radio buttons
         const radioElements = document.querySelectorAll(`.${selector} [input="radio"]`);
         radioElements.forEach(element => element.classList.add("input_hidden"));
@@ -447,6 +380,19 @@ class Help {
                 sibling.classList.remove(operatingClass);
             });
         }));
+    }
+
+    public static selectOneButton(ev: Event): void {
+        const button = ev.target as HTMLButtonElement;
+        button.classList.add("btn-warning");
+        let children = button.parentNode.childNodes;
+        children = [].filter.call(children,
+            (element: any) => {
+                return element != button;
+            });
+        children.forEach((child) => {
+            (child as HTMLElement).classList.remove("btn-warning");
+        })
     }
 }
 

@@ -11,7 +11,6 @@ import { FooterComponent } from './app-footer/app-footer';
 import { HeaderComponent } from './app-header/app-header'
 import { CategoriesComponent } from './categories/categories.component';
 import { SubcategoryComponent } from './subcategories/subcategories.component';
-import { ManualComponent } from './manual/manual.component';
 import { SlideShowComponent } from './slideshow/slideshow.component';
 import { BreadcrumbComponent } from './breadcrumbs/breadcrumbs.component';
 import { HomeComponent } from './home/home.component';
@@ -22,7 +21,6 @@ const routes: Routes = [
     { path: '', component: HomeComponent, pathMatch: 'full' },
     { path: 'Categories', component: CategoriesComponent },
     { path: 'Categories/Subcategories/:parentId', component: SubcategoryComponent },
-    { path: 'Categories/Subcategories/:parentId/Manual/:subcategoryId', component: ManualComponent },
     { path: 'Categories/Subcategories/:parentId/View/:subcategoryId', component: SlideShowComponent },
     { path: 'Categories/Subcategories/:parentId/Tests/:subcategoryId', component: TestIndexComponent },
     { path: 'Categories/Subcategories/:parentId/Tests/:subcategoryId/Test/:testId', component: TestComponent}
@@ -31,7 +29,7 @@ const routes: Routes = [
 @NgModule({
     imports: [BrowserModule, FormsModule, HttpClientModule, NgbModule, RouterModule.forRoot(routes)],
     declarations: [AppComponent, HeaderComponent, FooterComponent,
-        SubcategoryComponent, CategoriesComponent, ManualComponent,
+        SubcategoryComponent, CategoriesComponent,
         SlideShowComponent, BreadcrumbComponent, HomeComponent, TestIndexComponent,
         TestComponent],
     bootstrap: [AppComponent]

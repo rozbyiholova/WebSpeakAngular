@@ -12,12 +12,12 @@ export class TestInfo {
 
     private readonly http: HttpClient;
     private readonly testId: number;
-    private _currentIndex: number;
     private readonly _categories: any[];
     private readonly _testSetting: Object;
+    private _currentIndex: number;
+    private testResult: TestResult;
     public checkMethod: Function = new Function();
     public fillMethods: Function[] = new Array<Function>();
-    public testResult: TestResult;
 
     private readonly picturesWordsSounds: Function[] = [
         FillMethod.loadPictures,
@@ -112,7 +112,10 @@ export class TestInfo {
         }
         case 10:
         {
-            this.checkMethod = CheckMethod.checkPictureWithText;
+            this.checkMethod = this.checkTenth;
+                    this.fillMethods = [
+                        FillMethod.loadPairs
+                    ];
             break;
         }
         }
@@ -136,6 +139,10 @@ export class TestInfo {
 
     public get categories(): any[] {
         return this._categories;
+    }
+
+    public get result(): TestResult {
+        return this.testResult;
     }
 
     private setConfirmButton(testId: number): void {
@@ -221,5 +228,15 @@ export class TestInfo {
 
     private runFillMethods(): void {
         this.fillMethods.forEach(method => method(this));
+    }
+
+    private checkTenth(): void {
+        const btnCount: number = document.getElementsByClassName("btn").length;
+        const disabledCount: number = document.querySelectorAll(":disabled").length;
+        if (btnCount === disabledCount) {
+            this.loadNextTest();
+        } else {
+            alert("Make all the pairs, please");
+        }
     }
 }
