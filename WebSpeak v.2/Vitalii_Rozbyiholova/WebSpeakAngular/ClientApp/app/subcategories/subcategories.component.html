@@ -8,8 +8,8 @@
                 <div class="title">
                     <h2>{{category.translation}} ({{category.native}})</h2>
 
-                    <a [routerLink]="['./Manual', category.id]">Manual</a>
-                    <a [routerLink]="['./Slideshow', category.id]">Slide-show</a>
+                    <a [routerLink]="['./View', category.id]" [queryParams]="{type: 'manual'}">Manual</a>
+                    <a [routerLink]="['./View', category.id]" [queryParams]="{type: 'slideshow'}">Slide-show</a>
                     <a [routerLink]="['./Tests', category.id]">Tests</a>
                 </div>
 

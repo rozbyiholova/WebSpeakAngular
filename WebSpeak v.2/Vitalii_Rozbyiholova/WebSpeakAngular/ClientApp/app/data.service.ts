@@ -4,11 +4,11 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class DataService {
     
-    private categoriesUrl: string = "/Categories";
-    private subcategoriesUrl: string = "/Categories/Subcategories/";
-    private wordsUrl: string = "Categories/Subcategories/Words/";
-    private testIndexUrl: string = "Categories/Subcategories/Tests/";
-    private testUrl: string = "Categories/Subcategories/Tests/Test/";
+    private categoriesUrl: string = "Home/Categories";
+    private subcategoriesUrl: string = "Home/Categories/Subcategories/";
+    private wordsUrl: string = "Home/Categories/Subcategories/Words/";
+    private testIndexUrl: string = "Home/Categories/Subcategories/Tests/";
+    private testUrl: string = "Home/Categories/Subcategories/Tests/Test/";
 
     constructor(private http: HttpClient) {}
 

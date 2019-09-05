@@ -1,8 +1,9 @@
-﻿import { NgModule } from '@angular/core';
+﻿import { NgModule, } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 import { Routes, RouterModule } from '@angular/router';
 
@@ -23,11 +24,11 @@ const routes: Routes = [
     { path: 'Categories/Subcategories/:parentId', component: SubcategoryComponent },
     { path: 'Categories/Subcategories/:parentId/View/:subcategoryId', component: SlideShowComponent },
     { path: 'Categories/Subcategories/:parentId/Tests/:subcategoryId', component: TestIndexComponent },
-    { path: 'Categories/Subcategories/:parentId/Tests/:subcategoryId/Test/:testId', component: TestComponent}
+    { path: 'Categories/Subcategories/:parentId/Tests/:subcategoryId/Test/:testId', component: TestComponent }
 ];
 
 @NgModule({
-    imports: [BrowserModule, FormsModule, HttpClientModule, NgbModule, RouterModule.forRoot(routes)],
+    imports: [BrowserModule, FormsModule, HttpClientModule, NgbModule, RouterModule.forRoot(routes, { useHash: true })],
     declarations: [AppComponent, HeaderComponent, FooterComponent,
         SubcategoryComponent, CategoriesComponent,
         SlideShowComponent, BreadcrumbComponent, HomeComponent, TestIndexComponent,

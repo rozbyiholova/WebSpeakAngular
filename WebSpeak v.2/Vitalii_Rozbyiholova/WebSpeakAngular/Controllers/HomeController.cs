@@ -11,12 +11,14 @@ using Microsoft.AspNetCore.Mvc;
     */
 namespace WebSpeakAngular.Controllers
 {
+    [Route("[controller]/")]
     public class HomeController : Controller
     {
         private CategoriesRepository _categoriesRepository;
         private WordsRepository _wordsRepository;
         private TestsRepository _testsRepository;
 
+        
         public HomeController()
         {
             _categoriesRepository = new CategoriesRepository();

@@ -25,9 +25,10 @@ export class BreadcrumbComponent implements OnInit {
     
     ngOnInit() {
         this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
-            let url: string = document.location.pathname;
+            let url: string = document.location.hash;
             let urlSplited: string[] = url.split('/');
-            urlSplited = urlSplited.filter(element => element != '' && element != null);
+            urlSplited = urlSplited.filter(element => element != '' && element != null && element != "#");
+            urlSplited = urlSplited.map(this.deleteQueryParams);
             
             this.breadcrumbs = this.makeBreadcrumbs(urlSplited);
         });
@@ -74,5 +75,15 @@ export class BreadcrumbComponent implements OnInit {
             if (!isNaN(+array[i])) { return i; }
         }
         return -1;
+    }
+
+    private deleteQueryParams(url: string): string {
+        const questionMarkIndex: number = url.indexOf("?");
+        if (questionMarkIndex !== -1) {
+            const partToRemove: string = url.slice(questionMarkIndex);
+            let res = url.replace(partToRemove, "");
+            return res;
+        }
+        return url;
     }
 }
