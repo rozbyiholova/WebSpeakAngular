@@ -14,9 +14,9 @@ namespace WebSpeakAngular.Controllers
     [Route("[controller]/")]
     public class HomeController : Controller
     {
-        private CategoriesRepository _categoriesRepository;
-        private WordsRepository _wordsRepository;
-        private TestsRepository _testsRepository;
+        private readonly CategoriesRepository _categoriesRepository;
+        private readonly WordsRepository _wordsRepository;
+        private readonly TestsRepository _testsRepository;
 
         
         public HomeController()

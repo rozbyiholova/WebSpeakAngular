@@ -4,7 +4,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
-
 import { Routes, RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
@@ -18,13 +17,17 @@ import { HomeComponent } from './home/home.component';
 import { TestIndexComponent } from './Tests/index/testIndex.component';
 import { TestComponent } from './Tests/test/test.component';
 
+import { LoginComponent } from "./auth/login/login.component";
+
 const routes: Routes = [
     { path: '', component: HomeComponent, pathMatch: 'full' },
     { path: 'Categories', component: CategoriesComponent },
     { path: 'Categories/Subcategories/:parentId', component: SubcategoryComponent },
     { path: 'Categories/Subcategories/:parentId/View/:subcategoryId', component: SlideShowComponent },
     { path: 'Categories/Subcategories/:parentId/Tests/:subcategoryId', component: TestIndexComponent },
-    { path: 'Categories/Subcategories/:parentId/Tests/:subcategoryId/Test/:testId', component: TestComponent }
+    { path: 'Categories/Subcategories/:parentId/Tests/:subcategoryId/Test/:testId', component: TestComponent },
+
+    {path: "api/login", component: LoginComponent}
 ];
 
 @NgModule({
@@ -32,7 +35,7 @@ const routes: Routes = [
     declarations: [AppComponent, HeaderComponent, FooterComponent,
         SubcategoryComponent, CategoriesComponent,
         SlideShowComponent, BreadcrumbComponent, HomeComponent, TestIndexComponent,
-        TestComponent],
+        TestComponent, LoginComponent],
     bootstrap: [AppComponent]
 })
 export class AppModule { }
