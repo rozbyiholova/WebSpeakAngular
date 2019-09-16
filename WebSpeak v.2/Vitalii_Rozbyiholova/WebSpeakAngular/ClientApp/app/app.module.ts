@@ -1,10 +1,10 @@
 ﻿import { NgModule, } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
+import { JwtModule } from "@auth0/angular-jwt";
 
 import { AppComponent } from './app.component';
 import { FooterComponent } from './app-footer/app-footer';
@@ -17,7 +17,9 @@ import { HomeComponent } from './home/home.component';
 import { TestIndexComponent } from './Tests/index/testIndex.component';
 import { TestComponent } from './Tests/test/test.component';
 
+import { AuthService } from './auth.service';
 import { LoginComponent } from "./auth/login/login.component";
+import { RegisterComponent } from "./auth/register/register.component";
 
 const routes: Routes = [
     { path: '', component: HomeComponent, pathMatch: 'full' },
@@ -27,15 +29,25 @@ const routes: Routes = [
     { path: 'Categories/Subcategories/:parentId/Tests/:subcategoryId', component: TestIndexComponent },
     { path: 'Categories/Subcategories/:parentId/Tests/:subcategoryId/Test/:testId', component: TestComponent },
 
-    {path: "api/login", component: LoginComponent}
+    { path: "api/Login", component: LoginComponent },
+    {path: "api/Register", component: RegisterComponent}
 ];
 
 @NgModule({
-    imports: [BrowserModule, FormsModule, HttpClientModule, NgbModule, RouterModule.forRoot(routes, { useHash: true })],
+    imports: [BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule, NgbModule,
+        RouterModule.forRoot(routes, { useHash: true }),
+        JwtModule.forRoot({
+            config: {
+                tokenGetter: () => { return localStorage.getItem('jwt'); },
+                whitelistedDomains: ["http://localhost:50342"]
+            }
+        })
+    ],
     declarations: [AppComponent, HeaderComponent, FooterComponent,
         SubcategoryComponent, CategoriesComponent,
         SlideShowComponent, BreadcrumbComponent, HomeComponent, TestIndexComponent,
-        TestComponent, LoginComponent],
+        TestComponent, LoginComponent, RegisterComponent],
+    providers: [AuthService],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

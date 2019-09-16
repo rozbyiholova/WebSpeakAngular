@@ -16,14 +16,25 @@
                     </li>
                 </ul>
             </div>
-            <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+            <div *ngIf="!loggedIn; else loggedInDiv" 
+                 class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                 <ul class="navbar-nav flex-grow-1">
                     <li class="nav-item">
-                        <a class="nav-link text-dark" routerLink="api/login">Login</a>
+                        <a class="nav-link text-dark" routerLink="api/Login">Login</a>
                     </li>
-                    
+
                 </ul>
             </div>
+            <ng-template #loggedInDiv>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" routerLink="api/elsewhere">Cabinet</a>
+                        </li>
+
+                    </ul>
+                </div>
+            </ng-template>
         </div>
     </nav>
 </header>

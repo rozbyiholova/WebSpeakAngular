@@ -28,6 +28,7 @@ export class LoginComponent {
                 localStorage.setItem("jwt", token);
                 this.invalidLogin = false;
                 this.router.navigate(["/"]);
+                this.authService.emitLogin(this.user.login);
             },
             err => {
                 this.invalidLogin = true;

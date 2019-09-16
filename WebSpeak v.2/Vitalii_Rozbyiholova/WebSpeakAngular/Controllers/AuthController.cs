@@ -29,7 +29,17 @@ namespace WebSpeakAngular.Controllers
             _helper = new AuthHelper();
         }
 
-        [HttpPost, Route("login")]
+        [HttpGet("UsersLogins")]
+        public List<string> UsersLogins()
+        {
+            List<Users> users = _usersRepository.GetAll().ToList();
+            List<string> logins = users.Select(user => user.Email).ToList();
+            logins.AddRange(users.Select(user => user.UserName).ToList());
+
+            return logins;
+        }
+
+        [HttpPost, Route("Login")]
         public IActionResult Login([FromBody] LoginModel user)
         {
             if (user == null)
@@ -58,5 +68,41 @@ namespace WebSpeakAngular.Controllers
             }
         }
 
+        [HttpPost, Route("Register")]
+        public IActionResult Register([FromBody] Users user)
+        {
+            if (user == null)
+            {
+                return BadRequest("Invalid client request");
+            }
+
+            LoginModel loginModel = new LoginModel
+            {
+                Login = user.Email,
+                Password =user.PasswordHash
+            };
+
+            string userId = Guid.NewGuid().ToString("N");
+            string hashedPassword = _helper.ComputeSha256Hash(user.PasswordHash);
+            UserSettings userSettings = new UserSettings
+            {
+                LearningLanguageId = 0,
+                NativeLanguageId = 0,
+                UserId = userId
+            };
+
+            user.Id = userId;
+            user.UserSettings = new List<UserSettings> {userSettings};
+            user.PasswordHash = hashedPassword;
+
+            using (ProductHouseContext db = new ProductHouseContext())
+            {
+                db.Users.Add(user);
+                db.SaveChanges();
+            }
+
+
+            return Login(loginModel);
+        }
     }
 }

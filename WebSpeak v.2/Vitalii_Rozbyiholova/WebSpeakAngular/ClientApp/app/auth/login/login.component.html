@@ -1,14 +1,23 @@
-﻿<form class="form-signin" #loginForm="ngForm" (ngSubmit)="provideLogin(loginForm)">
-    <div class="container-fluid">
-        <h2 class="form-signin-heading">Login</h2>
-        <div *ngIf="invalidLogin" class="alert alert-danger">Invalid username or password.</div>
-        <br/>
-        <label for="login" class="sr-only">Email address</label>
-        <input type="email" id="login" name="login" ngModel class="form-control" placeholder="User Name" required autofocus>
-        <br/>
-        <label for="password" class="sr-only">Password</label>
-        <input type="password" id="password" name="password" ngModel class="form-control" placeholder="Password" required>
-        <br/>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-    </div>
-</form>
+﻿<div class="container">
+    <form class="form-signin" #loginForm="ngForm" (ngSubmit)="provideLogin(loginForm)">
+        <div class="form-group">
+            <h2 class="form-signin-heading">Login</h2>
+            <div *ngIf="invalidLogin" class="alert alert-danger">Invalid username or password.</div>
+        </div>
+
+        <div class="form-group">
+            <label for="login" class="sr-only">Email address</label>
+            <input type="email" id="login" name="login" ngModel class="form-control" placeholder="User Name" required autofocus>
+        </div>
+
+        <div class="form-group">
+            <label for="password" class="sr-only">Password</label>
+            <input type="password" id="password" name="password" ngModel class="form-control" placeholder="Password" required>
+        </div>
+
+        <div class="form-group">
+            <button class="btn btn-lg btn-primary" type="submit">Sign in</button>
+            <a [routerLink]="['/api/Register']" class="btn btn-link">Register</a>
+        </div>
+    </form>
+</div>
