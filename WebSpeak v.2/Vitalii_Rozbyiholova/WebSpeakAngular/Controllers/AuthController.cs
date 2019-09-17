@@ -58,6 +58,7 @@ namespace WebSpeakAngular.Controllers
                     claims: new List<Claim>(),
                     expires: DateTime.Now.AddMinutes(TokenOptions.MinutesExpire),
                     signingCredentials: signinCredentials);
+                tokenOptions.Payload["userLogin"] = user.Login;
 
                 string tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
                 return Ok(new {Token = tokenString});
@@ -103,6 +104,19 @@ namespace WebSpeakAngular.Controllers
 
 
             return Login(loginModel);
+        }
+
+        [HttpGet, Route("User/{userLogin}"), Authorize]
+        public IActionResult GetUser(string userLogin)
+        {
+            if (String.IsNullOrEmpty(userLogin)) { return BadRequest("Invalid client request"); }
+
+            string decodedLogin = Uri.UnescapeDataString(userLogin);
+            Users user = _helper.GetUserByEmailOrName(decodedLogin);
+
+            if (user == null) { return BadRequest("No such user"); }
+
+            return Ok(new {User = user});
         }
     }
 }

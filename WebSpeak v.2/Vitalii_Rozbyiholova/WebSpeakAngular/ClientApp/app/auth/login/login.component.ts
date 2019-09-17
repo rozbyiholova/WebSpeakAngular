@@ -1,37 +1,50 @@
-﻿import { Component} from '@angular/core';
-import { NgForm } from "@angular/forms";
+﻿import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import {AuthService} from "../../auth.service"
 import { ActivatedRoute, Router } from '@angular/router';
 import {LoginModel} from "../../../Models/LoginModel";
 
 @Component({
     selector: 'login',
-    templateUrl: `./login.component.html`,
-    providers: [AuthService]
+    templateUrl: `./login.component.html`
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
-    public invalidLogin: boolean;
-    private user: LoginModel;
+    private submitted: boolean = false;
+    private loginForm: FormGroup;
+    private loginModel: LoginModel;
 
-    constructor(private authService: AuthService, private router: Router) {
+    constructor(
+        private authService: AuthService,
+        private router: Router,
+        private formBuilder: FormBuilder) {}
 
+    ngOnInit(): void {
+        this.loginForm = this.formBuilder.group({
+            login: [null, [Validators.required]],
+            password: [null, [Validators.required, Validators.minLength(6)]]
+        });
     }
 
+    public provideLogin(): void {
+        this.submitted = true;
 
-    public provideLogin(form: NgForm): void {
-        const credentials = JSON.stringify(form.value);
-        this.user = JSON.parse(credentials) as LoginModel;
-        this.authService.login(this.user)
+        if (this.loginForm.invalid) {
+            console.log(this.loginForm.errors);
+            return;
+        }
+
+        const credentials = JSON.stringify(this.loginForm.value);
+        this.loginModel = JSON.parse(credentials) as LoginModel;
+        this.authService.login(this.loginModel)
             .subscribe(response => {
-                const token = (<any>response).token;
-                localStorage.setItem("jwt", token);
-                this.invalidLogin = false;
-                this.router.navigate(["/"]);
-                this.authService.emitLogin(this.user.login);
-            },
-            err => {
-                this.invalidLogin = true;
-            });
+                    const token = (<any>response).token;
+                    localStorage.setItem("jwt", token);
+                    this.authService.notifyLogin(this.loginModel.login);
+                    this.router.navigate(["/"]);
+                },
+                err => {
+                    console.log(err);
+                });
     }
 }

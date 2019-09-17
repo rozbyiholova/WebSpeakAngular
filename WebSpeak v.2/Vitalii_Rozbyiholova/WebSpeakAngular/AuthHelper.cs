@@ -10,7 +10,7 @@ namespace WebSpeakAngular
 {
     public class AuthHelper
     {
-
+        private readonly UsersRepository _usersRepository = new UsersRepository();
         public bool IsUser(LoginModel user)
         {
             if (user == null)
@@ -18,7 +18,7 @@ namespace WebSpeakAngular
                 return false;
             }
 
-            List<Users> allUsers = new UsersRepository().GetAll().ToList();
+            List<Users> allUsers = _usersRepository.GetAll().ToList();
             List<string> userNames = allUsers.Select(u => u.UserName).ToList();
             List<string> emails = allUsers.Select(u => u.Email).ToList();
             List<string> passwords = allUsers.Select(u => u.PasswordHash).ToList();
@@ -43,6 +43,20 @@ namespace WebSpeakAngular
                 }
                 return builder.ToString();
             }
+        }
+
+        public Users GetUserByEmailOrName(string loginString)
+        {
+            List<Users> users = _usersRepository.GetAll().ToList();
+            Users userByEmail = users.FirstOrDefault(u => u.Email == loginString);
+            Users userByName = users.FirstOrDefault(u => u.UserName == loginString);
+
+            if (userByName != null || userByEmail != null)
+            {
+                return userByName ?? userByEmail;
+            }
+
+            return null;
         }
     }
 }

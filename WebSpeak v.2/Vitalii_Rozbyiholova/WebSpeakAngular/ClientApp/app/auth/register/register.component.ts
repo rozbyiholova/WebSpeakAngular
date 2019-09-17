@@ -30,10 +30,6 @@ export class RegisterComponent implements OnInit{
             passwordHash: [null, [Validators.required, Validators.minLength(6)]]
         });
     }
-
-    public f() {
-        return this.registerForm.controls;
-    }
     
     public provideRegistration() {
         this.submitted = true;
@@ -49,7 +45,7 @@ export class RegisterComponent implements OnInit{
                     const token = (<any>response).token;
                     localStorage.setItem("jwt", token);
                     this.router.navigate(["/"]);
-                    this.auth.emitLogin(this.user.email);
+                    this.auth.notifyLogin(this.user.email);
                 },
                 err => {
                     console.log(err);

@@ -1,22 +1,43 @@
 ﻿<div class="container">
-    <form class="form-signin" #loginForm="ngForm" (ngSubmit)="provideLogin(loginForm)">
+    <form [formGroup]="loginForm" (ngSubmit)="provideLogin()">
         <div class="form-group">
-            <h2 class="form-signin-heading">Login</h2>
-            <div *ngIf="invalidLogin" class="alert alert-danger">Invalid username or password.</div>
+            <h2 class="form-signin-heading">Signing in</h2>
         </div>
 
         <div class="form-group">
-            <label for="login" class="sr-only">Email address</label>
-            <input type="email" id="login" name="login" ngModel class="form-control" placeholder="User Name" required autofocus>
+            <label for="login">User Name or e-mail address</label>
+            <input type="text" formControlName="login" 
+                   class="form-control" 
+                   [ngClass]="{'isInvalid': submitted && loginForm.get('login')?.errors}"
+                   autofocus/>
+            <div *ngIf="submitted && loginForm.get('login')?.errors" class="invalid-feedback">
+                <div *ngIf="loginForm.get('login')?.errors.required">
+                    Login is required
+                </div>
+            </div>
         </div>
 
         <div class="form-group">
-            <label for="password" class="sr-only">Password</label>
-            <input type="password" id="password" name="password" ngModel class="form-control" placeholder="Password" required>
+            <label for="password">Password</label>
+            <input
+                id="password"
+                type="password" 
+                formControlName="password" 
+                class="form-control" 
+                [ngClass]="{'isInvalid': submitted && loginForm.get('password')?.errors}"/>
+            <div *ngIf="submitted && loginForm.get('password')?.errors"
+                 class="invalid-feedback">
+                <div *ngIf="loginForm.get('password')?.errors.required">
+                    Password is required
+                </div>
+                <div *ngIf="loginForm.get('password')?.errors.minLength">
+                    Password must be at least 6 characters
+                </div>
+            </div>
         </div>
 
         <div class="form-group">
-            <button class="btn btn-lg btn-primary" type="submit">Sign in</button>
+            <button class="btn btn-primary">Sign in</button>
             <a [routerLink]="['/api/Register']" class="btn btn-link">Register</a>
         </div>
     </form>
