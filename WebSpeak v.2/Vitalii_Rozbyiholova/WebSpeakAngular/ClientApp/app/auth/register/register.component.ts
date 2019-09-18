@@ -45,7 +45,7 @@ export class RegisterComponent implements OnInit{
                     const token = (<any>response).token;
                     localStorage.setItem("jwt", token);
                     this.router.navigate(["/"]);
-                    this.auth.notifyLogin(this.user.email);
+                    this.auth.notifyLogin(this.user.Email);
                 },
                 err => {
                     console.log(err);

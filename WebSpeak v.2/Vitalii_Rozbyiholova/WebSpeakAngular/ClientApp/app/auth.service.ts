@@ -14,6 +14,7 @@ export class AuthService {
     private readonly registerUrl: string = "api/auth/Register";
     private readonly usersLoginsUrl: string = "api/auth/UsersLogins";
     private readonly getUserUrl: string = "api/auth/User/";
+    private readonly getLanguagesUrl: string = "api/auth/Languages";
 
     constructor(private http: HttpClient, private jwtHelper: JwtHelperService) { }
 
@@ -36,6 +37,10 @@ export class AuthService {
         const str = encodeURIComponent(this.getDecodedUser()["userLogin"].toString());
         return this.http.get(this.getUserUrl + str);
     } 
+
+    public getLanguages() {
+        return this.http.get(this.getLanguagesUrl);
+    }
 
     public isLoggedIn(): boolean {
         return !this.jwtHelper.isTokenExpired();

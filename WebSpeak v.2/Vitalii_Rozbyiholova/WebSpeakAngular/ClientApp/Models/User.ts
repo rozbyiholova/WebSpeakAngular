@@ -1,8 +1,8 @@
 ﻿import { UserSettings } from "./UserSettings";
 export class User {
-    public id: string;
-    public userName: string;
-    public email: string;
-    public passwordHash: string;
-    public userSettings: UserSettings[];
+    public Id: string;
+    public UserName: string;
+    public Email: string;
+    public PasswordHash: string;
+    public UserSettings: UserSettings[];
 }

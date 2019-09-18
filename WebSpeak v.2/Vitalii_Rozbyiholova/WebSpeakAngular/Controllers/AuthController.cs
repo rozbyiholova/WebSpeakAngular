@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using DAL.Models;
 using DAL.Repositories;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using WebSpeakAngular.Models;
 
 namespace WebSpeakAngular.Controllers
@@ -116,7 +118,31 @@ namespace WebSpeakAngular.Controllers
 
             if (user == null) { return BadRequest("No such user"); }
 
-            return Ok(new {User = user});
+            string json = JsonConvert.SerializeObject(new {user = user}, Formatting.None,
+                new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                });
+
+            return Ok(json);
+        }
+
+        [Authorize, HttpGet, Route("Languages")]
+        public IActionResult GetLanguages()
+        {
+            List<Languages> languages = new LanguagesRepository().GetAll().ToList();
+            List<LanguageTranslations> languageTranslations = new LanguagesTranslationsRepository().GetAll().ToList();
+            var result = (from language in languages
+                join langTranslation in languageTranslations on language.Id equals langTranslation.LangId
+                where langTranslation.NativeLangId == language.Id
+                select new
+                {
+                    Translation = langTranslation.Translation,
+                    Id = language.Id
+                }).ToList();
+            string json = JsonConvert.SerializeObject(result);
+
+            return Ok(json);
         }
     }
 }

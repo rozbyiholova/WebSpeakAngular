@@ -14,6 +14,7 @@ interface IBreadcrumb {
     styleUrls: ["./breadcrumbsStyle.scss"]
 })
 export class BreadcrumbComponent implements OnInit {
+    private readonly blackList: string[] = ["", "#", "api"];
 
     public breadcrumbs: IBreadcrumb[];
     
@@ -27,7 +28,7 @@ export class BreadcrumbComponent implements OnInit {
         this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
             let url: string = document.location.hash;
             let urlSplited: string[] = url.split('/');
-            urlSplited = urlSplited.filter(element => element != '' && element != null && element != "#");
+            urlSplited = urlSplited.filter(element => element !== null && this.blackList.indexOf(element) === -1);
             urlSplited = urlSplited.map(this.deleteQueryParams);
             
             this.breadcrumbs = this.makeBreadcrumbs(urlSplited);
@@ -85,5 +86,10 @@ export class BreadcrumbComponent implements OnInit {
             return res;
         }
         return url;
+    }
+
+    private textTransform(word: string): string {
+        return  word[0].toUpperCase() + word.slice(1);
+
     }
 }
