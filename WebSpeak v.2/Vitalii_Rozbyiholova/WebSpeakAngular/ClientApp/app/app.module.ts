@@ -17,9 +17,11 @@ import { HomeComponent } from './home/home.component';
 import { TestIndexComponent } from './Tests/index/testIndex.component';
 import { TestComponent } from './Tests/test/test.component';
 
-import { AuthService } from './auth.service';
+import { AuthService } from "./auth.service";
 import { LoginComponent } from "./auth/login/login.component";
 import { RegisterComponent } from "./auth/register/register.component";
+import { CabinetComponent } from "./auth/cabinet/cabinet.component";
+import { InfoComponent } from "./auth/cabinet/Info/info.component";
 
 const routes: Routes = [
     { path: '', component: HomeComponent, pathMatch: 'full' },
@@ -30,7 +32,14 @@ const routes: Routes = [
     { path: 'Categories/Subcategories/:parentId/Tests/:subcategoryId/Test/:testId', component: TestComponent },
 
     { path: "api/Login", component: LoginComponent },
-    {path: "api/Register", component: RegisterComponent}
+    { path: "api/Register", component: RegisterComponent },
+    {
+        path: "api/Cabinet", component: CabinetComponent, children: [
+            { path: "Info", component: InfoComponent },
+
+        ]
+    }
+
 ];
 
 @NgModule({
@@ -44,9 +53,10 @@ const routes: Routes = [
         })
     ],
     declarations: [AppComponent, HeaderComponent, FooterComponent,
-        SubcategoryComponent, CategoriesComponent,
-        SlideShowComponent, BreadcrumbComponent, HomeComponent, TestIndexComponent,
-        TestComponent, LoginComponent, RegisterComponent],
+        SubcategoryComponent, CategoriesComponent, SlideShowComponent,
+        BreadcrumbComponent, HomeComponent, TestIndexComponent,
+        TestComponent, LoginComponent, RegisterComponent, CabinetComponent,
+        InfoComponent],
     providers: [AuthService],
     bootstrap: [AppComponent]
 })

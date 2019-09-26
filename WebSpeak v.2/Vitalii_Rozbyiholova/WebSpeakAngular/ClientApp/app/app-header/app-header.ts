@@ -1,22 +1,38 @@
-﻿import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from '../auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-header',
     templateUrl: './app-header.html',
-    styles: [],
-    providers: [AuthService]
+    styles: []
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit, OnDestroy {
+    
+
+    public subscription: Subscription;
     public loggedIn: boolean;
     public userName: string;
 
     constructor(private auth: AuthService) {
-        this.loggedIn = auth.isLoggedIn();
-        this.auth.loggedIn.subscribe((name: string) => {
-            console.log("caught an login event");
-            this.userName = name;
-            this.loggedIn = true;
+       
+    }
+
+    ngOnInit(): void {
+        this.loggedIn = this.auth.isLoggedIn();
+        const token = this.auth.getDecodedUser();
+
+        if (token) { this.userName = token["userLogin"]; }
+
+        this.subscription = this.auth.getLoggedIn().subscribe((name: string) => {
+            if (name) {
+                this.loggedIn = true;
+                this.userName = name;
+            }
         });
+    }
+
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
     }
 }

@@ -4,26 +4,26 @@
         
         <div class="form-group">
             <label for="username">Username</label>
-            <input id="username" type="text" formControlName="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && registerForm.get('username').errors }" />
-            <div *ngIf="submitted && registerForm.get('username').errors" class="invalid-feedback">
-                <div *ngIf="registerForm.get('username').errors.required">Username is required</div>
+            <input type="text" formControlName="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && registerForm.get('username')?.errors }" />
+            <div *ngIf="submitted && registerForm.get('username')?.errors" class="invalid-feedback">
+                <div *ngIf="registerForm.get('username')?.errors.required">Username is required</div>
             </div>
         </div>
 
         <div class="form-group">
             <label for="email">E-mail</label>
-            <input id="email" type="email" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && registerForm.get('email').errors }" />
-            <div *ngIf="submitted && registerForm.get('email').errors" class="invalid-feedback">
-                <div *ngIf="registerForm.get('email').errors.required">E-mail is required</div>
+            <input type="email" formControlName="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && registerForm.get('email')?.errors }" />
+            <div *ngIf="submitted && registerForm.get('email')?.errors" class="invalid-feedback">
+                <div *ngIf="registerForm.get('email')?.errors.required">E-mail is required</div>
             </div>
         </div>
 
         <div class="form-group">
             <label for="passwordHash">Password</label>
-            <input id="passwordHash" type="password" formControlName="passwordHash" class="form-control" [ngClass]="{ 'is-invalid': submitted && registerForm.get('passwordHash').password.errors }" />
+            <input type="password" formControlName="passwordHash" class="form-control" [ngClass]="{ 'is-invalid': submitted && registerForm.get('passwordHash')?.errors }" />
             <div *ngIf="submitted && registerForm.get('passwordHash').errors" class="invalid-feedback">
-                <div *ngIf="registerForm.get('passwordHash').errors.required">Password is required</div>
-                <div *ngIf="registerForm.get('passwordHash').errors.minlength">Password must be at least 6 characters</div>
+                <div *ngIf="registerForm.get('passwordHash')?.errors.required">Password is required</div>
+                <div *ngIf="registerForm.get('passwordHash')?.errors.minlength">Password must be at least 6 characters</div>
             </div>
         </div>
         <div class="form-group">

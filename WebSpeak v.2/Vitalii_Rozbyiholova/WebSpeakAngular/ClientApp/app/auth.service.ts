@@ -1,18 +1,22 @@
-﻿import { Injectable, Output, EventEmitter } from "@angular/core";
+﻿import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { BehaviorSubject, Subject } from "rxjs";
+import { JwtHelperService } from "@auth0/angular-jwt";
 import { LoginModel } from "../Models/LoginModel";
 import { User } from "../Models/User";
 
 @Injectable()
 export class AuthService {
 
-    @Output() loggedIn: EventEmitter<string> = new EventEmitter();
+    private subject = new Subject<string>();
 
     private readonly loginUrl: string = "api/auth/Login";
     private readonly registerUrl: string = "api/auth/Register";
-    private readonly usersLoginsUrl: string = "api/UsersLogins";
+    private readonly usersLoginsUrl: string = "api/auth/UsersLogins";
+    private readonly getUserUrl: string = "api/auth/User/";
+    private readonly getLanguagesUrl: string = "api/auth/Languages";
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private jwtHelper: JwtHelperService) { }
 
     public login(user: LoginModel) {
         return this.http.post(this.loginUrl, user,
@@ -29,16 +33,34 @@ export class AuthService {
             });
     }
 
-    public isLoggedIn(): boolean {
-        return localStorage.getItem("jwt") !== null;
+    public getUser() {
+        const str = encodeURIComponent(this.getDecodedUser()["userLogin"].toString());
+        return this.http.get(this.getUserUrl + str);
+    } 
+
+    public getLanguages() {
+        return this.http.get(this.getLanguagesUrl);
     }
 
-    public emitLogin(name: string): void {
-        this.loggedIn.emit(name);
-        console.log("emitted login event");
+    public isLoggedIn(): boolean {
+        return !this.jwtHelper.isTokenExpired();
     }
 
     public usersLogins() {
         return this.http.get(this.usersLoginsUrl);
+    }
+
+    public getDecodedUser() {
+        return this.jwtHelper.decodeToken();
+    }
+
+    /*--------------------Work with events--------------------*/
+
+    public notifyLogin(name: string): void {
+       this.subject.next(name);
+    }
+
+    public getLoggedIn() {
+        return this.subject.asObservable();
     }
 }

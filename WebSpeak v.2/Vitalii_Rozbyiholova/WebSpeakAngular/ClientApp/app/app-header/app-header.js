@@ -8,17 +8,35 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { Component } from '@angular/core';
+import { AuthService } from '../auth.service';
 var HeaderComponent = /** @class */ (function () {
-    function HeaderComponent() {
+    function HeaderComponent(auth) {
+        this.auth = auth;
     }
-    HeaderComponent.prototype.ngOnInit = function () { };
+    HeaderComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.loggedIn = this.auth.isLoggedIn();
+        var token = this.auth.getDecodedUser();
+        if (token) {
+            this.userName = token["userLogin"];
+        }
+        this.subscription = this.auth.getLoggedIn().subscribe(function (name) {
+            if (name) {
+                _this.loggedIn = true;
+                _this.userName = name;
+            }
+        });
+    };
+    HeaderComponent.prototype.ngOnDestroy = function () {
+        this.subscription.unsubscribe();
+    };
     HeaderComponent = __decorate([
         Component({
             selector: 'app-header',
             templateUrl: './app-header.html',
             styles: []
         }),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [AuthService])
     ], HeaderComponent);
     return HeaderComponent;
 }());
