@@ -1,4 +1,4 @@
-﻿import { Injectable } from "@angular/core";
+﻿import { Injectable, EventEmitter, Output } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { BehaviorSubject, Subject } from "rxjs";
 import { JwtHelperService } from "@auth0/angular-jwt";
@@ -7,8 +7,7 @@ import { User } from "../Models/User";
 
 @Injectable()
 export class AuthService {
-
-    private subject = new Subject<string>();
+    @Output() loggedIn = new EventEmitter<boolean>();
 
     private readonly loginUrl: string = "api/auth/Login";
     private readonly registerUrl: string = "api/auth/Register";
@@ -34,7 +33,7 @@ export class AuthService {
     }
 
     public getUser() {
-        const str = encodeURIComponent(this.getDecodedUser()["userLogin"].toString());
+        const str = encodeURIComponent(this.getDecodedToken()["userLogin"].toString());
         return this.http.get(this.getUserUrl + str);
     } 
 
@@ -50,17 +49,18 @@ export class AuthService {
         return this.http.get(this.usersLoginsUrl);
     }
 
-    public getDecodedUser() {
+    public getDecodedToken() {
         return this.jwtHelper.decodeToken();
     }
+
 
     /*--------------------Work with events--------------------*/
 
     public notifyLogin(name: string): void {
-       this.subject.next(name);
+       this.loggedIn.emit(true);
     }
 
-    public getLoggedIn() {
-        return this.subject.asObservable();
+    public notifyLogOut() {
+        this.loggedIn.emit(false);
     }
 }

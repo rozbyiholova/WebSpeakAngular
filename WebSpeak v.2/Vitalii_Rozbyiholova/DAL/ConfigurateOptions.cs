@@ -17,7 +17,7 @@ namespace DAL
             builder.AddJsonFile("appsettings.json");
             var config = builder.Build();
 
-            string connectionString = @"Server=(LocalDb)\MSSQLLocalDB;Database=ProductHouse;Trusted_Connection=True;ConnectRetryCount=0";
+            string connectionString = "Server=tcp:vitaliiserver.database.windows.net,1433;Initial Catalog=ProductHouse;Persist Security Info=False;User ID=rozbiygolova;Password=Vetal12314;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
 
             var optionsBuilder = new DbContextOptionsBuilder<ProductHouseContext>();
             var options = optionsBuilder

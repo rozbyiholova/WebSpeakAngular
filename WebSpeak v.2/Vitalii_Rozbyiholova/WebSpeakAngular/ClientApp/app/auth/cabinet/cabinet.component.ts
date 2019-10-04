@@ -1,4 +1,5 @@
 ﻿import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 import { AuthService } from "../../auth.service";
 import { User } from "../../../Models/User";
 
@@ -11,7 +12,7 @@ export class CabinetComponent implements OnInit {
 
     user: User;
 
-    constructor(private auth: AuthService) {
+    constructor(private auth: AuthService, private router: Router) {
 
     }
 
@@ -23,5 +24,7 @@ export class CabinetComponent implements OnInit {
 
     public logOut(): void {
         localStorage.removeItem("jwt");
+        this.auth.notifyLogOut();
+        this.router.navigate(["/"]);
     }
 }

@@ -1,0 +1,132 @@
+﻿
+.input_hidden {
+    display: none;
+}
+
+.selected_text,
+.selected_picture {
+    background-color: #1a33ae70;
+}
+
+.selected_f_text {
+    font-size: 1rem;
+    background-color: #2d94bb70
+}
+
+.selected_n_text {
+    font-size: 1rem;
+    background-color: #c7bf2c70
+}
+
+.selected_text label,
+.test_images label {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.selected_text label h3,
+.test_images label img {
+    padding: 8px;
+}
+
+h3 {
+    font-size: 2vh;
+}
+
+.selected_f_text,
+.selected_n_text {
+    label h3 {
+            display: inline-block;
+            cursor: pointer;
+    }
+}
+
+.test {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.test_images {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.test_word {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 1em;
+    width: 70%;
+    display: grid;
+    grid-gap: 5px;
+    grid-template-columns: repeat(auto-fit, minmax(30px, 1fr));
+    place-items: center center;
+
+    h3 {
+        font-size: 1em;
+        cursor: pointer;
+    }
+}
+
+.confirm {
+    text-transform: uppercase;
+}
+
+.buttons{
+    display: flex;
+    justify-content: center;
+
+    button {
+        width: 100px;
+        margin: 0 20px;
+    }
+}
+
+.img-fluid {
+    object-fit: cover;
+    height: 50vh;
+    width: 50vh;
+}
+
+.test10 {
+    background: none;
+    width: 80%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+    justify-items: center;
+}
+
+.test {
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.foreign_words,
+.native_words {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 10px;
+}
+
+input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+    & + label {
+        cursor: pointer;
+    }
+}
+
+.test_result,
+.test_images,
+.test_sounds,
+.test_input,
+.test_foreign,
+.test10,
+.buttons,
+.intermediate {
+    display: none;
+}

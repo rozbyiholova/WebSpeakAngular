@@ -33,7 +33,7 @@ namespace DAL.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=(LocalDb)\\MSSQLLocalDB;Database=ProductHouse;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=tcp:vitaliiserver.database.windows.net,1433;Initial Catalog=ProductHouse;Persist Security Info=False;User ID=rozbiygolova;Password=Vetal12314;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
             }
         }
 
@@ -244,8 +244,6 @@ namespace DAL.Models
 
             modelBuilder.Entity<UserSettings>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.UserId)
                     .IsRequired()
                     .HasMaxLength(100)
@@ -255,7 +253,7 @@ namespace DAL.Models
                     .WithMany(p => p.UserSettings)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UserSetti__UserI__66603565");
+                    .HasConstraintName("FK__UserSetti__UserI__6B24EA82");
             });
 
             modelBuilder.Entity<Users>(entity =>
