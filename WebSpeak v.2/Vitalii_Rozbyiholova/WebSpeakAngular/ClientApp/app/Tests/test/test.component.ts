@@ -3,7 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { DataService } from '../../data.service';
 import { Subscription } from 'rxjs';
 import { DTO } from '../../../Models/DTO';
+import { User } from "../../../Models/User";
 import { TestInfo } from '../helpers/TestInfo';
+import { AuthService } from "../../auth.service";
 
 @Component({
     selector: 'test',
@@ -14,17 +16,25 @@ import { TestInfo } from '../helpers/TestInfo';
 })
 export class TestComponent implements OnInit {
 
+    private user: User = null;
     private testId: number;
     private subcategoryId: number;
     private subscription: Subscription;
     private test: DTO[];
     public testInfo: TestInfo;
 
-    constructor(private dataService: DataService, activeRoute: ActivatedRoute) {
+    constructor(
+        private dataService: DataService,
+        private auth: AuthService,
+        private activeRoute: ActivatedRoute
+    ) {
         this.subscription = activeRoute.params.subscribe(params => {
             this.testId = params['testId'];
             this.subcategoryId = params["subcategoryId"];
         });
+
+        this.testInfo.testResult.testEnded
+            .subscribe((res: Object) => this.onTestEnded(res));
     }
 
     ngOnInit(): void {
@@ -40,11 +50,17 @@ export class TestComponent implements OnInit {
     }
 
     private initTest(): void {
-        this.testInfo = new TestInfo(this.test, this.testId);
+
+        if (this.auth.isLoggedIn()) {
+            this.auth.getUser().subscribe(u => this.user = u as User);
+        }
+
+        this.testInfo = new TestInfo(this.test, this.testId, this.subcategoryId, this.user);
         this.testInfo.loadNextTest();
     }
-    
-    /*----------Work with test----------*/
-    
+
+    private onTestEnded(result: Object) {
+        this.dataService.saveTestResult(result);
+    }
     
 }

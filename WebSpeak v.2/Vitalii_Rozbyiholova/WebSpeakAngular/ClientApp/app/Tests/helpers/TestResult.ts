@@ -8,6 +8,7 @@ export class TestResult {
 
     @Output() correct: EventEmitter<string> = new EventEmitter();
     @Output() incorrect: EventEmitter<string> = new EventEmitter();
+    @Output() testEnded: EventEmitter<Object> = new EventEmitter();
 
     questionNames: string[];
     questionResults: string[];
@@ -28,5 +29,8 @@ export class TestResult {
     }
     public emitIncorrectAnswer(word: string): void {
         this.incorrect.emit(word);
+    }
+    public emitTestEnded(result: Object): void {
+        this.testEnded.emit(result);
     }
 }

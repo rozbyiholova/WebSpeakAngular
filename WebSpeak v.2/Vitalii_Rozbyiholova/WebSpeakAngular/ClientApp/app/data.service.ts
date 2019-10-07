@@ -9,6 +9,7 @@ export class DataService {
     private wordsUrl: string = "Home/Categories/Subcategories/Words/";
     private testIndexUrl: string = "Home/Categories/Subcategories/Tests/";
     private testUrl: string = "Home/Categories/Subcategories/Tests/Test/";
+    private saveResultUrl: string = "Home/SaveResult";
 
     constructor(private http: HttpClient) {}
 
@@ -30,5 +31,9 @@ export class DataService {
 
     getTest(subcategoryId: number) {
         return this.http.get(this.testUrl + subcategoryId);
+    }
+
+    saveTestResult(result: Object) {
+        this.http.post(this.saveResultUrl, result);
     }
 }

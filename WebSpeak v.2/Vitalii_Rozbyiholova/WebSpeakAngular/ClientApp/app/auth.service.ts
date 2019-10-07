@@ -42,7 +42,10 @@ export class AuthService {
     }
 
     public isLoggedIn(): boolean {
-        return !this.jwtHelper.isTokenExpired();
+        if (localStorage.getItem("jwt")) {
+            return !this.jwtHelper.isTokenExpired();
+        }
+        return false;
     }
 
     public usersLogins() {

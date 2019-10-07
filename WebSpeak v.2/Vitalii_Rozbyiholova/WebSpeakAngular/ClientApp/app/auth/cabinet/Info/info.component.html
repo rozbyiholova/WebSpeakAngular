@@ -1,17 +1,17 @@
 ﻿<form>
-    <div class="form-group">
+    <div class="form-group" *ngIf="isUser">
         <label>User name</label>
-        <input disabled [title]="user['UserName']" />
+        <input disabled [value]="userName" />
     </div>
-    <div class="form-group">
+    <div class="form-group" *ngIf="isUser">
         <label>E-mail</label>
-        <input disabled [title]="user.Email" />
+        <input disabled [value]="userEmail" />
     </div>
     <div class="form-group">
         <label>Native Language</label>
         <select>
             <option></option>
-            <option *ngFor="let language of languages; let i = index" 
+            <option *ngFor="let language of languages;" 
                     [value]="language.Id">{{language.Translation}}</option>
         </select>
     </div>
@@ -19,7 +19,7 @@
         <label>Learning language</label>
         <select>
             <option></option>
-            <option *ngFor="let language of languages; let i = index" 
+            <option *ngFor="let language of languages;" 
                     [value]="language.Id">{{language.Translation}}</option>
         </select>
     </div>

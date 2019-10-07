@@ -1,21 +1,26 @@
 ﻿import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { AuthService } from "../../auth.service";
+import { DataService } from "../../data.service";
 
 import { Constants } from './Constants';
 import { CheckMethod } from './CheckMethod';
 import { TestResult } from './TestResult';
 import { FillMethod } from './FillMethod';
 
+import { User } from "../../../Models/User";
+
 let data = require("./testssettings.json");
 
 export class TestInfo {
 
-    private readonly http: HttpClient;
     private readonly testId: number;
+    private readonly categoryId: number;
     private readonly _categories: any[];
     private readonly _testSetting: Object;
+    private readonly user: User;
     private _currentIndex: number;
-    private testResult: TestResult;
+    public testResult: TestResult;
     public checkMethod: Function = new Function();
     public fillMethods: Function[] = new Array<Function>();
 
@@ -25,10 +30,16 @@ export class TestInfo {
         FillMethod.loadSounds
     ];
     
-    constructor(array: any[], testId: number) {
+    constructor(
+        array: any[],
+        testId: number,
+        categoryId: number,
+        user?: User) {
         this._currentIndex = 0;
         this._categories = array;
         this.testId = testId;
+        this.categoryId = categoryId;
+        this.user = user;
         this.testResult = new TestResult();
         const settingString = JSON.stringify(data);
         const settingObject = JSON.parse(settingString);
@@ -185,6 +196,12 @@ export class TestInfo {
     private generateResult(testResult: TestResult): void {
         if (testResult) {
 
+            const resultForSaving = this.generateTestResultForSaving(testResult);
+
+            if (resultForSaving) {
+                this.testResult.emitTestEnded(resultForSaving);
+            }
+
             let testResultDiv = document.getElementsByClassName(Constants.TEST_RESULT)[0] as HTMLElement;
             let testDiv = document.getElementsByClassName(Constants.TEST)[0] as HTMLElement;
             let names = testResult.questionNames;
@@ -238,5 +255,21 @@ export class TestInfo {
         } else {
             alert("Make all the pairs, please");
         }
+    }
+
+    private generateTestResultForSaving(result: TestResult): Object | null {
+        if (this.user) {
+            const totalResult: number = result.getTotal();
+            return {
+                TestId: this.testId,
+                Result: totalResult,
+                UserId: this.user.Id,
+                LangId: this.user.UserSettings["LearningLanguageId"],
+                CategoryId: this.categoryId,
+                TestDate: Date.now()
+            }
+        }
+
+        return null;
     }
 }

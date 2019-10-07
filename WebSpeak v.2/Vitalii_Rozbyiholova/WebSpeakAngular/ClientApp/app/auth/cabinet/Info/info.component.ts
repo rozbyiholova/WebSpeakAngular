@@ -9,8 +9,11 @@ import { User } from "../../../../Models/User";
 })
 export class InfoComponent implements OnInit {
 
-    user: User;
+    isUser: boolean = false;
+    private user: User;
     languages: object[];
+    public userName: string;
+    public userEmail: string;
 
     constructor(private auth: AuthService) {
 
@@ -19,9 +22,10 @@ export class InfoComponent implements OnInit {
     ngOnInit(): void {
         this.auth.getUser().subscribe((u) => {
             this.user = new User();
-            Object.assign(this.user, u);
-            console.dir(this.user);
-            console.log(this.user instanceof User);
+            Object.assign(this.user, u["user"]);
+            this.userEmail = this.user.Email;
+            this.userName = this.user.UserName;
+            this.isUser = true;
         });
 
         this.auth.getLanguages().subscribe((languages: Object[]) => {

@@ -12,23 +12,25 @@ import { AuthService } from '../auth.service';
 var HeaderComponent = /** @class */ (function () {
     function HeaderComponent(auth) {
         this.auth = auth;
+        this.loggedIn = false;
     }
     HeaderComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.loggedIn = this.auth.isLoggedIn();
-        var token = this.auth.getDecodedUser();
-        if (token) {
-            this.userName = token["userLogin"];
-        }
-        this.subscription = this.auth.getLoggedIn().subscribe(function (name) {
-            if (name) {
-                _this.loggedIn = true;
-                _this.userName = name;
-            }
+        this.setUser();
+        this.auth.loggedIn.subscribe(function (isLoggedIn) {
+            _this.loggedIn = isLoggedIn;
+            _this.setUser();
         });
     };
-    HeaderComponent.prototype.ngOnDestroy = function () {
-        this.subscription.unsubscribe();
+    HeaderComponent.prototype.setUser = function () {
+        var _this = this;
+        if (this.loggedIn) {
+            this.auth.getUser().subscribe(function (u) {
+                _this.user = u["user"];
+                _this.userName = _this.user.UserName;
+            });
+        }
     };
     HeaderComponent = __decorate([
         Component({

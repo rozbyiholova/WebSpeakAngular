@@ -60,5 +60,15 @@ namespace WebSpeakAngular.Controllers
             List<DTO> words = _wordsRepository.GetDTO(1, 3, subcategoryId);
             return words;
         }
+
+        [HttpPost("SaveResult")]
+        public void SaveTestResult([FromBody] TestResults testResults)
+        {
+            using (ProductHouseContext db = new ProductHouseContext())
+            {
+                db.TestResults.Add(testResults);
+                db.SaveChanges();
+            }
+        }
     }
 }
