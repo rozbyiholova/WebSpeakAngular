@@ -43,7 +43,7 @@ html {
 
 body {
     /* Margin bottom by footer height */
-    background: linear-gradient(to bottom right, #43cea2, #185a9d)
+    background: linear-gradient(to bottom right, #F7971E, #FFD200)
 }
 .footer {
     margin-top: auto;
@@ -95,7 +95,7 @@ body {
 }
 
 .item:hover {
-    border: 7px solid #19906c;
+    border: 7px solid #b8860b;
     border-top-left-radius: 100% 20px;
     border-bottom-right-radius: 100% 20px;
     transition: .5s ease-in-out;

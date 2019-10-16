@@ -9,21 +9,19 @@
     </div>
     <div class="form-group">
         <label>Native Language</label>
-        <select>
-            <option></option>
+        <select [(ngModel)]="nativeLanguageId" name="native">
             <option *ngFor="let language of languages;" 
-                    [value]="language.Id">{{language.Translation}}</option>
+                    [ngValue]="language.Id">{{language.Translation}}</option>
         </select>
     </div>
     <div class="form-group">
         <label>Learning language</label>
-        <select>
-            <option></option>
+        <select [(ngModel)]="learningLanguageId" name="learning">
             <option *ngFor="let language of languages;" 
-                    [value]="language.Id">{{language.Translation}}</option>
+                    [ngValue]="language.Id">{{language.Translation}}</option>
         </select>
     </div>
     <div class="form-group">
-        <button type="submit">Save changes</button>
+        <button type="submit" (click)="changeLanguages()">Save changes</button>
     </div>
 </form>

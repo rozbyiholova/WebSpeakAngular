@@ -33,7 +33,7 @@ namespace DAL.Repositories
             {
                 try
                 {
-                    return db.Users.First(u => u.Id == id);
+                    return db.Users.Include(u => u.UserSettings).First(u => u.Id == id);
                 }
                 catch (Exception e)
                 {
@@ -41,6 +41,34 @@ namespace DAL.Repositories
                     throw;
                 }
             }
+        }
+
+        public Users GetByEmailOrName(string loginString)
+        {
+            List<Users> users = GetAll().ToList();
+            Users userByEmail = users.FirstOrDefault(u => u.Email == loginString);
+            Users userByName = users.FirstOrDefault(u => u.UserName == loginString);
+
+            if (userByName != null || userByEmail != null)
+            {
+                return userByName ?? userByEmail;
+            }
+
+            return null;
+        }
+
+        public bool ChangeLanguages(string login, int nativeLanguageId, int learningLanguageId)
+        {
+            Users user = GetByEmailOrName(login);
+
+            if (user == null) { return false; }
+
+            user.UserSettings.First().NativeLanguageId = nativeLanguageId;
+            user.UserSettings.First().LearningLanguageId = learningLanguageId;
+
+            db.SaveChanges();
+
+            return true;
         }
 
         private bool disposed = false;

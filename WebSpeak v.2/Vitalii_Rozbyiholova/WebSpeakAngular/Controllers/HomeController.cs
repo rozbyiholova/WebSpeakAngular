@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using DAL.Models;
 using DAL.Repositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 /*                                             ---------------------------------------------------------------------
                                                |                             Angular                               |
@@ -17,47 +20,62 @@ namespace WebSpeakAngular.Controllers
         private readonly CategoriesRepository _categoriesRepository;
         private readonly WordsRepository _wordsRepository;
         private readonly TestsRepository _testsRepository;
+        private readonly int defaultNativeLanguageId = 1;
+        private readonly int defaultLearningLanguageId = 3;
+        private readonly Users _currentUser;
 
-        
-        public HomeController()
+        public HomeController(IHttpContextAccessor httpContextAccessor)
         {
             _categoriesRepository = new CategoriesRepository();
             _wordsRepository = new WordsRepository();
             _testsRepository = new TestsRepository();
+
+            string userLogin = httpContextAccessor?.HttpContext?.User?.FindFirst("userLogin")?.Value;
+
+            if (userLogin != null)
+            {
+                _currentUser = new UsersRepository().GetByEmailOrName(userLogin);
+            }
+            
         }
 
         [HttpGet("Categories")]
         public List<DTO> Index()
         {
-            List<DTO> DTOs = _categoriesRepository.GetDTO(1, 3, null);
+            HandleLanguages(out int native, out int learning);
+            List<DTO> DTOs = _categoriesRepository.GetDTO(native, learning, null);
             return DTOs;
         }
 
         [HttpGet("Categories/Subcategories/{parentId}")]
         public List<DTO> Subcategories(int parentId)
         {
-            List<DTO> DTOs = _categoriesRepository.GetDTO(1, 3, parentId);
+            HandleLanguages(out int native, out int learning);
+            List<DTO> DTOs = _categoriesRepository.GetDTO(native, learning, parentId);
             return DTOs;
         }
 
         [HttpGet("Categories/Subcategories/Words/{subcategoryId}")]
         public List<DTO> Words(int subcategoryId)
         {
-            List<DTO> words = _wordsRepository.GetDTO(1, 3, subcategoryId);
+            HandleLanguages(out int native, out int learning);
+            List<DTO> words = _wordsRepository.GetDTO(native, learning, subcategoryId);
             return words;
         }
 
         [HttpGet("Categories/Subcategories/Tests/{subcategoryId}")]
         public List<DTO> TestsIndex()
         {
-            List<DTO> tests = _testsRepository.GetDTO(1, 3);
+            HandleLanguages(out int native, out int learning);
+            List<DTO> tests = _testsRepository.GetDTO(native, learning);
             return tests;
         }
 
         [HttpGet("Categories/Subcategories/Tests/Test/{subcategoryId}")]
         public List<DTO> Test(int subcategoryId)
         {
-            List<DTO> words = _wordsRepository.GetDTO(1, 3, subcategoryId);
+            HandleLanguages(out int native, out int learning);
+            List<DTO> words = _wordsRepository.GetDTO(native, learning, subcategoryId);
             return words;
         }
 
@@ -68,6 +86,22 @@ namespace WebSpeakAngular.Controllers
             {
                 db.TestResults.Add(testResults);
                 db.SaveChanges();
+            }
+        }
+
+        public int NativeLanguageId => _currentUser.UserSettings.First().NativeLanguageId;
+
+        public int LearningLanguageId => _currentUser.UserSettings.First().LearningLanguageId;
+
+        private void HandleLanguages(out int native, out int learning)
+        {
+            native = NativeLanguageId;
+            learning = LearningLanguageId;
+
+            if (native == 0 || learning == 0)
+            {
+                native = defaultNativeLanguageId;
+                learning = defaultLearningLanguageId;
             }
         }
     }

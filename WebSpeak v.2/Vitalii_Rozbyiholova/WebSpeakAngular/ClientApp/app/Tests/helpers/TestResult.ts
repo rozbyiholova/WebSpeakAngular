@@ -31,6 +31,7 @@ export class TestResult {
         this.incorrect.emit(word);
     }
     public emitTestEnded(result: Object): void {
+        console.log("TestResult - emitTestEnded");
         this.testEnded.emit(result);
     }
 }

@@ -32,12 +32,13 @@ export class TestComponent implements OnInit {
             this.testId = params['testId'];
             this.subcategoryId = params["subcategoryId"];
         });
-
-        this.testInfo.testResult.testEnded
-            .subscribe((res: Object) => this.onTestEnded(res));
     }
 
     ngOnInit(): void {
+        if (this.auth.isLoggedIn()) {
+            this.auth.getUser().subscribe(u => this.user = u["user"] as User);
+        }
+
         this.loadSubcategories(this.testId);
     }
 
@@ -50,16 +51,12 @@ export class TestComponent implements OnInit {
     }
 
     private initTest(): void {
-
-        if (this.auth.isLoggedIn()) {
-            this.auth.getUser().subscribe(u => this.user = u as User);
-        }
-
         this.testInfo = new TestInfo(this.test, this.testId, this.subcategoryId, this.user);
         this.testInfo.loadNextTest();
     }
 
     private onTestEnded(result: Object) {
+        console.log("test.component - OnTestEnded");
         this.dataService.saveTestResult(result);
     }
     

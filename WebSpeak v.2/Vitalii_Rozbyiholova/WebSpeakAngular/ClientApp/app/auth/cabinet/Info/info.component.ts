@@ -11,13 +11,14 @@ export class InfoComponent implements OnInit {
 
     isUser: boolean = false;
     private user: User;
+    public nativeLanguageId: any;
+    public learningLanguageId: any;
     languages: object[];
     public userName: string;
     public userEmail: string;
 
-    constructor(private auth: AuthService) {
 
-    }
+    constructor(private auth: AuthService) {}
 
     ngOnInit(): void {
         this.auth.getUser().subscribe((u) => {
@@ -31,5 +32,9 @@ export class InfoComponent implements OnInit {
         this.auth.getLanguages().subscribe((languages: Object[]) => {
             this.languages = languages;
         });
+    }
+
+    changeLanguages(): void {
+        this.auth.setLanguages(this.userEmail, this.nativeLanguageId, this.learningLanguageId);
     }
 }

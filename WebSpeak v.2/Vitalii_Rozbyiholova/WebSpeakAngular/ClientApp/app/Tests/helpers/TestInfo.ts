@@ -258,6 +258,8 @@ export class TestInfo {
     }
 
     private generateTestResultForSaving(result: TestResult): Object | null {
+        console.log("TestInfo - generateTestResultForSaving");
+        console.log("user - " + this.user);
         if (this.user) {
             const totalResult: number = result.getTotal();
             return {

@@ -9,11 +9,12 @@ import { User } from "../Models/User";
 export class AuthService {
     @Output() loggedIn = new EventEmitter<boolean>();
 
-    private readonly loginUrl: string = "api/auth/Login";
-    private readonly registerUrl: string = "api/auth/Register";
-    private readonly usersLoginsUrl: string = "api/auth/UsersLogins";
-    private readonly getUserUrl: string = "api/auth/User/";
-    private readonly getLanguagesUrl: string = "api/auth/Languages";
+    private readonly loginUrl: string = "Auth/Login";
+    private readonly registerUrl: string = "Auth/Register";
+    private readonly usersLoginsUrl: string = "Auth/UsersLogins";
+    private readonly getUserUrl: string = "Auth/User/";
+    private readonly getLanguagesUrl: string = "Auth/Languages";
+    private readonly setLanguagesUrl: string = "Auth/SetLanguages";
 
     constructor(private http: HttpClient, private jwtHelper: JwtHelperService) { }
 
@@ -54,6 +55,18 @@ export class AuthService {
 
     public getDecodedToken() {
         return this.jwtHelper.decodeToken();
+    }
+
+    public setLanguages(login: string, nativeLanguageId: number, learningLanguageId: number) {
+        let languagesObj = {
+            "Login": login,
+            "NativeLanguageId": nativeLanguageId,
+            "LearningLanguageId": learningLanguageId
+        };
+        return this.http.post(this.setLanguagesUrl, languagesObj,
+            {
+                headers: new HttpHeaders({ "ContentType": "application/json" })
+            });
     }
 
 

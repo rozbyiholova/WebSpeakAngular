@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -45,18 +46,14 @@ namespace WebSpeakAngular
             }
         }
 
-        public Users GetUserByEmailOrName(string loginString)
+        public Users GetUserByEmailOrName(string login)
         {
-            List<Users> users = _usersRepository.GetAll().ToList();
-            Users userByEmail = users.FirstOrDefault(u => u.Email == loginString);
-            Users userByName = users.FirstOrDefault(u => u.UserName == loginString);
-
-            if (userByName != null || userByEmail != null)
-            {
-                return userByName ?? userByEmail;
-            }
-
-            return null;
+            return _usersRepository.GetByEmailOrName(login);
+        }
+        
+        public bool SetLanguages(string login, int nativeLanguageId, int learningLanguageId)
+        {
+            return _usersRepository.ChangeLanguages(login, nativeLanguageId, learningLanguageId);
         }
     }
 }

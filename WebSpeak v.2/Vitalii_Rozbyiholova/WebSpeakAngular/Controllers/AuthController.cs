@@ -18,7 +18,7 @@ using WebSpeakAngular.Models;
 
 namespace WebSpeakAngular.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]/")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -46,7 +46,7 @@ namespace WebSpeakAngular.Controllers
         {
             if (user == null)
             {
-                return BadRequest("Invalid client request");
+                return InvalidClientRequest();
             }
 
             if (_helper.IsUser(user))
@@ -76,7 +76,7 @@ namespace WebSpeakAngular.Controllers
         {
             if (user == null)
             {
-                return BadRequest("Invalid client request");
+                return InvalidClientRequest();
             }
 
             LoginModel loginModel = new LoginModel
@@ -111,7 +111,7 @@ namespace WebSpeakAngular.Controllers
         [HttpGet, Route("User/{userLogin}"), Authorize]
         public IActionResult GetUser(string userLogin)
         {
-            if (String.IsNullOrEmpty(userLogin)) { return BadRequest("Invalid client request"); }
+            if (String.IsNullOrEmpty(userLogin)) { return InvalidClientRequest(); }
 
             string decodedLogin = Uri.UnescapeDataString(userLogin);
             Users user = _helper.GetUserByEmailOrName(decodedLogin);
@@ -128,7 +128,7 @@ namespace WebSpeakAngular.Controllers
         }
 
         [Authorize, HttpGet, Route("Languages")]
-        public IActionResult GetLanguages()
+        public IActionResult GetAllLanguages()
         {
             List<Languages> languages = new LanguagesRepository().GetAll().ToList();
             List<LanguageTranslations> languageTranslations = new LanguagesTranslationsRepository().GetAll().ToList();
@@ -143,6 +143,24 @@ namespace WebSpeakAngular.Controllers
             string json = JsonConvert.SerializeObject(result);
 
             return Ok(json);
+        }
+
+        [Authorize, HttpPost, Route("SetLanguages")]
+        public IActionResult SetLanguages([FromBody] ChangeLanguageModel model)
+        {
+            bool changedSuccessfully = _helper.SetLanguages(model.Login, model.NativeLanguageId, model.LearningLanguageId);
+
+            if (!changedSuccessfully)
+            {
+                return InvalidClientRequest();
+            }
+
+            return Ok();
+        }
+
+        private IActionResult InvalidClientRequest()
+        {
+            return BadRequest("Invalid client request");
         }
     }
 }
