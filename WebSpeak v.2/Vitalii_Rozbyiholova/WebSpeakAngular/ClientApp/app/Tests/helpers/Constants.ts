@@ -21,4 +21,9 @@
     static readonly BUTTON_NO: string = "button_no";
     static readonly CLICKED: string = "clicked";
     static readonly ALERT_MESSAGE: string = "Nothing selected. Please select any item";
+    static readonly TEST_RESULT_STYLE: string = `display: flex;
+        flex-direction: column-reverse;
+        -webkit-justify-content: center;
+        align-items: center;
+        justify-content: center;`;
 }

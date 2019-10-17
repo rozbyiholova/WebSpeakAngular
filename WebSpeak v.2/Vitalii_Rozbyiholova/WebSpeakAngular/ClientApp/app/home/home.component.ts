@@ -2,7 +2,8 @@
 
 @Component({
     selector: "home",
-    template: `<h1>Home</h1>`
+    templateUrl: "./home.component.html",
+    styleUrls: ["./home.component.scss"]
 })
 export class HomeComponent {
 }

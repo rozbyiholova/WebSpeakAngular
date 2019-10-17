@@ -1,0 +1,13 @@
+﻿.cabinet-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    align-items: center;
+    justify-content: center;
+}
+
+.change-lang-btn {
+    grid-column: 1 / span 2;
+    display: flex;
+    justify-content: center;
+}

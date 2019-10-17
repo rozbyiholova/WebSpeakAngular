@@ -213,9 +213,19 @@ export class TestInfo {
             }
 
             testDiv.setAttribute("style", "display: none");
-            testResultDiv.setAttribute("style", "display: block;");
             let table: HTMLTableElement = document.createElement("table");
-
+            const thead: HTMLTableSectionElement = document.createElement("thead");
+            const headerRow: HTMLTableRowElement = document.createElement("tr");
+            let headerQuestion: HTMLTableHeaderCellElement = document.createElement("th");
+            headerQuestion.innerText = "Question";
+            let headerAnswer: HTMLTableHeaderCellElement = document.createElement("th");
+            headerAnswer.innerText = "Answer";
+            headerRow.appendChild(headerQuestion);
+            headerRow.appendChild(headerAnswer);
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+            const tbody: HTMLTableSectionElement = document.createElement("tbody");
+            
             for (let i = 0; i < testResult.getLength(); i++) {
                 let tr: HTMLTableRowElement = document.createElement("tr");
                 const nameTextNode: Text = document.createTextNode(names[i]);
@@ -228,16 +238,22 @@ export class TestInfo {
 
                 tr.appendChild(tdName);
                 tr.appendChild(tdResult);
-                table.appendChild(tr);
+                tbody.appendChild(tr);
             }
 
             let trTotal = document.createElement("tr");
             let total = testResult.getTotal();
             trTotal.innerHTML = "<td>Total</td>";
             trTotal.innerHTML += `<td>${total}</td>`;
-            table.appendChild(trTotal);
+            tbody.appendChild(trTotal);
 
+            table.appendChild(tbody);
+            
+            table.classList.add("table");
+            table.classList.add("table-striped");
             testResultDiv.appendChild(table);
+
+            testResultDiv.setAttribute("style", Constants.TEST_RESULT_STYLE);
         } else {
             return;
         }
@@ -258,17 +274,14 @@ export class TestInfo {
     }
 
     private generateTestResultForSaving(result: TestResult): Object | null {
-        console.log("TestInfo - generateTestResultForSaving");
-        console.log("user - " + this.user);
         if (this.user) {
             const totalResult: number = result.getTotal();
             return {
-                TestId: this.testId,
-                Result: totalResult,
-                UserId: this.user.Id,
-                LangId: this.user.UserSettings["LearningLanguageId"],
-                CategoryId: this.categoryId,
-                TestDate: Date.now()
+                "TestId": +this.testId,
+                "Result": +totalResult,
+                "UserId": this.user.Id,
+                "LangId": +this.user.UserSettings[0]["LearningLanguageId"],
+                "CategoryId": +this.categoryId,
             }
         }
 

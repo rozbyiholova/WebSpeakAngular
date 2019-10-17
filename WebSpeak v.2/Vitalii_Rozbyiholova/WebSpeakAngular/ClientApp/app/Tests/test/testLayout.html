@@ -1,17 +1,17 @@
 ﻿<div class="test container">
 
-    <div class="test_images row"></div>
-    <div class="test_sounds row"></div>
-    <div class="test_input">
+    <div class="test_images little-transparent row"></div>
+    <div class="test_sounds little-transparent row"></div>
+    <div class="test_input little-transparent">
         <input type="text" />
     </div>
-    <div class="test_foreign"></div>
-    <div class="test_word"></div>
+    <div class="test_foreign" little-transparent></div>
+    <div class="test_word" little-transparent></div>
 
 
     <div class="test10">
-        <div class="foreign_words"></div>
-        <div class="native_words"></div>
+        <div class="foreign_words" little-transparent></div>
+        <div class="native_words" little-transparent></div>
     </div>
 
     <button class="confirm btn-success">Next</button>
@@ -22,5 +22,5 @@
 </div>
 
 <div class="test_result container">
-    <button class="save-result btn-success">Finish</button>
+    <button class="save-result btn-success" (click)="goBack()">Return to tests</button>
 </div>

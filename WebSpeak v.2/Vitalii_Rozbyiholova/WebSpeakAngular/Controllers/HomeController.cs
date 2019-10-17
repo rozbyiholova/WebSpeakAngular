@@ -79,19 +79,49 @@ namespace WebSpeakAngular.Controllers
             return words;
         }
 
-        [HttpPost("SaveResult")]
-        public void SaveTestResult([FromBody] TestResults testResults)
+        [HttpPost, Route("SaveResult")]
+        public void SaveTestResult([FromBody] TestResults testResult)
         {
-            using (ProductHouseContext db = new ProductHouseContext())
+            if (testResult != null)
             {
-                db.TestResults.Add(testResults);
-                db.SaveChanges();
+                testResult.TestDate = DateTime.Now;
+                using (ProductHouseContext db = new ProductHouseContext())
+                {
+                    db.TestResults.Add(testResult);
+                    db.SaveChanges();
+                }
             }
         }
 
-        public int NativeLanguageId => _currentUser.UserSettings.First().NativeLanguageId;
+        public int NativeLanguageId
+        {
+            get
+            {
+                if (_currentUser != null)
+                {
+                    return _currentUser.UserSettings.First().NativeLanguageId;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        } 
 
-        public int LearningLanguageId => _currentUser.UserSettings.First().LearningLanguageId;
+        public int LearningLanguageId
+        {
+            get
+            {
+                if (_currentUser != null)
+                {
+                    return _currentUser.UserSettings.First().LearningLanguageId;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
 
         private void HandleLanguages(out int native, out int learning)
         {

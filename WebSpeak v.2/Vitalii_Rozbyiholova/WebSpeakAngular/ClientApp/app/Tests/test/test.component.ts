@@ -1,5 +1,6 @@
 ﻿import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { DataService } from '../../data.service';
 import { Subscription } from 'rxjs';
 import { DTO } from '../../../Models/DTO';
@@ -26,7 +27,8 @@ export class TestComponent implements OnInit {
     constructor(
         private dataService: DataService,
         private auth: AuthService,
-        private activeRoute: ActivatedRoute
+        private activeRoute: ActivatedRoute,
+        private location: Location
     ) {
         this.subscription = activeRoute.params.subscribe(params => {
             this.testId = params['testId'];
@@ -53,11 +55,17 @@ export class TestComponent implements OnInit {
     private initTest(): void {
         this.testInfo = new TestInfo(this.test, this.testId, this.subcategoryId, this.user);
         this.testInfo.loadNextTest();
+        this.testInfo.testResult.testEnded.subscribe((result: Object) => {
+            this.onTestEnded(result);
+        });
     }
 
     private onTestEnded(result: Object) {
-        console.log("test.component - OnTestEnded");
-        this.dataService.saveTestResult(result);
+        this.dataService.saveTestResult(result).subscribe();
     }
-    
+
+    goBack(): void {
+        this.location.back();
+    }
+
 }

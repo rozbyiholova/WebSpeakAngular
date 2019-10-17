@@ -395,10 +395,3 @@ class Help {
         })
     }
 }
-
-/*TODO:
- -implement fill method for test 10
- -implement check method for test 10
- -rewrite checkMethod class with using of "Abstract 
-    method" => change TestInfo class
- */

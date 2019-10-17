@@ -19,7 +19,6 @@ using WebSpeakAngular.Models;
 namespace WebSpeakAngular.Controllers
 {
     [Route("[controller]/")]
-    [ApiController]
     public class AuthController : ControllerBase
     {
         private readonly UsersRepository _usersRepository;

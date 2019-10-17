@@ -1,5 +1,5 @@
 ﻿import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class DataService {
@@ -34,6 +34,9 @@ export class DataService {
     }
 
     saveTestResult(result: Object) {
-        this.http.post(this.saveResultUrl, result);
+        return this.http.post(this.saveResultUrl, result,
+            {
+                headers: new HttpHeaders({ "ContentType": "application/json" })
+            });
     }
 }

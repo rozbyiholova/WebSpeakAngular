@@ -15,6 +15,7 @@ interface IBreadcrumb {
 })
 export class BreadcrumbComponent implements OnInit {
     private readonly blackList: string[] = ["", "#", "api"];
+    private api: string = "";
 
     public breadcrumbs: IBreadcrumb[];
     
@@ -27,11 +28,12 @@ export class BreadcrumbComponent implements OnInit {
     ngOnInit() {
         this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => {
             let url: string = document.location.hash;
-            let urlSplited: string[] = url.split('/');
-            urlSplited = urlSplited.filter(element => element !== null && this.blackList.indexOf(element) === -1);
-            urlSplited = urlSplited.map(this.deleteQueryParams);
+            let urlSplitted: string[] = url.split('/');
+            this.setApi(urlSplitted);
+            urlSplitted = urlSplitted.filter(element => element !== null && this.blackList.indexOf(element) === -1);
+            urlSplitted = urlSplitted.map(this.deleteQueryParams);
             
-            this.breadcrumbs = this.makeBreadcrumbs(urlSplited);
+            this.breadcrumbs = this.makeBreadcrumbs(urlSplitted);
         });
     }
 
@@ -47,7 +49,7 @@ export class BreadcrumbComponent implements OnInit {
             if (paramIndex !== -1) {isParams = true;}
 
             if (isParams && paramIndex == currentPosition + 1) {
-                let breadcrumbUrl: string = '/' + array.slice(0, paramIndex).join('/');
+                let breadcrumbUrl: string = '/' + this.api + array.slice(0, paramIndex).join('/');
                 breadcrumb = {
                     label: array[paramIndex - 1],
                     params: +array[paramIndex],
@@ -55,7 +57,7 @@ export class BreadcrumbComponent implements OnInit {
                 }
                 currentPosition++;
             } else {
-                let breadcrumbUrl: string = '/' + array.slice(0, currentPosition + 1).join('/');
+                let breadcrumbUrl: string = '/' + this.api + array.slice(0, currentPosition + 1).join('/');
                 breadcrumb = {
                     label: array[currentPosition],
                     params: null,
@@ -88,8 +90,14 @@ export class BreadcrumbComponent implements OnInit {
         return url;
     }
 
-    private textTransform(word: string): string {
-        return  word[0].toUpperCase() + word.slice(1);
+    private setApi(urlSplitted: string[]) {
 
+        //index 1 - because first element of array is ALWAYS"#"
+        const firstParam: string = urlSplitted[1];
+        const apiIndex: number = this.blackList.indexOf(firstParam);
+
+        if (apiIndex !== -1) {
+            this.api = this.blackList[apiIndex] + "/";
+        }
     }
 }
