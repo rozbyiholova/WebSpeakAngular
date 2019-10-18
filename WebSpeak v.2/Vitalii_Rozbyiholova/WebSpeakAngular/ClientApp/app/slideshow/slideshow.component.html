@@ -1,22 +1,30 @@
-﻿<ngb-carousel *ngIf="words">
-    <ng-container *ngFor="let word of words">
-        <ng-template ngbSlide>
-            <img class="d-block img-thumbnail" src="{{word.picture}}" alt="{{word.native}}">
-            <div class="carousel-caption d-none d-md-block">
-                <audio controls *ngIf="word.sound">
-                    <source src="{{word.sound}}"/>
-                </audio>
-
-                <h3>{{word.translation}}</h3>
-                <audio controls *ngIf="word.translationPronounce">
-                    <source src="{{word.translationPronounce}}"/>
-                </audio>
-
-                <h3>{{word.native}}</h3>
-                <audio controls *ngIf="word.nativePronounce">
-                    <source src="{{word.nativePronounce}}"/>
-                </audio>
-            </div>
-        </ng-template>
-    </ng-container>
-</ngb-carousel>
+﻿<div class="container">
+    <ngb-carousel id="carousel" #carousel *ngIf="words" (slide)="onSlide($event)">
+        <ng-container *ngFor="let word of words">
+            <ng-template ngbSlide>
+                <div class="slides">
+                    <img class="d-block img-thumbnail view-img" src="{{word.picture}}" alt="{{word.native}}">
+                    <div class="carousel-caption d-none d-md-block">
+                        <audio controls *ngIf="word.sound">
+                            <source src="{{word.sound}}" />
+                        </audio>
+                        
+                        <div class="learn-pron">
+                            <h3>{{word.translation}}</h3>
+                            <audio controls *ngIf="word.translationPronounce" class="check-audio">
+                                <source src="{{word.translationPronounce}}" />
+                            </audio>
+                        </div>
+                        
+                        <div class="native-pron">
+                        <h3>{{word.native}}</h3>
+                            <audio controls *ngIf="word.nativePronounce" class="check-audio">
+                                <source src="{{word.nativePronounce}}" />
+                            </audio>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+        </ng-container>
+    </ngb-carousel>
+</div>

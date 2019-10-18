@@ -1,0 +1,15 @@
+﻿.slides {
+    display: flex;
+    flex-direction: column;
+}
+.carousel-caption {
+    position: relative;
+    left: auto;
+    right: auto;
+}
+
+.view-img {
+    object-fit: cover;
+    height: 30vw;
+    margin: auto;
+}
